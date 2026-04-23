@@ -28,8 +28,20 @@ Thumbs.db
 .idea/
 *.swp
 
+# Claude Code local memory
+.claude/
+
 # ML artifacts
 *.pt
 *.onnx
 runs/
 mlruns/
+
+# Diretorios de teste e outputs locais
+backend/test_data/
+backend/test_weights/
+backend/test_logs/
+backend/test_results/
+backend/logs/
+backend/results/
+backend/data/

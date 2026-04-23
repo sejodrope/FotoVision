@@ -1,0 +1,47 @@
+{
+  "_note": "Mapeamento das pastas do PlantVillage (Kaggle) para as 6 classes do FitoVision. Edita conforme o dataset que tiveres. Pastas não listadas aqui são ignoradas pelo dataset.py.",
+
+  "Apple___healthy":                               "saudavel",
+  "Blueberry___healthy":                           "saudavel",
+  "Cherry_(including_sour)___healthy":             "saudavel",
+  "Corn_(maize)___healthy":                        "saudavel",
+  "Grape___healthy":                               "saudavel",
+  "Peach___healthy":                               "saudavel",
+  "Pepper,_bell___healthy":                        "saudavel",
+  "Potato___healthy":                              "saudavel",
+  "Raspberry___healthy":                           "saudavel",
+  "Soybean___healthy":                             "saudavel",
+  "Strawberry___healthy":                          "saudavel",
+  "Tomato___healthy":                              "saudavel",
+
+  "Cherry_(including_sour)___Powdery_mildew":      "oidio",
+  "Squash___Powdery_mildew":                       "oidio",
+  "Tomato___Leaf_Mold":                            "oidio",
+  "Tomato___Septoria_leaf_spot":                   "oidio",
+
+  "Grape___Black_rot":                             "mildio",
+  "Grape___Esca_(Black_Measles)":                  "mildio",
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)":    "mildio",
+  "Tomato___Late_blight":                          "mildio",
+  "Potato___Late_blight":                          "mildio",
+  "Strawberry___Leaf_scorch":                      "mildio",
+
+  "Tomato___Spider_mites Two-spotted_spider_mite": "danos_pragas",
+  "Apple___Apple_scab":                            "danos_pragas",
+  "Apple___Cedar_apple_rust":                      "danos_pragas",
+  "Peach___Bacterial_spot":                        "danos_pragas",
+  "Pepper,_bell___Bacterial_spot":                 "danos_pragas",
+  "Tomato___Bacterial_spot":                       "danos_pragas",
+  "Tomato___Target_Spot":                          "danos_pragas",
+  "Tomato___Tomato_mosaic_virus":                  "danos_pragas",
+
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus":        "clorose_nitrogenio",
+  "Orange___Haunglongbing_(Citrus_greening)":      "clorose_nitrogenio",
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": "clorose_nitrogenio",
+
+  "Potato___Early_blight":                         "estresse_hidrico",
+  "Tomato___Early_blight":                         "estresse_hidrico",
+  "Apple___Black_rot":                             "estresse_hidrico",
+  "Corn_(maize)___Northern_Leaf_Blight":           "estresse_hidrico",
+  "Corn_(maize)___Common_rust_":                   "estresse_hidrico"
+}

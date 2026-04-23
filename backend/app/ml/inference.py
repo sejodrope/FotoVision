@@ -36,7 +36,7 @@ def load_model(name: str) -> nn.Module:
 
     weight_path = Path(settings.weights_dir) / f"{name}.pth"
     if weight_path.exists():
-        state = torch.load(weight_path, map_location=_device)
+        state = torch.load(weight_path, map_location=_device, weights_only=True)
         model.load_state_dict(state)
 
     model.to(_device)

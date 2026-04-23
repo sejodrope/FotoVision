@@ -11,3 +11,8 @@ pydantic==2.10.3
 pydantic-settings==2.6.1
 python-dotenv==1.0.1
 numpy==1.26.4
+scikit-learn==1.5.2
+matplotlib==3.9.3
+seaborn==0.13.2
+tqdm==4.67.1
+pandas==2.2.3

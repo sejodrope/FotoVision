@@ -1,0 +1,38 @@
+{
+  "_note": "Mapeamento das classes do PlantDoc para as 6 classes do FitoVision. Dataset: https://github.com/pratikkayal/PlantDoc-Dataset",
+
+  "Apple leaf":                              "saudavel",
+  "Bell_pepper leaf":                        "saudavel",
+  "Blueberry leaf":                          "saudavel",
+  "Cherry leaf":                             "saudavel",
+  "grape leaf":                              "saudavel",
+  "Peach leaf":                              "saudavel",
+  "Potato leaf":                             "saudavel",
+  "Raspberry leaf":                          "saudavel",
+  "Soybean leaf":                            "saudavel",
+  "Strawberry leaf":                         "saudavel",
+  "Tomato leaf":                             "saudavel",
+
+  "Squash Powdery mildew leaf":              "oidio",
+
+  "grape leaf black rot":                    "mildio",
+  "Potato leaf late blight":                 "mildio",
+  "Tomato leaf late blight":                 "mildio",
+
+  "Tomato leaf yellow virus":                "clorose_nitrogenio",
+  "Tomato leaf mosaic virus":                "clorose_nitrogenio",
+
+  "Apple Scab Leaf":                         "danos_pragas",
+  "Apple rust leaf":                         "danos_pragas",
+  "Bell_pepper leaf spot":                   "danos_pragas",
+  "Corn Gray leaf spot":                     "danos_pragas",
+  "Corn leaf blight":                        "danos_pragas",
+  "Corn rust leaf":                          "danos_pragas",
+  "Tomato leaf bacterial spot":              "danos_pragas",
+  "Tomato Septoria leaf spot":               "danos_pragas",
+  "Tomato two spotted spider mites leaf":    "danos_pragas",
+  "Tomato mold leaf":                        "danos_pragas",
+
+  "Potato leaf early blight":                "estresse_hidrico",
+  "Tomato Early blight leaf":                "estresse_hidrico"
+}

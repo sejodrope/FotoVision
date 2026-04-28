@@ -16,7 +16,6 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <Leaf className="text-primary-600 w-7 h-7" />
             <span className="font-bold text-xl text-gray-900">FitoVision</span>
-            <span className="hidden sm:block text-xs text-gray-400 ml-1">by UNIVILLE</span>
           </div>
           <div className="flex gap-1">
             {links.map(({ to, label, icon: Icon, end }) => (

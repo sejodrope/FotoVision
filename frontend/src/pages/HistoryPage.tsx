@@ -1,19 +1,10 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getHistory, deleteDiagnosis } from '../services/api'
-import { CLASS_COLORS, MODEL_LABELS } from '../types'
+import { CLASS_COLORS, CLASS_LABELS, MODEL_LABELS } from '../types'
 import type { ClassId, ModelId } from '../types'
 import { Trash2, Loader2, FlaskConical } from 'lucide-react'
 import clsx from 'clsx'
-
-const CLASS_LABELS: Record<ClassId, string> = {
-  saudavel: 'Saudável',
-  mildio: 'Míldio',
-  oidio: 'Oídio',
-  clorose_nitrogenio: 'Clorose por Nitrogênio',
-  danos_pragas: 'Danos por Pragas',
-  estresse_hidrico: 'Estresse Hídrico',
-}
 
 export function HistoryPage() {
   const queryClient = useQueryClient()

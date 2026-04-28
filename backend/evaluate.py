@@ -39,7 +39,7 @@ import seaborn as sns
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
-from dataset import PlantDataset, VAL_TRANSFORMS, make_loaders
+from dataset import dataset_from_samples, VAL_TRANSFORMS, make_loaders
 from app.config import CLASS_NAMES, AVAILABLE_MODELS, CLASS_LABELS
 
 
@@ -240,11 +240,7 @@ def main():
         with open(args.test_split) as f:
             raw = json.load(f)
         test_samples = [(Path(p), int(lbl)) for p, lbl in raw]
-        test_ds = PlantDataset.__new__(PlantDataset)
-        test_ds.class_names = CLASS_NAMES
-        test_ds.class_to_idx = {c: i for i, c in enumerate(CLASS_NAMES)}
-        test_ds.transform = VAL_TRANSFORMS
-        test_ds.samples = test_samples
+        test_ds = dataset_from_samples(CLASS_NAMES, test_samples, VAL_TRANSFORMS)
         test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False,
                                  num_workers=args.workers)
         print(f"Test set    : {len(test_samples)} imagens (do train.py)")

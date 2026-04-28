@@ -201,6 +201,19 @@ def main():
         with open(args.mapping) as f:
             folder_map = json.load(f)
 
+    data_path = Path(args.data)
+    if not data_path.exists():
+        sys.exit(f"[ERRO] Directório de dados não encontrado: {data_path}")
+
+    if folder_map is None:
+        # Valida que todas as classes têm imagens antes de iniciar o treino
+        missing = [cls for cls in CLASS_NAMES if not any((data_path / cls).glob("*"))]
+        if missing:
+            sys.exit(
+                f"[ERRO] Classes sem imagens no directório '{data_path}': {missing}\n"
+                "       Certifique-se que cada classe tem uma pasta com o respectivo nome."
+            )
+
     print(f"\nCarregando dataset de: {args.data}")
     train_loader, val_loader, _, test_samples = make_loaders(
         data_dir=args.data,

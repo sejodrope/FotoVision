@@ -1,7 +1,8 @@
-from PIL import Image
-from torchvision import transforms
-import torch
 import io
+import torch
+from fastapi import HTTPException
+from PIL import Image, UnidentifiedImageError
+from torchvision import transforms
 
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
@@ -15,7 +16,12 @@ _transform = transforms.Compose([
 
 
 def preprocess_image(image_bytes: bytes) -> tuple[torch.Tensor, Image.Image]:
-    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    try:
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=422, detail="Ficheiro não é uma imagem válida.")
+    except Exception as exc:
+        raise HTTPException(status_code=422, detail=f"Erro ao processar imagem: {exc}")
     tensor = _transform(image).unsqueeze(0)
     return tensor, image
 

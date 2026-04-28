@@ -1,10 +1,13 @@
-import os
+import logging
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 from torchvision import models
-from pathlib import Path
+
 from app.config import settings, CLASS_NAMES, AVAILABLE_MODELS
 
+logger = logging.getLogger("fitovision.inference")
 
 _model_cache: dict[str, nn.Module] = {}
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,6 +41,13 @@ def load_model(name: str) -> nn.Module:
     if weight_path.exists():
         state = torch.load(weight_path, map_location=_device, weights_only=True)
         model.load_state_dict(state)
+        logger.info("Pesos carregados: %s", weight_path)
+    else:
+        logger.warning(
+            "Pesos não encontrados para '%s' (%s). A usar pesos ImageNet — modo demo activado.",
+            name,
+            weight_path,
+        )
 
     model.to(_device)
     model.eval()

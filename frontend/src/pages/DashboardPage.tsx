@@ -3,18 +3,9 @@ import { getModelsStatus, getHistory } from '../services/api'
 import { ModelComparison } from '../components/dashboard/ModelComparison'
 import { MetricsCard } from '../components/dashboard/MetricsCard'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { CLASS_COLORS } from '../types'
+import { CLASS_COLORS, CLASS_LABELS_SHORT } from '../types'
 import type { ClassId } from '../types'
 import { Loader2 } from 'lucide-react'
-
-const CLASS_LABELS: Record<string, string> = {
-  saudavel: 'Saudável',
-  mildio: 'Míldio',
-  oidio: 'Oídio',
-  clorose_nitrogenio: 'Clorose N',
-  danos_pragas: 'Pragas',
-  estresse_hidrico: 'Est. Hídrico',
-}
 
 export function DashboardPage() {
   const { data: models, isLoading: loadingModels } = useQuery({
@@ -36,7 +27,7 @@ export function DashboardPage() {
   )
 
   const chartData = Object.entries(classCounts ?? {}).map(([cls, count]) => ({
-    name: CLASS_LABELS[cls] ?? cls,
+    name: CLASS_LABELS_SHORT[cls as ClassId] ?? cls,
     count,
     cls,
   }))

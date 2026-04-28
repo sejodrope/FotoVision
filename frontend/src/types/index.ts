@@ -45,6 +45,24 @@ export interface ModelsStatusResponse {
   demo_mode: boolean
 }
 
+export const CLASS_LABELS: Record<ClassId, string> = {
+  saudavel: 'Saudável',
+  mildio: 'Míldio',
+  oidio: 'Oídio',
+  clorose_nitrogenio: 'Clorose por Nitrogênio',
+  danos_pragas: 'Danos por Pragas',
+  estresse_hidrico: 'Estresse Hídrico',
+}
+
+export const CLASS_LABELS_SHORT: Record<ClassId, string> = {
+  saudavel: 'Saudável',
+  mildio: 'Míldio',
+  oidio: 'Oídio',
+  clorose_nitrogenio: 'Clorose N',
+  danos_pragas: 'Pragas',
+  estresse_hidrico: 'Est. Hídrico',
+}
+
 export const CLASS_COLORS: Record<ClassId, string> = {
   saudavel: '#22c55e',
   mildio: '#ef4444',

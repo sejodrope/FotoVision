@@ -99,7 +99,8 @@ export function HomePage() {
 
             {mutation.isError && (
               <p className="text-sm text-red-600 text-center">
-                Erro ao processar. Verifique se o backend está rodando.
+                {(mutation.error as { response?: { data?: { detail?: string } } })?.response?.data
+                  ?.detail ?? 'Erro ao processar. Verifique se o backend está em execução.'}
               </p>
             )}
           </div>

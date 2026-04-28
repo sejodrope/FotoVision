@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,10 +6,18 @@ from app.db.database import init_db
 from app.api.routes import diagnosis, history, models_info
 from app.config import settings
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+logger = logging.getLogger("fitovision")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    logger.info("FitoVision iniciado | demo_mode=%s", settings.demo_mode)
     yield
 
 

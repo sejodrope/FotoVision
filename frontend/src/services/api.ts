@@ -12,9 +12,7 @@ export async function runDiagnosis(
   form.append('file', file)
   form.append('model_name', modelName)
   form.append('generate_gradcam_flag', String(generateGradcam))
-  const { data } = await api.post<DiagnosisResult>('/diagnosis/', form, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  })
+  const { data } = await api.post<DiagnosisResult>('/diagnosis/', form)
   return data
 }
 

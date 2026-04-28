@@ -1,9 +1,12 @@
 import json
-from fastapi import APIRouter, Depends, Query
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.database import get_db
 from app.db.models import Diagnosis
+from app.ml.inference import is_model_calibrated
 from app.config import CLASS_LABELS
 from app.schemas.diagnosis import DiagnosisListItem, DiagnosisResult
 
@@ -40,10 +43,8 @@ async def get_diagnosis(diagnosis_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Diagnosis).where(Diagnosis.id == diagnosis_id))
     row = result.scalar_one_or_none()
     if not row:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Diagnóstico não encontrado")
 
-    from app.ml.inference import is_model_calibrated
     return DiagnosisResult(
         id=row.id,
         created_at=row.created_at,
@@ -64,7 +65,6 @@ async def delete_diagnosis(diagnosis_id: int, db: AsyncSession = Depends(get_db)
     result = await db.execute(select(Diagnosis).where(Diagnosis.id == diagnosis_id))
     row = result.scalar_one_or_none()
     if not row:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Diagnóstico não encontrado")
     await db.delete(row)
     await db.commit()

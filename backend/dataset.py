@@ -12,16 +12,18 @@ Modo mapeado — para PlantVillage ou outro dataset com nomes de pasta diferente
     Ver plantvillage_map.json para exemplo.
 """
 
+import logging
 import random
 from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import torch
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from torchvision import transforms
 
+logger = logging.getLogger("fitovision.dataset")
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
@@ -78,7 +80,12 @@ class PlantDataset(Dataset):
 
     def __getitem__(self, idx: int):
         path, label = self.samples[idx]
-        img = Image.open(path).convert("RGB")
+        try:
+            img = Image.open(path).convert("RGB")
+        except (UnidentifiedImageError, OSError) as exc:
+            logger.warning("Imagem corrompida ou ilegível, ignorada: %s (%s)", path, exc)
+            # Devolve tensor nulo para não quebrar o DataLoader; o treino segue
+            img = Image.new("RGB", (224, 224), color=0)
         if self.transform:
             img = self.transform(img)
         return img, label
@@ -88,6 +95,24 @@ class PlantDataset(Dataset):
         for _, label in self.samples:
             counts[self.class_names[label]] += 1
         return dict(counts)
+
+
+def dataset_from_samples(
+    class_names: list[str],
+    samples: list[tuple[Path, int]],
+    transform=None,
+) -> "PlantDataset":
+    """Cria um PlantDataset a partir de uma lista de (path, label) já preparada.
+
+    Usado pelo evaluate.py para reconstruir o test split guardado pelo train.py.
+    """
+    ds = PlantDataset.__new__(PlantDataset)
+    ds.root = Path(".")
+    ds.class_names = class_names
+    ds.class_to_idx = {c: i for i, c in enumerate(class_names)}
+    ds.transform = transform
+    ds.samples = samples
+    return ds
 
 
 def _stratified_split(
@@ -143,9 +168,10 @@ def make_loaders(
     seed: int = 42,
     pin_memory: bool = True,
 ) -> tuple[DataLoader, DataLoader, DataLoader, list]:
-    """
-    Retorna (train_loader, val_loader, test_loader, test_samples).
-    test_samples é uma lista de (path, label) guardada pelo train.py para o evaluate.py.
+    """Retorna (train_loader, val_loader, test_loader, test_samples).
+
+    test_samples é uma lista de (path, label) guardada pelo train.py
+    para que o evaluate.py use exactamente o mesmo conjunto de teste.
     """
     full = PlantDataset(data_dir, class_names, transform=None, folder_class_map=folder_class_map)
     print(f"  Total de imagens : {len(full)}")

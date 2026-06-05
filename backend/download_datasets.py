@@ -35,15 +35,20 @@ load_dotenv(Path(__file__).parent / ".env")
 
 # ─── CONFIGURAÇÃO: Kaggle ────────────────────────────────────────────────────
 
-# Adicione aqui os slugs "usuario/nome-dataset" encontrados no Kaggle
+# Slugs "usuario/nome-dataset" — apenas datasets com imagens de plantas/folhas
 KAGGLE_DATASETS = [
     "abdallahalidev/plantvillage-dataset",
-    # Exemplos de datasets de hortaliças encontrados no Kaggle:
-    # "ashishmotwani/lettuce",
-    # "smaranjitghose/plant-disease-classification-merged-dataset",
-    # "vipoooool/new-plant-diseases-dataset",
-    # "ajinkyakadam2003/plant-diseases-comprehensive-dataset",
+    "ashishjstar/lettuce-diseases",
+    "shuvokumarbasak2030/lettuce-disease-multi-transformation-dataset",
+    # misrakahmed/vegetable-image-dataset removido: classifica tipo de vegetal,
+    # nao tem labels de doenca — inutilizavel para pipeline binario healthy/anomalous
+    "nirmalsankalana/plant-diseases-training-dataset",
 ]
+
+# Datasets Kaggle para IGNORAR no staging (nao tem labels de doenca utilizaveis)
+KAGGLE_STAGING_SKIP = {
+    "misrakahmed_vegetable-image-dataset",
+}
 
 # Subpastas do PlantVillage relevantes para o pipeline binário.
 # PlantVillage não tem alface/rúcula, mas tem imagens folha que servem como
@@ -68,22 +73,45 @@ PV_KEEP_FOLDERS = {
 
 # ─── CONFIGURAÇÃO: Roboflow ──────────────────────────────────────────────────
 
-# Formato: (workspace_id, project_id, numero_da_versao)
-# Encontre em universe.roboflow.com → pesquise "lettuce disease classification"
-ROBOFLOW_DATASETS: list[tuple[str, str, int]] = [
-    # Exemplos — substitua pelos slugs que encontrar:
-    # ("workspace_id", "lettuce-disease-classification", 1),
-    # ("workspace_id", "leafy-vegetable-disease", 2),
+# Formato: (workspace_id, project_id)  — versão detectada automaticamente
+# Extraídos de universe.roboflow.com/{workspace}/{project}
+ROBOFLOW_DATASETS: list[tuple[str, str]] = [
+    # ── Alface (lettuce) ───────────────────────────────────────────────────
+    ("prabhat-shukla-xnveb",                    "lettuce-disease"),
+    ("cv-tomato-disease",                        "lettuce-disease-auek1"),
+    ("justin-issac-zwnqi",                       "lettuce-disease-classification-dryyj"),
+    ("yssp",                                     "disease-lettuce-h69zb"),
+    ("university-11lwh",                         "lettuce-disease-detection"),
+    ("disease-detection-rqwrr",                  "lettuce-disease-detection-pvv71"),
+    ("lettuce-iyoop",                            "lettuce-disease-cge82"),
+    ("the-stove",                                "lettuce-kgxfw"),
+    ("lettuce-cjpxw",                            "lettuce-ub8x5"),
+    ("asia-in6sj",                               "lettuce-d3ixa"),
+    ("pravalika-odkyr",                          "lettuce-qcfff"),
+    ("nanyang-technological-university-ytc7m",   "lettuce-disease-detection-wbnpq"),
+    ("sathwik-chandra",                          "lettuce-leaf-disease-detection"),
+    # ── Folhosas genéricas ─────────────────────────────────────────────────
+    ("hung-nguyen-g3wvq",                        "leaf-disease-gm9cg"),
+    ("oral-cncer",                               "anthracnose-spinach"),
+    ("chlorotechdatasets",                       "leafy-vegetables-7kpre"),
+    ("cxd",                                      "leafy-vegetables-iz0st"),
+    ("tsqs-workspace",                           "leafy-vegetable-crops"),
+    ("final-year-project-zmta6",                 "plant-leaf-disease-detection"),
+    ("new-workspace-iuwda",                      "plant-village-9vp8g"),
 ]
 
 # ─── CONFIGURAÇÃO: Organização binária ───────────────────────────────────────
 
 HEALTHY_KEYWORDS = ["healthy", "saudavel", "saudável", "normal", "good"]
 ANOMALOUS_KEYWORDS = [
-    "disease", "blight", "mildew", "spot", "rot", "virus",
+    "disease", "blight", "mildew", "spot", "rot", "virus", "viral",
     "anomaly", "doenca", "doença", "bacterial", "fungal",
     "downy", "powdery", "mosaic", "chlorosis", "scorch",
     "rust", "leaf_curl", "wilt", "necrosis", "angular",
+    # patógenos e pragas adicionais (PlantVillage + shuvokumarbasak2030)
+    "scab", "mite", "mold", "anthracnose", "blast", "nematode",
+    "mottle", "greening", "measles", "weed", "phytophthora",
+    "tungro", "streak", "septoria", "leafroll", "target",
 ]
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
@@ -97,6 +125,12 @@ BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 RAW_DIR  = DATA_DIR / "raw"
 STAGING  = DATA_DIR / "staging"
+
+
+# ─── Helpers ─────────────────────────────────────────────────────────────────
+
+def _count_images(path: Path) -> int:
+    return sum(1 for f in path.rglob("*") if f.suffix.lower() in IMAGE_EXTENSIONS)
 
 
 # ─── Kaggle ──────────────────────────────────────────────────────────────────
@@ -131,18 +165,32 @@ def download_from_kaggle(dry_run: bool = False):
 
     api = _kaggle_api()
 
+    ok = failed = skipped = 0
+
     for slug in KAGGLE_DATASETS:
         dest = RAW_DIR / slug.replace("/", "_")
         if dest.exists() and any(dest.iterdir()):
-            print(f"[Kaggle] '{slug}' já existe em {dest} — ignorando.")
+            print(f"[Kaggle] '{slug}' ja existe — ignorando.")
+            skipped += 1
             continue
-        print(f"[Kaggle] Baixando '{slug}' → {dest} ...")
+
+        print(f"[Kaggle] {slug} ...", end=" ", flush=True)
+
         if dry_run:
-            print(f"[Kaggle] [DRY-RUN] seria baixado para {dest}")
+            print("[DRY-RUN]")
             continue
-        dest.mkdir(parents=True, exist_ok=True)
-        api.dataset_download_files(slug, path=str(dest), unzip=True)
-        print(f"[Kaggle] '{slug}' baixado.")
+
+        try:
+            dest.mkdir(parents=True, exist_ok=True)
+            api.dataset_download_files(slug, path=str(dest), unzip=True)
+            n = _count_images(dest)
+            print(f"OK ({n} imgs)")
+            ok += 1
+        except Exception as exc:
+            print(f"ERRO — {exc}")
+            failed += 1
+
+    print(f"[Kaggle] Concluido: {ok} baixados, {skipped} ja existentes, {failed} falhas.")
 
 
 # ─── Roboflow ─────────────────────────────────────────────────────────────────
@@ -165,19 +213,176 @@ def download_from_roboflow(dry_run: bool = False):
 
     rf = Roboflow(api_key=api_key)
 
-    for workspace_id, project_id, version in ROBOFLOW_DATASETS:
-        dest = RAW_DIR / f"roboflow_{project_id}_v{version}"
-        if dest.exists() and any(dest.iterdir()):
-            print(f"[Roboflow] '{project_id}' já existe — ignorando.")
+    ok = failed = skipped = 0
+
+    for workspace_id, project_id in ROBOFLOW_DATASETS:
+        dest = RAW_DIR / f"roboflow_{project_id}"
+        if dest.exists() and any(dest.rglob("*")):
+            print(f"[Roboflow] '{project_id}' ja existe — ignorando.")
+            skipped += 1
             continue
-        print(f"[Roboflow] Baixando '{workspace_id}/{project_id}' v{version} → {dest} ...")
+
+        print(f"[Roboflow] {workspace_id}/{project_id} ...", end=" ", flush=True)
+
         if dry_run:
-            print(f"[Roboflow] [DRY-RUN] seria baixado para {dest}")
+            print("[DRY-RUN]")
             continue
-        dest.mkdir(parents=True, exist_ok=True)
-        project  = rf.workspace(workspace_id).project(project_id)
-        project.version(version).download("folder", location=str(dest))
-        print(f"[Roboflow] '{project_id}' baixado.")
+
+        try:
+            project = rf.workspace(workspace_id).project(project_id)
+
+            # Auto-detecta versão mais recente
+            try:
+                versions = project.versions()
+                version_num = max(v.version for v in versions) if versions else 1
+            except Exception:
+                version_num = 1
+
+            dest.mkdir(parents=True, exist_ok=True)
+
+            # Tenta "folder" (classificação). Se for detecção, usa "yolov8".
+            fmt = "folder"
+            try:
+                project.version(version_num).download(fmt, location=str(dest))
+            except Exception as exc_fmt:
+                if "object-detection" in str(exc_fmt) or "invalid format" in str(exc_fmt):
+                    fmt = "yolov8"
+                    project.version(version_num).download(fmt, location=str(dest))
+                else:
+                    raise
+
+            n = _count_images(dest)
+            print(f"v{version_num} [{fmt}] OK ({n} imgs)")
+            ok += 1
+
+        except Exception as exc:
+            msg = str(exc)
+            # Simplifica mensagem de erro longa (JSON do Roboflow)
+            if "error" in msg and len(msg) > 120:
+                msg = msg[:120] + "..."
+            print(f"ERRO — {msg}")
+            if dest.exists() and not any(dest.rglob("*")):
+                shutil.rmtree(dest, ignore_errors=True)
+            failed += 1
+
+    print(f"[Roboflow] Concluido: {ok} baixados, {skipped} ja existentes, {failed} falhas.")
+
+
+# ─── Staging: Kaggle genérico ─────────────────────────────────────────────────
+
+PV_SLUG = "abdallahalidev_plantvillage-dataset"
+
+
+def stage_kaggle_raw(dry_run: bool = False) -> int:
+    """
+    Copia datasets Kaggle de raw/ para staging/, preservando a estrutura de pastas.
+    O PlantVillage é tratado por integrate_plantvillage(); Roboflow por stage_roboflow_raw().
+    O organize_binary() posterior classifica pelas palavras-chave nos nomes das pastas.
+    Datasets em KAGGLE_STAGING_SKIP são ignorados (sem labels de doença utilizáveis).
+    """
+    total = 0
+    for source_dir in sorted(RAW_DIR.iterdir()):
+        if not source_dir.is_dir():
+            continue
+        if source_dir.name == PV_SLUG:
+            continue
+        if source_dir.name.startswith("roboflow_"):
+            continue
+        if source_dir.name in KAGGLE_STAGING_SKIP:
+            print(f"  [{source_dir.name}] na lista de skip — ignorando.")
+            continue
+
+        staging_dest = STAGING / source_dir.name
+        if staging_dest.exists() and any(
+            f for f in staging_dest.rglob("*") if f.suffix.lower() in IMAGE_EXTENSIONS
+        ):
+            print(f"  [{source_dir.name}] ja staged — ignorando.")
+            continue
+
+        print(f"  [{source_dir.name}] copiando para staging/ ...")
+        n = 0
+        for img in source_dir.rglob("*"):
+            if img.suffix.lower() not in IMAGE_EXTENSIONS:
+                continue
+            rel  = img.relative_to(source_dir)
+            dest = staging_dest / rel
+            if not dry_run:
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                if not dest.exists():
+                    shutil.copy2(img, dest)
+            n += 1
+        print(f"    {n} imagens copiadas")
+        total += n
+    return total
+
+
+# ─── Staging: Roboflow (yolov8 → binário) ────────────────────────────────────
+
+def stage_roboflow_raw(dry_run: bool = False) -> dict[str, int]:
+    """
+    Converte datasets Roboflow baixados em formato yolov8 para o formato binário:
+      - imagem COM arquivo de label não-vazio → anomalous  (tem doença anotada)
+      - imagem SEM label ou label vazio       → healthy
+
+    Para datasets classification (formato "folder"), o organize_binary() já trata.
+    """
+    counts = {"healthy": 0, "anomalous": 0}
+
+    for rf_dir in sorted(RAW_DIR.iterdir()):
+        if not rf_dir.is_dir() or not rf_dir.name.startswith("roboflow_"):
+            continue
+
+        # Detecta se é formato yolov8 (tem pasta "labels/")
+        has_labels_dir = any(rf_dir.rglob("labels"))
+        if not has_labels_dir:
+            continue  # formato "folder" (classificação) — organizado por organize_binary
+
+        staging_dest = STAGING / rf_dir.name
+        if staging_dest.exists() and any(
+            f for f in staging_dest.rglob("*") if f.suffix.lower() in IMAGE_EXTENSIONS
+        ):
+            print(f"  [{rf_dir.name}] ja staged — ignorando.")
+            continue
+
+        print(f"  [{rf_dir.name}] yolov8 → binário ...")
+        n_h = n_a = 0
+
+        # Localiza todas as pastas "images/" dentro do dataset
+        for images_dir in rf_dir.rglob("images"):
+            if not images_dir.is_dir():
+                continue
+            labels_dir = images_dir.parent / "labels" / images_dir.name
+            if not labels_dir.exists():
+                labels_dir = images_dir.parent.parent / "labels" / images_dir.name
+
+            for img in images_dir.iterdir():
+                if img.suffix.lower() not in IMAGE_EXTENSIONS:
+                    continue
+
+                # Procura arquivo de label correspondente
+                label_file = labels_dir / (img.stem + ".txt") if labels_dir.exists() else None
+                has_annotation = (
+                    label_file is not None
+                    and label_file.exists()
+                    and label_file.stat().st_size > 10
+                )
+
+                label = "anomalous" if has_annotation else "healthy"
+                dest_dir = staging_dest / label
+                if not dry_run:
+                    dest_dir.mkdir(parents=True, exist_ok=True)
+                    dest = dest_dir / f"{images_dir.name}_{img.name}"
+                    if not dest.exists():
+                        shutil.copy2(img, dest)
+                counts[label] += 1
+                if label == "healthy":
+                    n_h += 1
+                else:
+                    n_a += 1
+
+        print(f"    healthy={n_h} | anomalous={n_a}")
+
+    return counts
 
 
 # ─── PlantVillage ─────────────────────────────────────────────────────────────
@@ -253,12 +458,35 @@ def _infer_label(name: str) -> str | None:
     return None
 
 
+def _collect_labeled_dirs(root: Path) -> list[tuple[Path, str]]:
+    """
+    BFS a partir de root: retorna (dir, label) para cada diretório cujo nome
+    indica label binário. Não desce dentro de um diretório já rotulado.
+    """
+    results: list[tuple[Path, str]] = []
+    queue: list[Path] = [d for d in sorted(root.iterdir()) if d.is_dir()]
+    while queue:
+        d = queue.pop(0)
+        label = _infer_label(d.name)
+        if label is not None:
+            results.append((d, label))
+        else:
+            queue.extend(d2 for d2 in sorted(d.iterdir()) if d2.is_dir())
+    return results
+
+
 def organize_binary(dry_run: bool = False) -> dict[str, int]:
     """
-    Percorre staging/ recursivamente e organiza imagens em:
+    Percorre staging/ recursivamente (qualquer profundidade) e organiza imagens em:
         staging/healthy/
         staging/anomalous/
     usando palavras-chave nos nomes das pastas.
+
+    Suporta:
+      staging/<dataset>/healthy|anomalous/          (já organizado — plantvillage)
+      staging/<dataset>/<class>/                    (nível 2)
+      staging/<dataset>/<sub>/<class>/              (nível 3 — ashishjstar, nirmalsankalana)
+      staging/<dataset>/<sub>/<sub>/<class>/        (nível 4+ — shuvokumarbasak2030)
     """
     counts: dict[str, int] = {"healthy": 0, "anomalous": 0}
 
@@ -273,7 +501,7 @@ def organize_binary(dry_run: bool = False) -> dict[str, int]:
         if not source_dir.is_dir() or source_dir.name in ("healthy", "anomalous"):
             continue
 
-        # Caso 1: source tem subpastas healthy/ e anomalous/ (já organizado)
+        # Caso 1: source tem subpastas healthy/ e/ou anomalous/ diretas (já organizado)
         has_binary_sub = (source_dir / "healthy").is_dir() or (source_dir / "anomalous").is_dir()
         if has_binary_sub:
             for label in ("healthy", "anomalous"):
@@ -290,26 +518,25 @@ def organize_binary(dry_run: bool = False) -> dict[str, int]:
                     counts[label] += 1
             continue
 
-        # Caso 2: source/<class_folder>/ ou source/<class_folder>/images/
-        for class_folder in sorted(source_dir.iterdir()):
-            if not class_folder.is_dir():
-                continue
-            label = _infer_label(class_folder.name)
-            if label is None:
-                continue
+        # Caso 2: BFS recursivo — encontra pastas rotuladas a qualquer profundidade
+        labeled_dirs = _collect_labeled_dirs(source_dir)
+        if not labeled_dirs:
+            continue
+
+        for labeled_dir, label in labeled_dirs:
             dest_dir = STAGING / label
-            # Imagens direto na pasta OU em subpasta /images/
-            search_dirs = [class_folder]
-            if (class_folder / "images").is_dir():
-                search_dirs.append(class_folder / "images")
-            for sd in search_dirs:
-                for img in sd.iterdir():
-                    if img.suffix.lower() not in IMAGE_EXTENSIONS:
-                        continue
-                    dest = dest_dir / f"{source_dir.name}_{class_folder.name}_{img.name}"
-                    if not dest.exists() and not dry_run:
-                        shutil.copy2(img, dest)
-                    counts[label] += 1
+            rel_parts = labeled_dir.relative_to(source_dir).parts
+            prefix = source_dir.name + "_" + "_".join(rel_parts)
+
+            for img in labeled_dir.rglob("*"):
+                if not img.is_file() or img.suffix.lower() not in IMAGE_EXTENSIONS:
+                    continue
+                img_rel = img.relative_to(labeled_dir)
+                flat = "_".join(img_rel.parts[:-1] + (img.name,)) if len(img_rel.parts) > 1 else img.name
+                dest = dest_dir / f"{prefix}_{flat}"
+                if not dest.exists() and not dry_run:
+                    shutil.copy2(img, dest)
+                counts[label] += 1
 
     total = counts["healthy"] + counts["anomalous"]
     print(f"[organize_binary] staging/healthy={counts['healthy']} | staging/anomalous={counts['anomalous']} | total={total}")
@@ -431,21 +658,34 @@ def main():
     STAGING.mkdir(parents=True, exist_ok=True)
 
     if not args.skip_download:
-        print("─── 1/5  Download Kaggle ────────────────────────────────────")
+        print("─── 1/7  Download Kaggle ────────────────────────────────────")
         download_from_kaggle(dry_run=args.dry_run)
 
-        print("\n─── 2/5  Download Roboflow ──────────────────────────────────")
+        print("\n─── 2/7  Download Roboflow ──────────────────────────────────")
         download_from_roboflow(dry_run=args.dry_run)
     else:
         print("[--skip-download] Pulando downloads Kaggle/Roboflow.")
 
-    print("\n─── 3/5  Integrar PlantVillage (filtro binário) ─────────────")
+    print("\n─── 3/7  PlantVillage → staging (filtro binario) ────────────")
     integrate_plantvillage(dry_run=args.dry_run)
 
-    print("\n─── 4/5  Organizar staging → healthy / anomalous ────────────")
+    print("\n─── 4/7  Kaggle outros → staging ────────────────────────────")
+    n_kag = stage_kaggle_raw(dry_run=args.dry_run)
+    print(f"  Total copiado do Kaggle: {n_kag} imagens")
+
+    print("\n─── 5/7  Roboflow yolov8 → staging binario ──────────────────")
+    stage_roboflow_raw(dry_run=args.dry_run)
+
+    print("\n─── 6/7  Organizar staging → healthy / anomalous ────────────")
     organize_binary(dry_run=args.dry_run)
 
-    print("\n─── 5/5  Split 70/15/15 ─────────────────────────────────────")
+    print("\n─── 7/7  Split 70/15/15 ─────────────────────────────────────")
+    # Limpa splits anteriores para garantir consistência com o staging atual
+    if not args.dry_run:
+        for split_name in ("train", "val", "test"):
+            split_dir = DATA_DIR / split_name
+            if split_dir.exists():
+                shutil.rmtree(split_dir)
     split_counts = split_dataset(dry_run=args.dry_run)
 
     print_report(split_counts)

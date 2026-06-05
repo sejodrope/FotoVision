@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     max_upload_bytes: int = 10 * 1024 * 1024  # 10 MB
     confidence_threshold: float = 0.0  # 0 = desabilitado; >0 rejeita predições abaixo do limiar
 
-    model_config = {"env_file": ".env"}
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 settings = Settings()

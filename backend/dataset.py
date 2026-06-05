@@ -1,15 +1,28 @@
 """
 Dataset utilities para o FitoVision.
 
-Modo direto (padrão) — pastas nomeadas como as classes:
+━━━ Pipeline binário (novo) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Usa a estrutura criada por download_datasets.py:
+    data/
+      train/healthy/    train/anomalous/
+      val/healthy/      val/anomalous/
+      test/healthy/     test/anomalous/
+
+Classe principal:  BinaryFolderDataset
+Helper de loaders: make_binary_folder_loaders()
+
+━━━ Pipeline multi-classe (original) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Modo direto — pastas nomeadas como as classes:
     data/
       saudavel/   img1.jpg ...
       mildio/     img2.jpg ...
-      ...
 
-Modo mapeado — para PlantVillage ou outro dataset com nomes de pasta diferentes:
-    Passar folder_class_map: dict[str, str] mapeando nome_pasta -> classe_fitovision
+Modo mapeado — PlantVillage ou datasets com nomes de pasta diferentes:
+    folder_class_map: dict[str, str]  pasta → classe_fitovision
     Ver plantvillage_map.json para exemplo.
+
+Classe principal: PlantDataset
+Helper de loaders: make_loaders()
 """
 
 import logging
@@ -195,3 +208,124 @@ def make_loaders(
                               num_workers=num_workers, pin_memory=pin)
 
     return train_loader, val_loader, test_loader, test_s
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ─── Pipeline binário — BinaryFolderDataset ──────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+
+BINARY_CLASSES = ["healthy", "anomalous"]  # label: 0=healthy, 1=anomalous
+
+
+class BinaryFolderDataset(Dataset):
+    """
+    Carrega imagens de uma pasta de split pré-dividida:
+        split_dir/healthy/
+        split_dir/anomalous/
+
+    label: 0 = healthy, 1 = anomalous
+
+    Compatível com torchvision transforms (padrão) ou albumentations.
+    Para usar albumentations, passe use_albumentations=True — nesse caso
+    o transform deve ser um Compose do albumentations que espera dict
+    {'image': numpy_array} e retorna {'image': tensor}.
+    """
+
+    def __init__(
+        self,
+        split_dir: str | Path,
+        transform=None,
+        use_albumentations: bool = False,
+    ):
+        self.split_dir          = Path(split_dir)
+        self.transform          = transform
+        self.use_albumentations = use_albumentations
+        self.class_names        = BINARY_CLASSES
+        self.class_to_idx       = {c: i for i, c in enumerate(BINARY_CLASSES)}
+        self.samples: list[tuple[Path, int]] = []
+        self._scan()
+
+    def _scan(self):
+        for cls in BINARY_CLASSES:
+            cls_dir = self.split_dir / cls
+            if not cls_dir.is_dir():
+                continue
+            idx = self.class_to_idx[cls]
+            for f in cls_dir.iterdir():
+                if f.suffix.lower() in IMAGE_EXTENSIONS:
+                    self.samples.append((f, idx))
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, int]:
+        path, label = self.samples[idx]
+        try:
+            img = Image.open(path).convert("RGB")
+        except (UnidentifiedImageError, OSError):
+            logger.warning("Imagem ilegível ignorada: %s", path)
+            img = Image.new("RGB", (224, 224), 0)
+
+        if self.transform is None:
+            # Fallback mínimo: resize + normalização ImageNet sem library externa
+            img = img.resize((224, 224))
+            tensor = transforms.ToTensor()(img)
+            tensor = transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)(tensor)
+            return tensor, label
+
+        if self.use_albumentations:
+            import numpy as np
+            img_np    = np.array(img)
+            augmented = self.transform(image=img_np)
+            return augmented["image"], label
+
+        return self.transform(img), label
+
+    def class_distribution(self) -> dict[str, int]:
+        counts: dict[str, int] = defaultdict(int)
+        for _, label in self.samples:
+            counts[BINARY_CLASSES[label]] += 1
+        return dict(counts)
+
+
+def make_binary_folder_loaders(
+    data_dir: str | Path,
+    batch_size: int = 32,
+    num_workers: int = 0,
+    use_albumentations: bool = False,
+) -> tuple[DataLoader, DataLoader, DataLoader]:
+    """
+    Cria train/val/test DataLoaders para o pipeline binário a partir de:
+        data_dir/train/healthy/  data_dir/train/anomalous/
+        data_dir/val/...         data_dir/test/...
+
+    Se use_albumentations=True, usa transforms de prepare_data.make_binary_loaders
+    (albumentations + augmentation completo no treino).
+    Caso contrário usa transforms torchvision padrão.
+
+    Retorna: (train_loader, val_loader, test_loader)
+    """
+    if use_albumentations:
+        # Delega para prepare_data que tem os transforms albumentations completos
+        from prepare_data import make_binary_loaders
+        return make_binary_loaders(data_dir, batch_size=batch_size, num_workers=num_workers)
+
+    data_dir = Path(data_dir)
+    loaders  = []
+
+    for split in ("train", "val", "test"):
+        split_dir = data_dir / split
+        if not split_dir.exists():
+            raise FileNotFoundError(
+                f"'{split_dir}' não encontrada. Execute download_datasets.py primeiro."
+            )
+        transform = TRAIN_TRANSFORMS if split == "train" else VAL_TRANSFORMS
+        ds        = BinaryFolderDataset(split_dir, transform=transform, use_albumentations=False)
+        shuffle   = split == "train"
+        pin       = torch.cuda.is_available()
+        loader    = DataLoader(ds, batch_size=batch_size, shuffle=shuffle,
+                               num_workers=num_workers, pin_memory=pin)
+        loaders.append(loader)
+        print(f"  {split:<6}: {len(ds):>6} imgs  {ds.class_distribution()}")
+
+    return tuple(loaders)  # type: ignore[return-value]

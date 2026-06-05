@@ -74,6 +74,50 @@ def predict(model: nn.Module, tensor: torch.Tensor) -> dict:
     }
 
 
+_BINARY_WEIGHT_FILENAME = "mobilenet_v2_binary.pth"
+_BINARY_CLASSES = ["healthy", "anomalous"]  # índice 0 = healthy, 1 = anomalous
+
+
+def load_binary_model() -> nn.Module:
+    key = "mobilenet_v2_binary"
+    if key in _model_cache:
+        return _model_cache[key]
+
+    model = models.mobilenet_v2(weights=None)
+    model.classifier[1] = nn.Linear(model.last_channel, 2)
+
+    weight_path = Path(settings.weights_dir) / _BINARY_WEIGHT_FILENAME
+    if not weight_path.exists():
+        raise FileNotFoundError(f"Pesos binários não encontrados: {weight_path}")
+
+    state = torch.load(weight_path, map_location=_device, weights_only=True)
+    model.load_state_dict(state)
+    model.to(_device)
+    model.eval()
+    _model_cache[key] = model
+    logger.info("Modelo binário carregado de %s (device=%s)", weight_path, _device)
+    return model
+
+
+def predict_binary(tensor: torch.Tensor) -> dict:
+    model = load_binary_model()
+    tensor = tensor.to(_device)
+    with torch.no_grad():
+        logits = model(tensor)
+        probs = torch.softmax(logits, dim=1)[0]
+
+    healthy_prob = float(probs[0])
+    anomalous_prob = float(probs[1])
+    label = "healthy" if healthy_prob >= anomalous_prob else "anomalous"
+
+    return {
+        "label": label,
+        "confidence": max(healthy_prob, anomalous_prob),
+        "healthy_prob": healthy_prob,
+        "anomalous_prob": anomalous_prob,
+    }
+
+
 def is_model_calibrated(name: str) -> bool:
     weight_path = Path(settings.weights_dir) / f"{name}.pth"
     return weight_path.exists()

@@ -84,7 +84,7 @@ export function HistoryPage() {
                         {CLASS_LABELS[item.predicted_class as ClassId] ?? item.predicted_label}
                       </span>
                       {item.demo_mode && (
-                        <FlaskConical className="w-3.5 h-3.5 text-amber-400" title="Modo demo" />
+                        <FlaskConical className="w-3.5 h-3.5 text-amber-400" aria-label="Modo demo" />
                       )}
                     </div>
                   </td>

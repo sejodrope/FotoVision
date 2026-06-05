@@ -45,6 +45,13 @@ export interface ModelsStatusResponse {
   demo_mode: boolean
 }
 
+export interface PredictResult {
+  label: 'healthy' | 'anomalous'
+  confidence: number
+  healthy_prob: number
+  anomalous_prob: number
+}
+
 export const CLASS_LABELS: Record<ClassId, string> = {
   saudavel: 'Saudável',
   mildio: 'Míldio',

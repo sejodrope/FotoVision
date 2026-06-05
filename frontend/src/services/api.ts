@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { DiagnosisResult, DiagnosisListItem, ModelsStatusResponse } from '../types'
+import type { DiagnosisResult, DiagnosisListItem, ModelsStatusResponse, PredictResult } from '../types'
 
 const api = axios.create({ baseURL: '/api' })
 
@@ -13,6 +13,13 @@ export async function runDiagnosis(
   form.append('model_name', modelName)
   form.append('generate_gradcam_flag', String(generateGradcam))
   const { data } = await api.post<DiagnosisResult>('/diagnosis/', form)
+  return data
+}
+
+export async function runPredict(file: File): Promise<PredictResult> {
+  const form = new FormData()
+  form.append('file', file)
+  const { data } = await api.post<PredictResult>('/predict/', form)
   return data
 }
 

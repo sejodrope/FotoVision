@@ -74,17 +74,17 @@ def predict(model: nn.Module, tensor: torch.Tensor) -> dict:
     }
 
 
-_BINARY_WEIGHT_FILENAME = "mobilenet_v2_binary.pth"
+_BINARY_WEIGHT_FILENAME = "efficientnet_b0_binary.pth"
 _BINARY_CLASSES = ["healthy", "anomalous"]  # índice 0 = healthy, 1 = anomalous
 
 
 def load_binary_model() -> nn.Module:
-    key = "mobilenet_v2_binary"
+    key = "efficientnet_b0_binary"
     if key in _model_cache:
         return _model_cache[key]
 
-    model = models.mobilenet_v2(weights=None)
-    model.classifier[1] = nn.Linear(model.last_channel, 2)
+    model = models.efficientnet_b0(weights=None)
+    model.classifier[1] = nn.Linear(model.classifier[1].in_features, 2)
 
     weight_path = Path(settings.weights_dir) / _BINARY_WEIGHT_FILENAME
     if not weight_path.exists():

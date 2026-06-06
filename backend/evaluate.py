@@ -39,7 +39,7 @@ import seaborn as sns
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
-from dataset import dataset_from_samples, VAL_TRANSFORMS, make_loaders
+from dataset import dataset_from_samples, VAL_TRANSFORMS, make_loaders, BINARY_CLASSES, BinaryFolderDataset
 from app.config import CLASS_NAMES, AVAILABLE_MODELS, CLASS_LABELS
 
 
@@ -107,8 +107,14 @@ def evaluate_model(
     test_loader: DataLoader,
     device: torch.device,
     results_dir: Path,
+    class_names: list[str] | None = None,
 ) -> dict:
-    model = build_model(model_name, len(CLASS_NAMES)).to(device)
+    if class_names is None:
+        class_names = CLASS_NAMES
+    num_classes   = len(class_names)
+    display_names = [CLASS_LABELS.get(c, c) for c in class_names]
+
+    model = build_model(model_name, num_classes).to(device)
     state = torch.load(weight_path, map_location=device, weights_only=True)
     model.load_state_dict(state)
     model.eval()
@@ -131,13 +137,12 @@ def evaluate_model(
     cm   = confusion_matrix(y_true, y_pred)
     lat  = measure_latency(model, device)
 
-    display_names = [CLASS_LABELS[c] for c in CLASS_NAMES]
     plot_confusion_matrix(cm, display_names, model_name,
                           results_dir / f"cm_{model_name}.png")
 
-    report = classification_report(y_true, y_pred, target_names=CLASS_NAMES,
+    report = classification_report(y_true, y_pred, target_names=class_names,
                                    output_dict=True, zero_division=0)
-    per_class = {c: report[c] for c in CLASS_NAMES}
+    per_class = {c: report[c] for c in class_names}
 
     return {
         "model":            model_name,
@@ -225,6 +230,8 @@ def main():
     parser.add_argument("--val-split",      type=float, default=0.15)
     parser.add_argument("--test-split-frac",type=float, default=0.15, dest="test_frac")
     parser.add_argument("--seed",           type=int,   default=42)
+    parser.add_argument("--binary",         action="store_true",
+                        help="Avalia pipeline binário (healthy vs anomalous)")
     args = parser.parse_args()
 
     device      = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -232,18 +239,28 @@ def main():
     results_dir = Path(args.results_dir)
     results_dir.mkdir(exist_ok=True)
 
-    print(f"\nFitoVision — Avaliação")
+    active_classes = BINARY_CLASSES if args.binary else CLASS_NAMES
+    weights_suffix = "_binary" if args.binary else ""
+
+    print(f"\nFitoVision — Avaliação {'BINÁRIA' if args.binary else 'MULTI-CLASSE'}")
     print(f"Dispositivo : {device}")
+    print(f"Classes     : {active_classes}")
 
     # Monta test_loader
     if args.test_split:
         with open(args.test_split) as f:
             raw = json.load(f)
         test_samples = [(Path(p), int(lbl)) for p, lbl in raw]
-        test_ds = dataset_from_samples(CLASS_NAMES, test_samples, VAL_TRANSFORMS)
+        test_ds = dataset_from_samples(active_classes, test_samples, VAL_TRANSFORMS)
         test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False,
                                  num_workers=args.workers)
         print(f"Test set    : {len(test_samples)} imagens (do train.py)")
+    elif args.binary:
+        from pathlib import Path as P
+        test_ds = BinaryFolderDataset(P(args.data) / "test", transform=VAL_TRANSFORMS)
+        test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False,
+                                 num_workers=args.workers)
+        print(f"Test set    : {len(test_ds)} imagens")
     else:
         folder_map = None
         if args.mapping:
@@ -263,12 +280,13 @@ def main():
     # Avalia cada modelo com pesos disponíveis
     all_results = []
     for model_name in AVAILABLE_MODELS:
-        weight_path = weights_dir / f"{model_name}.pth"
+        weight_path = weights_dir / f"{model_name}{weights_suffix}.pth"
         if not weight_path.exists():
             print(f"\n[SKIP] {model_name} — {weight_path} não encontrado")
             continue
         print(f"\nAvaliando {model_name}...")
-        result = evaluate_model(model_name, weight_path, test_loader, device, results_dir)
+        result = evaluate_model(model_name, weight_path, test_loader, device,
+                                results_dir, class_names=active_classes)
         all_results.append(result)
         print(
             f"  accuracy={result['accuracy']:.4f}  "

@@ -9,11 +9,19 @@ import {
   WifiOff,
   FileX,
   Zap,
+  Leaf,
+  Database,
+  Cpu,
 } from 'lucide-react'
 import { ImageUploader } from '../components/diagnosis/ImageUploader'
 import { runPredict } from '../services/api'
 import type { PredictResult } from '../types'
 
+// ─── modelo activo ────────────────────────────────────────────────────────────
+const MODEL_NAME = 'EfficientNet-B0'
+const MODEL_ACC  = '99,01%'
+
+// ─── tipos ────────────────────────────────────────────────────────────────────
 type ApiError = {
   response?: { status?: number; data?: { detail?: string } }
   message?: string
@@ -48,22 +56,84 @@ function getErrorInfo(err: ApiError): { icon: React.ReactNode; text: string } {
   }
 }
 
-// ─── sub-components ──────────────────────────────────────────────────────────
-
-function PlaceholderCard() {
+// ─── stat item ────────────────────────────────────────────────────────────────
+function StatItem({
+  icon: Icon,
+  value,
+  label,
+}: {
+  icon: React.ElementType
+  value: string
+  label: string
+}) {
   return (
-    <div className="h-full min-h-[440px] flex items-center justify-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-      <div className="text-center px-8">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-          <Zap className="w-8 h-8 text-gray-300" />
-        </div>
-        <p className="text-lg font-medium text-gray-500">O resultado aparece aqui</p>
-        <p className="text-sm text-gray-400 mt-1">Selecione uma imagem e clique em Analisar</p>
+    <div className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3">
+      <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+        <Icon className="w-4 h-4 text-primary-600" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm font-bold text-gray-900 leading-tight">{value}</p>
+        <p className="text-xs text-gray-400 mt-0.5 truncate">{label}</p>
       </div>
     </div>
   )
 }
 
+// ─── gauge circular SVG ───────────────────────────────────────────────────────
+function ConfidenceGauge({ value, color }: { value: number; color: string }) {
+  const size   = 96
+  const stroke = 8
+  const r      = (size - stroke) / 2
+  const circ   = 2 * Math.PI * r
+  const offset = circ * (1 - value)
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none" stroke="#e5e7eb" strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none" stroke={color} strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.7s ease-out' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span
+          className="text-lg font-bold tabular-nums leading-none"
+          style={{ color }}
+        >
+          {(value * 100).toFixed(0)}%
+        </span>
+        <span className="text-[10px] text-gray-400 mt-0.5">confiança</span>
+      </div>
+    </div>
+  )
+}
+
+// ─── placeholder ──────────────────────────────────────────────────────────────
+function PlaceholderCard() {
+  return (
+    <div className="h-full min-h-[440px] flex items-center justify-center bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-dashed border-gray-200">
+      <div className="text-center px-8">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary-50 flex items-center justify-center">
+          <Leaf className="w-8 h-8 text-primary-300" />
+        </div>
+        <p className="text-base font-semibold text-gray-500">Resultado da análise</p>
+        <p className="text-sm text-gray-400 mt-1">
+          Envie uma imagem para iniciar o diagnóstico
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─── loading ──────────────────────────────────────────────────────────────────
 function LoadingCard({ preview }: { preview: string | null }) {
   return (
     <div className="relative rounded-2xl border border-gray-200 shadow-sm overflow-hidden min-h-[440px] bg-white flex items-center justify-center">
@@ -83,13 +153,14 @@ function LoadingCard({ preview }: { preview: string | null }) {
         </div>
         <div className="text-center">
           <p className="text-lg font-semibold text-gray-800">Analisando imagem…</p>
-          <p className="text-sm text-gray-500 mt-1">MobileNetV2 — classificação binária</p>
+          <p className="text-sm text-gray-500 mt-1">{MODEL_NAME} · classificação binária</p>
         </div>
       </div>
     </div>
   )
 }
 
+// ─── erro ─────────────────────────────────────────────────────────────────────
 function ErrorBanner({ error, onRetry }: { error: ApiError; onRetry: () => void }) {
   const { icon, text } = getErrorInfo(error)
   return (
@@ -107,6 +178,7 @@ function ErrorBanner({ error, onRetry }: { error: ApiError; onRetry: () => void 
   )
 }
 
+// ─── barra de probabilidade ───────────────────────────────────────────────────
 function ProbBar({
   label,
   prob,
@@ -121,14 +193,18 @@ function ProbBar({
   return (
     <div>
       <div className="flex justify-between items-center mb-1.5">
-        <span className={`text-sm ${isTop ? 'font-semibold text-gray-800' : 'font-medium text-gray-500'}`}>
+        <span
+          className={`text-sm ${
+            isTop ? 'font-semibold text-gray-800' : 'font-medium text-gray-500'
+          }`}
+        >
           {label}
         </span>
         <span className="text-sm font-bold tabular-nums" style={{ color }}>
           {(prob * 100).toFixed(1)}%
         </span>
       </div>
-      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${Math.max(prob * 100, 0.5)}%`, backgroundColor: color }}
@@ -138,6 +214,7 @@ function ProbBar({
   )
 }
 
+// ─── card de resultado ────────────────────────────────────────────────────────
 function BinaryResultCard({
   result,
   originalPreview,
@@ -147,29 +224,22 @@ function BinaryResultCard({
   originalPreview: string
   onReset: () => void
 }) {
-  const isHealthy = result.label === 'healthy'
-  const accentColor = isHealthy ? '#16a34a' : '#dc2626'
-  const headerBg = isHealthy ? '#f0fdf4' : '#fef2f2'
-  const headerBorder = isHealthy ? '#bbf7d0' : '#fecaca'
+  const isHealthy   = result.label === 'healthy'
+  const accentColor = isHealthy ? '#267350' : '#dc2626'
+  const headerBg    = isHealthy ? '#f0f7f3' : '#fef2f2'
+  const headerBorder = isHealthy ? '#b3dcc6' : '#fecaca'
+  const healthyColor = '#267350'
+  const anomColor    = '#dc2626'
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      {/* verdict header */}
+      {/* cabeçalho com gauge */}
       <div
-        className="px-6 py-5 border-b flex items-center gap-4"
+        className="px-6 py-5 border-b flex items-center gap-5"
         style={{ backgroundColor: headerBg, borderColor: headerBorder }}
       >
-        <div
-          className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center"
-          style={{ backgroundColor: `${accentColor}20` }}
-        >
-          {isHealthy ? (
-            <CheckCircle className="w-8 h-8" style={{ color: accentColor }} />
-          ) : (
-            <AlertTriangle className="w-8 h-8" style={{ color: accentColor }} />
-          )}
-        </div>
-        <div>
+        <ConfidenceGauge value={result.confidence} color={accentColor} />
+        <div className="flex-1 min-w-0">
           <p
             className="text-xs font-semibold uppercase tracking-widest"
             style={{ color: accentColor }}
@@ -179,38 +249,42 @@ function BinaryResultCard({
           <h2 className="text-2xl font-bold text-gray-900 leading-tight mt-0.5">
             {isHealthy ? 'Saudável' : 'Anômala'}
           </h2>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Confiança:{' '}
-            <span className="font-semibold" style={{ color: accentColor }}>
-              {(result.confidence * 100).toFixed(1)}%
-            </span>
-          </p>
+          <div className="flex items-center gap-1.5 mt-1.5">
+            {isHealthy ? (
+              <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: accentColor }} />
+            ) : (
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" style={{ color: accentColor }} />
+            )}
+            <p className="text-xs text-gray-500">
+              Modelo:{' '}
+              <span className="font-medium text-gray-700">{MODEL_NAME}</span>
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="p-6 space-y-5">
-        {/* probability bars */}
+      <div className="p-6 space-y-4">
+        {/* barras de probabilidade */}
         <div className="space-y-3">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Probabilidades por classe
+            Distribuição de probabilidades
           </p>
-          <ProbBar label="Saudável" prob={result.healthy_prob} color="#16a34a" isTop={isHealthy} />
+          <ProbBar
+            label="Saudável"
+            prob={result.healthy_prob}
+            color={healthyColor}
+            isTop={isHealthy}
+          />
           <ProbBar
             label="Anômala"
             prob={result.anomalous_prob}
-            color="#dc2626"
+            color={anomColor}
             isTop={!isHealthy}
           />
         </div>
 
-        {/* model badge */}
-        <div className="flex items-center justify-between text-xs text-gray-400 bg-gray-50 rounded-xl px-4 py-2.5">
-          <span>MobileNetV2 — classificação binária</span>
-          <span className="font-medium text-gray-500">98,81% acc.</span>
-        </div>
-
-        {/* image preview */}
-        <div className="rounded-xl overflow-hidden border border-gray-100 max-h-52">
+        {/* prévia da imagem */}
+        <div className="rounded-xl overflow-hidden border border-gray-100 max-h-48">
           <img
             src={originalPreview}
             alt="Folha analisada"
@@ -218,7 +292,13 @@ function BinaryResultCard({
           />
         </div>
 
-        {/* reset action */}
+        {/* badge do modelo */}
+        <div className="flex items-center justify-between text-xs bg-gray-50 rounded-xl px-4 py-2.5">
+          <span className="text-gray-400">{MODEL_NAME} · classificação binária</span>
+          <span className="font-semibold text-gray-600">{MODEL_ACC} acc.</span>
+        </div>
+
+        {/* nova análise */}
         <button
           onClick={onReset}
           className="w-full py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center justify-center gap-2"
@@ -231,12 +311,11 @@ function BinaryResultCard({
   )
 }
 
-// ─── page ─────────────────────────────────────────────────────────────────────
-
+// ─── página ───────────────────────────────────────────────────────────────────
 export function HomePage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [result, setResult] = useState<PredictResult | null>(null)
+  const [file, setFile]           = useState<File | null>(null)
+  const [preview, setPreview]     = useState<string | null>(null)
+  const [result, setResult]       = useState<PredictResult | null>(null)
   const [uploaderKey, setUploaderKey] = useState(0)
 
   const mutation = useMutation({
@@ -261,15 +340,33 @@ export function HomePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* hero */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Diagnóstico Fitossanitário</h1>
-        <p className="text-gray-500 mt-1">
-          Envie uma foto da folha e o sistema detecta automaticamente anomalias.
-        </p>
+        <div className="flex items-start gap-4">
+          <div className="w-11 h-11 rounded-2xl bg-primary-600 flex items-center justify-center shrink-0 mt-0.5">
+            <Leaf className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Diagnóstico Fitossanitário
+            </h1>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Detecção automática de anomalias em folhosas · Transfer Learning ·
+              Classificação binária
+            </p>
+          </div>
+        </div>
+
+        {/* strip de métricas */}
+        <div className="mt-5 grid grid-cols-3 gap-3">
+          <StatItem icon={Zap}      value={MODEL_ACC}   label="Acurácia no test set" />
+          <StatItem icon={Database} value="210.832"     label="Imagens de treino"    />
+          <StatItem icon={Cpu}      value={MODEL_NAME}  label="Modelo activo"        />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        {/* ── coluna esquerda: upload + botão + erro ── */}
+        {/* coluna esquerda: upload + botão + erro */}
         <div className="space-y-4">
           <ImageUploader
             key={uploaderKey}
@@ -303,12 +400,16 @@ export function HomePage() {
           )}
         </div>
 
-        {/* ── coluna direita: resultado / loading / placeholder ── */}
+        {/* coluna direita: resultado / loading / placeholder */}
         <div>
           {mutation.isPending ? (
             <LoadingCard preview={preview} />
           ) : result && preview ? (
-            <BinaryResultCard result={result} originalPreview={preview} onReset={handleReset} />
+            <BinaryResultCard
+              result={result}
+              originalPreview={preview}
+              onReset={handleReset}
+            />
           ) : (
             <PlaceholderCard />
           )}

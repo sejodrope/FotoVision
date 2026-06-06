@@ -90,6 +90,7 @@ def train_one_model(
     patience_counter = 0
     history         = []
     t_start         = time.time()
+    log_path        = logs_dir / f"{model_name}_history.json"
 
     for epoch in range(1, epochs + 1):
         # ---------- Treino ----------
@@ -134,6 +135,9 @@ def train_one_model(
             "val_acc":    v_acc,
         }
         history.append(record)
+        with open(log_path, "w") as _f:
+            json.dump({"model": model_name, "best_val_acc": best_val_acc,
+                       "elapsed_s": time.time() - t_start, "history": history}, _f, indent=2)
 
         marker = " *" if v_acc > best_val_acc else ""
         print(
@@ -160,7 +164,6 @@ def train_one_model(
         "elapsed_s":    elapsed,
         "history":      history,
     }
-    log_path = logs_dir / f"{model_name}_history.json"
     with open(log_path, "w") as f:
         json.dump(log, f, indent=2)
 

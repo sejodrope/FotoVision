@@ -3,6 +3,8 @@ import { useMutation } from '@tanstack/react-query'
 import {
   AlertTriangle,
   CheckCircle,
+  HelpCircle,
+  ImageOff,
   Loader2,
   RefreshCw,
   RotateCcw,
@@ -19,7 +21,15 @@ import type { PredictResult } from '../types'
 
 // ─── modelo activo ────────────────────────────────────────────────────────────
 const MODEL_NAME = 'EfficientNet-B0'
-const MODEL_ACC  = '99,01%'
+
+// A acurácia de 99,01% que aqui estava foi RETIRADA: era medida sobre um conjunto
+// de teste que continha duplicados e variantes por augmentation das mesmas fotos do
+// treino (ver backend/audit_leakage.py). Não media generalização — media memorização,
+// e era por isso que não se reproduzia em fotos reais.
+//
+// Após refazer o split agrupando por identidade visual, treinar e avaliar de novo,
+// coloque aqui a accuracy BALANCEADA obtida em backend/results/metrics_comparison.csv.
+const MODEL_ACC: string | null = null   // ← preencher após o novo treino
 
 // ─── tipos ────────────────────────────────────────────────────────────────────
 type ApiError = {
@@ -214,6 +224,28 @@ function ProbBar({
   )
 }
 
+// ─── aparência por tipo de resultado ──────────────────────────────────────────
+// Quatro estados, não dois. 'inconclusive' e 'not_a_leaf' são respostas legítimas:
+// abster-se é o comportamento correcto quando o modelo não sabe.
+const RESULT_STYLES = {
+  healthy: {
+    accent: '#267350', bg: '#f0f7f3', border: '#b3dcc6',
+    kicker: 'Planta saudável', title: 'Saudável', Icon: CheckCircle,
+  },
+  anomalous: {
+    accent: '#dc2626', bg: '#fef2f2', border: '#fecaca',
+    kicker: 'Anomalia detectada', title: 'Anômala', Icon: AlertTriangle,
+  },
+  inconclusive: {
+    accent: '#d97706', bg: '#fffbeb', border: '#fde68a',
+    kicker: 'Sem confiança suficiente', title: 'Inconclusivo', Icon: HelpCircle,
+  },
+  not_a_leaf: {
+    accent: '#64748b', bg: '#f8fafc', border: '#e2e8f0',
+    kicker: 'Imagem fora do domínio', title: 'Não é uma folha', Icon: ImageOff,
+  },
+} as const
+
 // ─── card de resultado ────────────────────────────────────────────────────────
 function BinaryResultCard({
   result,
@@ -224,10 +256,14 @@ function BinaryResultCard({
   originalPreview: string
   onReset: () => void
 }) {
-  const isHealthy   = result.label === 'healthy'
-  const accentColor = isHealthy ? '#267350' : '#dc2626'
-  const headerBg    = isHealthy ? '#f0f7f3' : '#fef2f2'
-  const headerBorder = isHealthy ? '#b3dcc6' : '#fecaca'
+  const style = RESULT_STYLES[result.label] ?? RESULT_STYLES.inconclusive
+  const { accent, bg, border, kicker, title, Icon } = style
+
+  // Só faz sentido mostrar a distribuição de probabilidades quando o modelo
+  // efectivamente se pronunciou sobre a folha.
+  const showProbs   = result.label === 'healthy' || result.label === 'anomalous'
+  const isAbstained = !showProbs
+
   const healthyColor = '#267350'
   const anomColor    = '#dc2626'
 
@@ -236,52 +272,74 @@ function BinaryResultCard({
       {/* cabeçalho com gauge */}
       <div
         className="px-6 py-5 border-b flex items-center gap-5"
-        style={{ backgroundColor: headerBg, borderColor: headerBorder }}
+        style={{ backgroundColor: bg, borderColor: border }}
       >
-        <ConfidenceGauge value={result.confidence} color={accentColor} />
+        {isAbstained ? (
+          <div
+            className="shrink-0 w-24 h-24 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: `${accent}14`, border: `2px dashed ${accent}55` }}
+          >
+            <Icon className="w-9 h-9" style={{ color: accent }} />
+          </div>
+        ) : (
+          <ConfidenceGauge value={result.confidence} color={accent} />
+        )}
+
         <div className="flex-1 min-w-0">
           <p
             className="text-xs font-semibold uppercase tracking-widest"
-            style={{ color: accentColor }}
+            style={{ color: accent }}
           >
-            {isHealthy ? 'Planta saudável' : 'Anomalia detectada'}
+            {kicker}
           </p>
           <h2 className="text-2xl font-bold text-gray-900 leading-tight mt-0.5">
-            {isHealthy ? 'Saudável' : 'Anômala'}
+            {title}
           </h2>
           <div className="flex items-center gap-1.5 mt-1.5">
-            {isHealthy ? (
-              <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: accentColor }} />
-            ) : (
-              <AlertTriangle className="w-3.5 h-3.5 shrink-0" style={{ color: accentColor }} />
-            )}
+            <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: accent }} />
             <p className="text-xs text-gray-500">
-              Modelo:{' '}
-              <span className="font-medium text-gray-700">{MODEL_NAME}</span>
+              Modelo: <span className="font-medium text-gray-700">{MODEL_NAME}</span>
             </p>
           </div>
         </div>
       </div>
 
       <div className="p-6 space-y-4">
-        {/* barras de probabilidade */}
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Distribuição de probabilidades
-          </p>
-          <ProbBar
-            label="Saudável"
-            prob={result.healthy_prob}
-            color={healthyColor}
-            isTop={isHealthy}
-          />
-          <ProbBar
-            label="Anômala"
-            prob={result.anomalous_prob}
-            color={anomColor}
-            isTop={!isHealthy}
-          />
-        </div>
+        {/* mensagem de abstenção — diz ao utilizador o que fazer a seguir */}
+        {result.message && (
+          <div
+            className="flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm"
+            style={{ backgroundColor: bg, color: '#374151', border: `1px solid ${border}` }}
+          >
+            <Icon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: accent }} />
+            <p className="min-w-0">{result.message}</p>
+          </div>
+        )}
+
+        {showProbs && (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Distribuição de probabilidades
+              {result.calibrated && (
+                <span className="ml-1.5 normal-case tracking-normal text-gray-400 font-normal">
+                  · calibradas
+                </span>
+              )}
+            </p>
+            <ProbBar
+              label="Saudável"
+              prob={result.healthy_prob}
+              color={healthyColor}
+              isTop={result.label === 'healthy'}
+            />
+            <ProbBar
+              label="Anômala"
+              prob={result.anomalous_prob}
+              color={anomColor}
+              isTop={result.label === 'anomalous'}
+            />
+          </div>
+        )}
 
         {/* prévia da imagem */}
         <div className="rounded-xl overflow-hidden border border-gray-100 max-h-48">
@@ -295,7 +353,11 @@ function BinaryResultCard({
         {/* badge do modelo */}
         <div className="flex items-center justify-between text-xs bg-gray-50 rounded-xl px-4 py-2.5">
           <span className="text-gray-400">{MODEL_NAME} · classificação binária</span>
-          <span className="font-semibold text-gray-600">{MODEL_ACC} acc.</span>
+          {MODEL_ACC ? (
+            <span className="font-semibold text-gray-600">{MODEL_ACC} acc.</span>
+          ) : (
+            <span className="font-medium text-amber-600">métricas em reavaliação</span>
+          )}
         </div>
 
         {/* nova análise */}
@@ -357,11 +419,23 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* strip de métricas */}
+        {/* strip de métricas
+            O "210.832 imagens" que aqui estava contava cópias transformadas da mesma
+            foto como imagens distintas — o número de FOTOS reais é bem menor. Tanto
+            esse valor como a acurácia só voltam depois do novo treino sobre o split
+            sem vazamento. Ver docs/COMPILADO_FITOVISION.md. */}
         <div className="mt-5 grid grid-cols-3 gap-3">
-          <StatItem icon={Zap}      value={MODEL_ACC}   label="Acurácia no test set" />
-          <StatItem icon={Database} value="210.832"     label="Imagens de treino"    />
-          <StatItem icon={Cpu}      value={MODEL_NAME}  label="Modelo activo"        />
+          <StatItem
+            icon={Zap}
+            value={MODEL_ACC ?? '—'}
+            label={MODEL_ACC ? 'Acurácia balanceada' : 'Em reavaliação'}
+          />
+          <StatItem
+            icon={Database}
+            value="—"
+            label="Fotos distintas (a apurar)"
+          />
+          <StatItem icon={Cpu} value={MODEL_NAME} label="Modelo activo" />
         </div>
       </div>
 

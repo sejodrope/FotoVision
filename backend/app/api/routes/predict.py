@@ -12,10 +12,19 @@ router = APIRouter(prefix="/predict", tags=["predict"])
 
 
 class PredictResult(BaseModel):
-    label: str           # "healthy" | "anomalous"
+    # "healthy" | "anomalous" | "inconclusive" | "not_a_leaf"
+    #
+    # 'inconclusive' e 'not_a_leaf' são estados novos e deliberados: o sistema
+    # anterior devolvia sempre healthy/anomalous, mesmo para fotos que não eram
+    # folhas, sempre com confiança alta. Abster-se é a resposta correcta quando o
+    # modelo não sabe.
+    label: str
     confidence: float
     healthy_prob: float
     anomalous_prob: float
+    calibrated: bool = False
+    vegetation_fraction: float | None = None
+    message: str | None = None
 
 
 @router.post("/", response_model=PredictResult)
@@ -34,20 +43,23 @@ async def predict_binary_endpoint(file: UploadFile = File(...)):
             detail=f"Ficheiro demasiado grande. Máximo: {settings.max_upload_bytes // (1024 * 1024)} MB.",
         )
 
-    tensor, _ = preprocess_image(image_bytes)
+    tensor, pil_image = preprocess_image(image_bytes)
 
     try:
-        result = predict_binary(tensor)
+        # A imagem PIL vai junto para a guarda de vegetação (ExG) poder correr
+        # sobre os píxeis originais, antes da normalização.
+        result = predict_binary(tensor, image=pil_image)
     except FileNotFoundError as exc:
         logger.error("Pesos binários ausentes: %s", exc)
         raise HTTPException(status_code=503, detail=str(exc))
 
     logger.info(
-        "Predição binária | label=%s | confiança=%.4f | healthy=%.4f | anomalous=%.4f",
+        "Predição | label=%s | confiança=%.4f | healthy=%.4f | anomalous=%.4f | veg=%s",
         result["label"],
         result["confidence"],
         result["healthy_prob"],
         result["anomalous_prob"],
+        f"{result['vegetation_fraction']:.3f}" if result.get("vegetation_fraction") is not None else "n/d",
     )
 
     return PredictResult(**result)

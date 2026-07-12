@@ -45,11 +45,23 @@ export interface ModelsStatusResponse {
   demo_mode: boolean
 }
 
+// 'inconclusive' e 'not_a_leaf' são estados deliberados: o backend passou a
+// abster-se quando a confiança calibrada é baixa, ou quando a imagem nem sequer
+// contém vegetação. Antes o sistema devolvia sempre healthy/anomalous — inclusive
+// para fotos que não eram folhas, e sempre com confiança alta.
+export type PredictLabel = 'healthy' | 'anomalous' | 'inconclusive' | 'not_a_leaf'
+
 export interface PredictResult {
-  label: 'healthy' | 'anomalous'
+  label: PredictLabel
   confidence: number
   healthy_prob: number
   anomalous_prob: number
+  /** true se as probabilidades passaram por temperature scaling */
+  calibrated: boolean
+  /** fracção de píxeis de vegetação (índice ExG); null se não avaliada */
+  vegetation_fraction: number | null
+  /** explicação apresentada ao utilizador quando o sistema se abstém */
+  message: string | null
 }
 
 export const CLASS_LABELS: Record<ClassId, string> = {

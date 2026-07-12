@@ -40,7 +40,10 @@ def _load_history(log_path: Path) -> dict | None:
 
 
 def wait_for_training(model_name: str) -> dict:
-    log_path   = LOGS / f"{model_name}_history.json"
+    # O train.py passou a guardar o histórico binário em <model>_binary_history.json
+    # e a seleccionar o melhor checkpoint por F1 macro (não por accuracy — que sob
+    # desbalanceamento premia o modelo que prevê sempre a classe maioritária).
+    log_path   = LOGS / f"{model_name}_binary_history.json"
     last_count = -1
     stale      = 0
 
@@ -50,23 +53,38 @@ def wait_for_training(model_name: str) -> dict:
         data = _load_history(log_path)
         if data is not None:
             count   = len(data.get("history", []))
-            best    = data.get("best_val_acc", 0.0)
+            best    = data.get("best_val_f1", 0.0)
             elapsed = data.get("elapsed_s", 0.0) / 60
 
             if count != last_count:
                 last_count = count
                 stale      = 0
                 print(f"[pipeline] {model_name}: epoch {count}/{TOTAL_EPOCHS}  "
-                      f"best_val_acc={best:.4f}  elapsed={elapsed:.1f}min")
+                      f"best_val_f1={best:.4f}  elapsed={elapsed:.1f}min")
             else:
                 stale += 1
 
             if count >= TOTAL_EPOCHS or stale >= STALE_POLLS:
                 reason = "30 epochs completos" if count >= TOTAL_EPOCHS else f"early stopping (epoch {count})"
-                print(f"[pipeline] {model_name}: TREINO COMPLETO — {reason}, best_val_acc={best:.4f}")
+                print(f"[pipeline] {model_name}: TREINO COMPLETO — {reason}, best_val_f1={best:.4f}")
                 return data
 
         time.sleep(POLL_SECS)
+
+
+def run_audit() -> int:
+    """Confirma que o split não vaza ANTES de treinar. Sem isto, as métricas mentem."""
+    print("\n[pipeline] Auditoria de vazamento do split...")
+    return subprocess.run([PYTHON, "audit_leakage.py"], cwd=str(BACKEND)).returncode
+
+
+def run_calibrate(model_name: str) -> int:
+    """Ajusta a temperatura e o limiar de abstenção no conjunto de validação."""
+    print(f"\n[pipeline] Calibração de confiança de {model_name}...")
+    return subprocess.run(
+        [PYTHON, "calibrate.py", "--data", "./data", "--binary", "--model", model_name],
+        cwd=str(BACKEND),
+    ).returncode
 
 
 def run_evaluate(label: str = "") -> int:
@@ -112,23 +130,37 @@ def main():
     print(f"  Logs   : {LOGS}")
     print("=" * 60)
 
-    # ── 1. EfficientNet-B0 ─────────────────────────────────────
-    eff_log = LOGS / "efficientnet_b0_history.json"
+    # ── 0. Auditoria do split ──────────────────────────────────
+    # Treinar sobre um split que vaza produz métricas sem valor. Confirma primeiro.
+    if not (BACKEND / "data" / "split_metadata.json").exists():
+        print("\n[pipeline] ERRO: 'data/split_metadata.json' não existe.")
+        print("           O split ainda é o antigo (shuffle por ficheiro), que vaza")
+        print("           duplicados do treino para o teste. Refaça-o primeiro:")
+        print("               python download_datasets.py --skip-download")
+        sys.exit(1)
+    run_audit()
+
+    # ── 1. Treinar EfficientNet-B0 ─────────────────────────────
+    eff_log = LOGS / "efficientnet_b0_binary_history.json"
     data    = _load_history(eff_log)
     if data and len(data.get("history", [])) >= TOTAL_EPOCHS:
-        print("[pipeline] EfficientNet-B0 já completo — a saltar espera.")
+        print("[pipeline] EfficientNet-B0 já completo — a saltar.")
     else:
-        wait_for_training("efficientnet_b0")
+        rc = run_train("efficientnet_b0", batch_size=64)
+        if rc != 0:
+            sys.exit(rc)
 
-    # ── 2. Avaliar EfficientNet-B0 ─────────────────────────────
-    run_evaluate("EfficientNet-B0")
-
-    # ── 3. Treinar ResNet50 ────────────────────────────────────
+    # ── 2. Treinar ResNet50 ────────────────────────────────────
     rc = run_train("resnet50", batch_size=64)
     if rc != 0:
         sys.exit(rc)
 
-    # ── 4. Avaliação final (ambos os modelos) ──────────────────
+    # ── 3. Calibrar ambos ──────────────────────────────────────
+    # Sem isto o softmax devolve ~99% de confiança para qualquer coisa.
+    for m in ("efficientnet_b0", "resnet50"):
+        run_calibrate(m)
+
+    # ── 4. Avaliação final (com probabilidades calibradas) ─────
     run_evaluate("EfficientNet-B0 + ResNet50")
 
     # ── 5. Sumário ─────────────────────────────────────────────
@@ -141,6 +173,10 @@ def main():
     csv = BACKEND / "results" / "metrics_comparison.csv"
     if csv.exists():
         print("\n" + csv.read_text())
+
+    print("\n  Reporte no TCC a coluna 'Bal. Acc' (accuracy balanceada), não a")
+    print("  'Accuracy' simples — e cite results/leakage_report.json para justificar")
+    print("  por que os números anteriores (99,01%) foram descartados.")
 
 
 if __name__ == "__main__":

@@ -29,8 +29,8 @@ from torch.utils.data import DataLoader
 from torchvision import models
 import pandas as pd
 from sklearn.metrics import (
-    accuracy_score, f1_score, precision_score, recall_score,
-    confusion_matrix, classification_report,
+    accuracy_score, balanced_accuracy_score, f1_score, precision_score, recall_score,
+    confusion_matrix, classification_report, roc_auc_score,
 )
 import matplotlib
 matplotlib.use("Agg")
@@ -101,6 +101,18 @@ def plot_confusion_matrix(
     plt.close()
 
 
+def _load_temperature(weights_dir: Path, model_name: str, suffix: str) -> float:
+    """Lê a temperatura de calibração, se calibrate.py já correu. 1.0 = sem correcção."""
+    path = weights_dir / f"{model_name}{suffix}_calibration.json"
+    if not path.exists():
+        return 1.0
+    try:
+        with open(path, encoding="utf-8") as f:
+            return float(json.load(f).get("temperature", 1.0))
+    except (OSError, ValueError):
+        return 1.0
+
+
 def evaluate_model(
     model_name: str,
     weight_path: Path,
@@ -108,6 +120,7 @@ def evaluate_model(
     device: torch.device,
     results_dir: Path,
     class_names: list[str] | None = None,
+    temperature: float = 1.0,
 ) -> dict:
     if class_names is None:
         class_names = CLASS_NAMES
@@ -119,23 +132,38 @@ def evaluate_model(
     model.load_state_dict(state)
     model.eval()
 
-    all_preds, all_labels = [], []
+    all_preds, all_labels, all_probs = [], [], []
     with torch.no_grad():
         for imgs, labels in tqdm(test_loader, desc=f"  {model_name}", leave=False):
             imgs = imgs.to(device)
-            preds = model(imgs).argmax(1).cpu().numpy()
-            all_preds.extend(preds)
+            logits = model(imgs)
+            probs = torch.softmax(logits / temperature, dim=1)
+            all_probs.extend(probs.cpu().numpy())
+            all_preds.extend(probs.argmax(1).cpu().numpy())
             all_labels.extend(labels.numpy())
 
     y_true = np.array(all_labels)
     y_pred = np.array(all_preds)
+    y_prob = np.array(all_probs)
 
     acc  = accuracy_score(y_true, y_pred)
+    # ─── Accuracy balanceada ──────────────────────────────────────────────────
+    # Média do recall por classe. Sob desbalanceamento, a accuracy simples premia
+    # o modelo que prevê sempre a classe maioritária; a balanceada não. É este o
+    # número que deve ir para o TCC.
+    bacc = balanced_accuracy_score(y_true, y_pred)
     f1   = f1_score(y_true, y_pred, average="macro",   zero_division=0)
     prec = precision_score(y_true, y_pred, average="macro", zero_division=0)
     rec  = recall_score(y_true, y_pred, average="macro",    zero_division=0)
     cm   = confusion_matrix(y_true, y_pred)
     lat  = measure_latency(model, device)
+
+    # AUC (só faz sentido no binário) e ECE (quão honesta é a confiança reportada)
+    auc = None
+    if num_classes == 2 and len(np.unique(y_true)) == 2:
+        auc = float(roc_auc_score(y_true, y_prob[:, 1]))
+    ece = _ece(y_prob, y_true)
+    mean_conf = float(y_prob.max(axis=1).mean())
 
     plot_confusion_matrix(cm, display_names, model_name,
                           results_dir / f"cm_{model_name}.png")
@@ -147,13 +175,31 @@ def evaluate_model(
     return {
         "model":            model_name,
         "accuracy":         acc,
+        "balanced_accuracy": bacc,
         "f1_macro":         f1,
         "precision_macro":  prec,
         "recall_macro":     rec,
+        "roc_auc":          auc,
+        "ece":              ece,
+        "mean_confidence":  mean_conf,
+        "temperature":      temperature,
         "latency_ms":       lat,
         "per_class":        per_class,
         "confusion_matrix": cm.tolist(),
     }
+
+
+def _ece(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> float:
+    """Expected Calibration Error — desvio médio entre confiança reportada e acerto real."""
+    conf = probs.max(axis=1)
+    correct = (probs.argmax(axis=1) == labels).astype(float)
+    bins = np.linspace(0.0, 1.0, n_bins + 1)
+    ece, n = 0.0, len(conf)
+    for lo, hi in zip(bins[:-1], bins[1:]):
+        mask = (conf > lo) & (conf <= hi)
+        if mask.any():
+            ece += (mask.sum() / n) * abs(correct[mask].mean() - conf[mask].mean())
+    return float(ece)
 
 
 def plot_comparison(results: list[dict], results_dir: Path):
@@ -188,17 +234,17 @@ def plot_comparison(results: list[dict], results_dir: Path):
     print(f"  Gráfico comparativo : {out}")
 
 
-def plot_per_class_f1(results: list[dict], results_dir: Path):
+def plot_per_class_f1(results: list[dict], results_dir: Path, class_names: list[str]):
     """Gráfico de F1 por classe para cada modelo — útil para o capítulo de análise do TCC."""
-    display_names = [CLASS_LABELS[c] for c in CLASS_NAMES]
-    x = np.arange(len(CLASS_NAMES))
+    display_names = [CLASS_LABELS.get(c, c) for c in class_names]
+    x = np.arange(len(class_names))
     width = 0.8 / len(results)
 
     fig, ax = plt.subplots(figsize=(12, 5))
     colors = ["#22c55e", "#3b82f6", "#f97316", "#8b5cf6"]
 
     for i, r in enumerate(results):
-        f1s = [r["per_class"][c]["f1-score"] for c in CLASS_NAMES]
+        f1s = [r["per_class"][c]["f1-score"] for c in class_names]
         offset = (i - len(results) / 2 + 0.5) * width
         ax.bar(x + offset, f1s, width=width, label=r["model"],
                color=colors[i % len(colors)], edgecolor="white", linewidth=0.5)
@@ -277,6 +323,17 @@ def main():
             seed=args.seed,
         )
 
+    # Aviso de vazamento: se o split não tem metadados, foi gerado pela versão
+    # antiga (shuffle por ficheiro) e estas métricas estarão infladas.
+    data_root = Path(args.data) if args.data else Path("./data")
+    if not (data_root / "split_metadata.json").exists():
+        print(
+            "\n  ⚠  AVISO: não encontrei 'data/split_metadata.json'.\n"
+            "     Se o split foi gerado pela versão antiga, o conjunto de teste contém\n"
+            "     duplicados do treino e TODAS as métricas abaixo estão infladas.\n"
+            "     Verifique com:  python audit_leakage.py\n"
+        )
+
     # Avalia cada modelo com pesos disponíveis
     all_results = []
     for model_name in AVAILABLE_MODELS:
@@ -284,13 +341,18 @@ def main():
         if not weight_path.exists():
             print(f"\n[SKIP] {model_name} — {weight_path} não encontrado")
             continue
-        print(f"\nAvaliando {model_name}...")
+        temperature = _load_temperature(weights_dir, model_name, weights_suffix)
+        print(f"\nAvaliando {model_name}..." +
+              (f"  (T={temperature:.3f})" if temperature != 1.0 else "  (sem calibração)"))
         result = evaluate_model(model_name, weight_path, test_loader, device,
-                                results_dir, class_names=active_classes)
+                                results_dir, class_names=active_classes,
+                                temperature=temperature)
         all_results.append(result)
         print(
             f"  accuracy={result['accuracy']:.4f}  "
+            f"bal_acc={result['balanced_accuracy']:.4f}  "
             f"f1={result['f1_macro']:.4f}  "
+            f"ECE={result['ece']:.4f}  "
             f"latência={result['latency_ms']:.1f}ms"
         )
 
@@ -299,13 +361,17 @@ def main():
         print("Execute primeiro: python train.py --data ./data --model all")
         return
 
-    # Tabela comparativa
+    # Tabela comparativa. 'Bal. Acc' e 'F1' são os números honestos sob
+    # desbalanceamento; 'ECE' diz se a confiança reportada é de confiar.
     rows = [{
         "Modelo":         r["model"],
         "Accuracy":       f"{r['accuracy']:.4f}",
+        "Bal. Acc":       f"{r['balanced_accuracy']:.4f}",
         "F1 (macro)":     f"{r['f1_macro']:.4f}",
         "Precision":      f"{r['precision_macro']:.4f}",
         "Recall":         f"{r['recall_macro']:.4f}",
+        "AUC":            f"{r['roc_auc']:.4f}" if r["roc_auc"] is not None else "—",
+        "ECE":            f"{r['ece']:.4f}",
         "Latência (ms)":  f"{r['latency_ms']:.1f}",
     } for r in all_results]
 
@@ -327,9 +393,17 @@ def main():
 
     plot_comparison(all_results, results_dir)
     if len(all_results) > 1:
-        plot_per_class_f1(all_results, results_dir)
+        plot_per_class_f1(all_results, results_dir, active_classes)
 
     print(f"\n  Confusion matrices por modelo em: {results_dir}/cm_*.png")
+
+    # Nota metodológica para o TCC
+    print("\n" + "-" * 60)
+    print("  Nota: 'Bal. Acc' (accuracy balanceada) é a métrica a reportar sob")
+    print("  desbalanceamento de classes. 'ECE' mede se a confiança é honesta:")
+    print("  ECE alto ⇒ o modelo diz '99%' quando na verdade acerta bem menos.")
+    print("  Se ECE > 0.05, execute: python calibrate.py --data ./data --binary")
+    print("-" * 60)
 
 
 if __name__ == "__main__":

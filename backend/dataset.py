@@ -41,23 +41,83 @@ logger = logging.getLogger("fitovision.dataset")
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
 
+# ─── Transforms ───────────────────────────────────────────────────────────────
+#
+# Duas correcções em relação à versão anterior:
+#
+# 1. VAL/TEST usava Resize((224, 224)), que ESMAGA a proporção da imagem. O treino
+#    usava RandomResizedCrop, que recorta preservando a proporção. Ou seja: o modelo
+#    treinava em folhas com geometria correcta e era avaliado em folhas achatadas.
+#    Numa foto de telemóvel (4:3 ou 16:9) a distorção é severa. Passou a
+#    Resize(256) + CenterCrop(224) — a convenção do ImageNet, e geometricamente
+#    consistente com o crop do treino.
+#
+# 2. O ColorJitter tinha saturation=0.3 e hue=0.05. Clorose, míldio e oídio são
+#    definidos precisamente por DESVIO DE COR (amarelecimento, manchas brancas).
+#    Perturbar matiz e saturação com essa intensidade apaga o próprio sinal que o
+#    modelo deve aprender. Reduzido para saturation=0.15 / hue=0.02; brilho e
+#    contraste (que modelam variação de iluminação, não de doença) foram mantidos
+#    generosos.
+
 TRAIN_TRANSFORMS = transforms.Compose([
-    transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),
+    transforms.RandomResizedCrop(224, scale=(0.6, 1.0), ratio=(0.75, 1.333)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.05),
     transforms.RandomRotation(30),
+    transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.15, hue=0.02),
     transforms.ToTensor(),
     transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+    # Oclusão aleatória: força o modelo a não depender de uma única região
+    # (ex.: o fundo cinzento uniforme do PlantVillage).
+    transforms.RandomErasing(p=0.25, scale=(0.02, 0.15)),
 ])
 
 VAL_TRANSFORMS = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
 ])
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
+
+
+def _load_or_resample(
+    samples: list[tuple[Path, int]],
+    idx: int,
+    log: logging.Logger,
+    max_tries: int = 8,
+):
+    """
+    Abre samples[idx]. Se a imagem estiver corrompida, devolve OUTRA imagem do
+    MESMO label em vez de um quadrado preto.
+
+    Porquê: a versão anterior substituía a imagem ilegível por Image.new("RGB", …, 0)
+    — um quadrado preto — MANTENDO o label original. Com centenas de ficheiros
+    corrompidos num dataset de 200k, isso ensina o modelo a associar "imagem preta"
+    a um label real, e injecta ruído puro na loss. Reamostrar dentro da mesma classe
+    preserva a distribuição de labels e não inventa nenhum padrão.
+    """
+    path, label = samples[idx]
+    for attempt in range(max_tries):
+        try:
+            return Image.open(path).convert("RGB"), label
+        except (UnidentifiedImageError, OSError) as exc:
+            if attempt == 0:
+                log.warning("Imagem ilegível: %s (%s) — reamostrando na mesma classe.", path, exc)
+            # Procura outro índice com o mesmo label (varredura circular determinística)
+            n = len(samples)
+            for step in range(1, n):
+                cand = (idx + step) % n
+                if samples[cand][1] == label:
+                    path, _ = samples[cand]
+                    break
+            else:
+                raise RuntimeError(
+                    f"Nenhuma imagem legível para o label {label}. Dataset inutilizável."
+                ) from exc
+
+    raise RuntimeError(f"{max_tries} imagens seguidas ilegíveis para o label {label}.")
 
 
 class PlantDataset(Dataset):
@@ -92,13 +152,7 @@ class PlantDataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx: int):
-        path, label = self.samples[idx]
-        try:
-            img = Image.open(path).convert("RGB")
-        except (UnidentifiedImageError, OSError) as exc:
-            logger.warning("Imagem corrompida ou ilegível, ignorada: %s (%s)", path, exc)
-            # Devolve tensor nulo para não quebrar o DataLoader; o treino segue
-            img = Image.new("RGB", (224, 224), color=0)
+        img, label = _load_or_resample(self.samples, idx, logger)
         if self.transform:
             img = self.transform(img)
         return img, label
@@ -259,18 +313,12 @@ class BinaryFolderDataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, int]:
-        path, label = self.samples[idx]
-        try:
-            img = Image.open(path).convert("RGB")
-        except (UnidentifiedImageError, OSError):
-            logger.warning("Imagem ilegível ignorada: %s", path)
-            img = Image.new("RGB", (224, 224), 0)
+        img, label = _load_or_resample(self.samples, idx, logger)
 
         if self.transform is None:
-            # Fallback mínimo: resize + normalização ImageNet sem library externa
-            img = img.resize((224, 224))
-            tensor = transforms.ToTensor()(img)
-            tensor = transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)(tensor)
+            # Fallback mínimo: mesma geometria do VAL_TRANSFORMS (resize + center crop),
+            # nunca um resize deformante.
+            tensor = VAL_TRANSFORMS(img)
             return tensor, label
 
         if self.use_albumentations:
@@ -288,30 +336,41 @@ class BinaryFolderDataset(Dataset):
         return dict(counts)
 
 
+def binary_weighted_sampler(dataset: "BinaryFolderDataset") -> WeightedRandomSampler:
+    """WeightedRandomSampler que equaliza a probabilidade de amostragem healthy/anomalous."""
+    dist  = dataset.class_distribution()
+    total = sum(dist.values())
+    present = [c for c in BINARY_CLASSES if dist.get(c, 0) > 0]
+    w = {c: total / (len(present) * dist[c]) for c in present}
+    weights = [w[BINARY_CLASSES[lbl]] for _, lbl in dataset.samples]
+    return WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
+
+
 def make_binary_folder_loaders(
     data_dir: str | Path,
     batch_size: int = 32,
     num_workers: int = 0,
     use_albumentations: bool = False,
-) -> tuple[DataLoader, DataLoader, DataLoader]:
+) -> tuple[DataLoader, DataLoader, DataLoader, torch.Tensor]:
     """
     Cria train/val/test DataLoaders para o pipeline binário a partir de:
         data_dir/train/healthy/  data_dir/train/anomalous/
         data_dir/val/...         data_dir/test/...
 
-    Se use_albumentations=True, usa transforms de prepare_data.make_binary_loaders
-    (albumentations + augmentation completo no treino).
-    Caso contrário usa transforms torchvision padrão.
+    O loader de treino usa WeightedRandomSampler para equalizar as classes.
 
-    Retorna: (train_loader, val_loader, test_loader)
+    Retorna: (train_loader, val_loader, test_loader, class_weights)
+             class_weights é um tensor [w_healthy, w_anomalous] para a CrossEntropyLoss.
     """
     if use_albumentations:
         # Delega para prepare_data que tem os transforms albumentations completos
         from prepare_data import make_binary_loaders
-        return make_binary_loaders(data_dir, batch_size=batch_size, num_workers=num_workers)
+        loaders = make_binary_loaders(data_dir, batch_size=batch_size, num_workers=num_workers)
+        return (*loaders, torch.tensor([1.0, 1.0]))
 
     data_dir = Path(data_dir)
     loaders  = []
+    class_weights = torch.tensor([1.0, 1.0])
 
     for split in ("train", "val", "test"):
         split_dir = data_dir / split
@@ -321,11 +380,39 @@ def make_binary_folder_loaders(
             )
         transform = TRAIN_TRANSFORMS if split == "train" else VAL_TRANSFORMS
         ds        = BinaryFolderDataset(split_dir, transform=transform, use_albumentations=False)
-        shuffle   = split == "train"
         pin       = torch.cuda.is_available()
-        loader    = DataLoader(ds, batch_size=batch_size, shuffle=shuffle,
-                               num_workers=num_workers, pin_memory=pin)
-        loaders.append(loader)
-        print(f"  {split:<6}: {len(ds):>6} imgs  {ds.class_distribution()}")
+        dist      = ds.class_distribution()
 
-    return tuple(loaders)  # type: ignore[return-value]
+        if split == "train":
+            # ─── Balanceamento de classes ────────────────────────────────────
+            # O pipeline binário anterior usava shuffle=True puro. Como o pool de
+            # 'anomalous' (11 pastas de doença do PlantVillage + datasets de doença)
+            # é muito maior que o de 'healthy' (4 pastas), o modelo aprendia o
+            # atalho de prever 'anomalous' quase sempre — o que bate certo com
+            # fotos aleatórias a serem classificadas como doentes.
+            #
+            # WeightedRandomSampler equaliza a probabilidade de amostragem por
+            # classe; class_weights faz o mesmo na loss (cinto e suspensórios).
+            sampler = binary_weighted_sampler(ds)
+            loader  = DataLoader(ds, batch_size=batch_size, sampler=sampler,
+                                 num_workers=num_workers, pin_memory=pin,
+                                 drop_last=True)
+
+            n_h = dist.get("healthy", 0)
+            n_a = dist.get("anomalous", 0)
+            total = n_h + n_a
+            if n_h > 0 and n_a > 0:
+                class_weights = torch.tensor([total / (2 * n_h), total / (2 * n_a)],
+                                             dtype=torch.float)
+            ratio = (max(n_h, n_a) / min(n_h, n_a)) if n_h and n_a else float("inf")
+            print(f"  {split:<6}: {len(ds):>6} imgs  {dist}  "
+                  f"(ratio {ratio:.2f}:1 → sampler balanceado, "
+                  f"pesos da loss = [{class_weights[0]:.2f}, {class_weights[1]:.2f}])")
+        else:
+            loader = DataLoader(ds, batch_size=batch_size, shuffle=False,
+                                num_workers=num_workers, pin_memory=pin)
+            print(f"  {split:<6}: {len(ds):>6} imgs  {dist}")
+
+        loaders.append(loader)
+
+    return (*loaders, class_weights)  # type: ignore[return-value]

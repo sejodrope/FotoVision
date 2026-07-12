@@ -8,7 +8,21 @@ class Settings(BaseSettings):
     num_classes: int = 6
     cors_origins: str = "http://localhost:5173"
     max_upload_bytes: int = 10 * 1024 * 1024  # 10 MB
-    confidence_threshold: float = 0.0  # 0 = desabilitado; >0 rejeita predições abaixo do limiar
+
+    # ─── Honestidade da predição ──────────────────────────────────────────────
+    # Abaixo deste limiar de confiança CALIBRADA o sistema devolve 'inconclusive'
+    # em vez de arriscar um diagnóstico. O valor real é lido de
+    # weights/<model>_binary_calibration.json (gerado por calibrate.py); este é
+    # apenas o fallback quando ainda não houve calibração.
+    #
+    # Estava em 0.0 (desabilitado), o que fazia o sistema dar sempre um veredicto
+    # — inclusive em fotos que não são folhas.
+    confidence_threshold: float = 0.70
+
+    # Fracção mínima de píxeis de vegetação (índice ExG) para a imagem ser aceite
+    # como uma folha. Abaixo disto devolve 'not_a_leaf'. Evita que uma foto de
+    # qualquer outra coisa receba um diagnóstico fitossanitário confiante.
+    min_vegetation_fraction: float = 0.10
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

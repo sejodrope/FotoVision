@@ -30,6 +30,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torchvision import models
@@ -70,27 +71,40 @@ def train_one_model(
     device: torch.device,
     patience: int = 10,
     weights_suffix: str = "",
-) -> float:
+    class_weights: torch.Tensor | None = None,
+) -> dict:
     print(f"\n{'='*60}")
     print(f"  Modelo : {model_name}")
     print(f"  Device : {device}  |  Épocas : {epochs}  |  LR : {lr}")
+    if class_weights is not None:
+        print(f"  Pesos de classe na loss : {[round(float(w), 3) for w in class_weights]}")
+    print(f"  Critério de selecção    : F1 macro na validação")
     print(f"{'='*60}")
 
     model = build_model(model_name, num_classes).to(device)
     optimizer = AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=lr * 0.01)
 
-    # label_smoothing ajuda na calibração das probabilidades — útil para o TCC
-    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+    # label_smoothing ajuda na calibração das probabilidades — útil para o TCC.
+    # class_weights compensa o desbalanceamento healthy/anomalous.
+    w = class_weights.to(device) if class_weights is not None else None
+    criterion = nn.CrossEntropyLoss(label_smoothing=0.1, weight=w)
 
     use_amp = device.type == "cuda"
     scaler  = torch.amp.GradScaler("cuda", enabled=use_amp)
 
-    best_val_acc    = 0.0
+    # ─── Selecção do melhor checkpoint ────────────────────────────────────────
+    # A versão anterior seleccionava por val_acc pura. Com classes desbalanceadas,
+    # a accuracy premia o modelo que prevê sempre a classe maioritária: com 80% de
+    # 'anomalous', prever sempre 'anomalous' dá 80% de accuracy e F1 macro de 0,44.
+    # O F1 macro pondera as duas classes igualmente — é o critério honesto aqui.
+    best_val_f1      = -1.0
+    best_epoch       = 0
+    best_metrics: dict = {}
     patience_counter = 0
-    history         = []
-    t_start         = time.time()
-    log_path        = logs_dir / f"{model_name}_history.json"
+    history          = []
+    t_start          = time.time()
+    log_path         = logs_dir / f"{model_name}{weights_suffix}_history.json"
 
     for epoch in range(1, epochs + 1):
         # ---------- Treino ----------
@@ -113,62 +127,80 @@ def train_one_model(
 
         # ---------- Validação ----------
         model.eval()
-        v_loss, v_correct, v_total = 0.0, 0, 0
+        v_loss, v_total = 0.0, 0
+        v_preds: list[int] = []
+        v_labels: list[int] = []
         with torch.no_grad():
             for imgs, labels in val_loader:
                 imgs, labels = imgs.to(device), labels.to(device)
                 with torch.autocast(device_type=device.type, enabled=use_amp):
                     out  = model(imgs)
                     loss = criterion(out, labels)
-                v_loss    += loss.item() * imgs.size(0)
-                v_correct += (out.argmax(1) == labels).sum().item()
-                v_total   += imgs.size(0)
+                v_loss += loss.item() * imgs.size(0)
+                v_total += imgs.size(0)
+                v_preds.extend(out.argmax(1).cpu().tolist())
+                v_labels.extend(labels.cpu().tolist())
 
-        t_acc = t_correct / t_total
-        v_acc = v_correct / v_total
+        t_acc  = t_correct / t_total
+        v_acc  = accuracy_score(v_labels, v_preds)
+        v_bacc = balanced_accuracy_score(v_labels, v_preds)
+        v_f1   = f1_score(v_labels, v_preds, average="macro", zero_division=0)
 
         record = {
-            "epoch":      epoch,
-            "train_loss": t_loss / t_total,
-            "train_acc":  t_acc,
-            "val_loss":   v_loss / v_total,
-            "val_acc":    v_acc,
+            "epoch":         epoch,
+            "train_loss":    t_loss / t_total,
+            "train_acc":     t_acc,
+            "val_loss":      v_loss / v_total,
+            "val_acc":       v_acc,
+            "val_bal_acc":   v_bacc,
+            "val_f1_macro":  v_f1,
+            "lr":            scheduler.get_last_lr()[0],
         }
         history.append(record)
-        with open(log_path, "w") as _f:
-            json.dump({"model": model_name, "best_val_acc": best_val_acc,
-                       "elapsed_s": time.time() - t_start, "history": history}, _f, indent=2)
 
-        marker = " *" if v_acc > best_val_acc else ""
+        improved = v_f1 > best_val_f1
+        marker = " *" if improved else ""
         print(
             f"  Epoch {epoch:3d} | "
             f"loss={record['train_loss']:.4f} acc={t_acc:.4f} | "
-            f"val_loss={record['val_loss']:.4f} val_acc={v_acc:.4f}{marker}"
+            f"val_loss={record['val_loss']:.4f} acc={v_acc:.4f} "
+            f"bal_acc={v_bacc:.4f} f1={v_f1:.4f}{marker}"
         )
 
-        if v_acc > best_val_acc:
-            best_val_acc     = v_acc
+        if improved:
+            best_val_f1      = v_f1
+            best_epoch       = epoch
+            best_metrics     = {"val_acc": v_acc, "val_bal_acc": v_bacc, "val_f1_macro": v_f1}
             patience_counter = 0
-            save_path = weights_dir / f"{model_name}{weights_suffix}.pth"
-            torch.save(model.state_dict(), save_path)
+            torch.save(model.state_dict(), weights_dir / f"{model_name}{weights_suffix}.pth")
         else:
             patience_counter += 1
             if patience_counter >= patience:
                 print(f"  Early stopping após {epoch} épocas (patience={patience}).")
                 break
 
+        with open(log_path, "w") as _f:
+            json.dump({"model": model_name, "best_val_f1": best_val_f1,
+                       "best_epoch": best_epoch,
+                       "elapsed_s": time.time() - t_start, "history": history}, _f, indent=2)
+
     elapsed = time.time() - t_start
     log = {
         "model":        model_name,
-        "best_val_acc": best_val_acc,
+        "best_val_f1":  best_val_f1,
+        "best_epoch":   best_epoch,
+        "best_metrics": best_metrics,
         "elapsed_s":    elapsed,
         "history":      history,
     }
     with open(log_path, "w") as f:
         json.dump(log, f, indent=2)
 
-    print(f"\n  Melhor val_acc : {best_val_acc:.4f}  ({elapsed/60:.1f} min)")
-    return best_val_acc
+    print(f"\n  Melhor F1 macro (val) : {best_val_f1:.4f}  @ época {best_epoch}  ({elapsed/60:.1f} min)")
+    if best_metrics:
+        print(f"  (accuracy={best_metrics['val_acc']:.4f}  "
+              f"balanced_acc={best_metrics['val_bal_acc']:.4f})")
+    return {"f1_macro": best_val_f1, **best_metrics}
 
 
 def main():
@@ -221,7 +253,7 @@ def main():
                     )
 
         print(f"\nCarregando dataset binario de: {data_path}")
-        train_loader, val_loader, test_loader = make_binary_folder_loaders(
+        train_loader, val_loader, test_loader, class_weights = make_binary_folder_loaders(
             data_dir=data_path,
             batch_size=args.batch_size,
             num_workers=args.workers,
@@ -234,8 +266,22 @@ def main():
         with open(test_split_path, "w") as f:
             json.dump([[str(p), lbl] for p, lbl in test_ds.samples], f)
 
+        # Aviso: se o split não foi refeito com o pipeline group-aware, as métricas
+        # continuarão infladas por vazamento. Verifica os metadados.
+        meta_path = data_path / "split_metadata.json"
+        if not meta_path.exists():
+            print(
+                "\n  ⚠  AVISO: 'data/split_metadata.json' não existe.\n"
+                "     Este split parece ter sido gerado pela versão ANTIGA (shuffle ao\n"
+                "     nível do ficheiro), que vaza duplicados do treino para o teste e\n"
+                "     infla a accuracy. Refaça o split antes de confiar nos números:\n"
+                "         python download_datasets.py --skip-download\n"
+                "         python audit_leakage.py\n"
+            )
+
     # ── Pipeline multi-classe ─────────────────────────────────────────────────
     else:
+        class_weights  = None
         class_names    = CLASS_NAMES
         folder_map     = None
         if args.mapping:
@@ -271,7 +317,7 @@ def main():
 
     models_to_train = AVAILABLE_MODELS if args.model == "all" else [args.model]
 
-    results: dict[str, float] = {}
+    results: dict[str, dict] = {}
     for model_name in models_to_train:
         results[model_name] = train_one_model(
             model_name=model_name,
@@ -285,17 +331,25 @@ def main():
             device=device,
             patience=args.patience,
             weights_suffix=weights_suffix,
+            class_weights=class_weights,
         )
 
     print("\n\n=== Resumo de Validacao ===")
-    for name, acc in sorted(results.items(), key=lambda x: -x[1]):
+    print(f"  {'modelo':<20} {'F1 macro':>9} {'bal.acc':>9} {'acc':>8}")
+    print("  " + "-" * 50)
+    for name, m in sorted(results.items(), key=lambda x: -x[1]["f1_macro"]):
         pth = weights_dir / f"{name}{weights_suffix}.pth"
         status = "SALVO" if pth.exists() else "FALHOU"
-        print(f"  {name:20s}: {acc:.4f}  [{status}]")
+        print(f"  {name:<20} {m['f1_macro']:>9.4f} "
+              f"{m.get('val_bal_acc', 0):>9.4f} {m.get('val_acc', 0):>8.4f}  [{status}]")
 
     print(f"\nPesos em   : {weights_dir}/")
     print(f"Logs em    : {logs_dir}/")
-    print(f"\nProximo passo: python evaluate.py --test-split {test_split_path}")
+    print("\nProximos passos:")
+    print(f"  1. python calibrate.py --data {data_path} --binary"
+          if args.binary else "  1. (calibração disponível apenas no modo --binary)")
+    print(f"  2. python evaluate.py --test-split {test_split_path}"
+          + (" --binary" if args.binary else ""))
 
 
 if __name__ == "__main__":

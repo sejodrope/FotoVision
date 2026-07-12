@@ -5,6 +5,97 @@
 
 ---
 
+## 0. ERRATA — Invalidação dos resultados de 06/06/2026
+
+> **Todas as métricas deste documento (99,01%, 98,81%, 98,71%) estão RETRATADAS.**
+> Foram medidas sobre um conjunto de teste contaminado. As secções 3, 4, 7.1 e 7.2
+> não devem ser citadas até que o experimento seja refeito.
+>
+> 📌 **O registo completo da investigação — hipóteses testadas, causa, as 9 correcções e
+> a verificação experimental de cada uma — está em
+> [`CORRECOES_METODOLOGICAS.md`](CORRECOES_METODOLOGICAS.md).**
+> Esta secção 0 é o resumo; aquele documento é a fonte para o capítulo de metodologia.
+
+### 0.1 O que aconteceu
+
+Ao testar o sistema com fotos novas, o desempenho não correspondeu de todo aos 99%
+reportados. A investigação encontrou **vazamento de dados (*data leakage*)** entre os
+conjuntos de treino e teste.
+
+O split era feito com um sorteio **ao nível do ficheiro**:
+
+```python
+images = sorted(f for f in src.iterdir() ...)
+rng.shuffle(images)                      # ← sorteio por FICHEIRO
+train, val, test = images[:a], images[a:b], images[b:]
+```
+
+Acontece que o pool de imagens contém **várias cópias da mesma fotografia**:
+
+| Fonte | Natureza da redundância |
+|-------|-------------------------|
+| `lettuce-disease-multi-transformation-dataset` | o nome diz tudo: são versões **rodadas, espelhadas e com brilho alterado** da mesma folha |
+| `plant-diseases-training-dataset` | é um **re-upload do PlantVillage** — as mesmas imagens, sob outros nomes de ficheiro |
+
+O sorteio por ficheiro colocava, portanto, a **rotação** de uma foto no treino e o
+**espelhamento da mesma foto** no teste. Como os nomes dos ficheiros eram diferentes,
+nada detectava a duplicação.
+
+**O modelo não estava a diagnosticar folhas. Estava a reconhecer fotografias que já
+tinha visto.** Os 99,01% mediam **memorização**, não capacidade de generalização.
+
+### 0.2 O indício que foi mal interpretado
+
+A secção 7.1 apresentava como prova de qualidade o facto de `val_acc ≈ test_acc`:
+
+> *"A diferença entre val_acc e test_acc é mínima (…) Isso confirma que os modelos
+> generalizaram bem e não sofreram overfitting."*
+
+**Esta inferência está invertida.** Validação e teste concordavam porque **ambos
+estavam contaminados pelo treino**. A concordância entre dois conjuntos igualmente
+vazados não é evidência de generalização — é um *sintoma* do vazamento. Um teste
+honesto teria mostrado uma queda, e foi a ausência dessa queda que deveria ter
+levantado suspeitas.
+
+Vale registar isto no TCC: é precisamente o tipo de raciocínio que a validação
+experimental existe para apanhar.
+
+### 0.3 A correcção
+
+| # | Problema | Correcção | Ficheiro |
+|---|----------|-----------|----------|
+| 1 | Split sorteava ficheiros; variantes da mesma foto caíam em splits diferentes | **Split agrupado por identidade visual** — hash perceptual invariante a rotação/espelho/brilho agrupa as variantes, e sorteiam-se **grupos inteiros** | `imagehash_utils.py`, `download_datasets.py` |
+| 2 | Sem forma de detectar o vazamento | **Auditoria** que quantifica quantas imagens de teste têm duplicado no treino | `audit_leakage.py` |
+| 3 | Softmax devolvia ~99% de confiança para qualquer imagem, inclusive não-folhas | **Temperature scaling** + **limiar de abstenção** (`inconclusive`) + **guarda de vegetação** (`not_a_leaf`) | `calibrate.py`, `app/ml/inference.py` |
+| 4 | Classes desbalanceadas; melhor checkpoint escolhido por *accuracy* | **Loss com pesos de classe**, amostragem balanceada, selecção por **F1 macro** | `train.py`, `dataset.py` |
+| 5 | Treino recortava a folha; inferência **esmagava** a proporção (`Resize((224,224))`) | `Resize(256) + CenterCrop(224)` em ambos | `dataset.py`, `app/ml/preprocessing.py` |
+| 6 | Imagem corrompida virava **quadrado preto com o label original** | Imagem ilegível é **descartada** (reamostra-se outra da mesma classe) | `dataset.py` |
+| 7 | Roboflow: *qualquer* imagem anotada → `anomalous` (mesmo quando a caixa marcava uma folha **saudável**) | Lê as classes do `data.yaml` e mapeia cada `class_id` | `download_datasets.py` |
+| 8 | Rótulos por palavra-chave incluíam `weed`, `good`, `normal`, `target` | Casamento por *token*; termos genéricos removidos; mapa auditável em `data/label_map_audit.json` | `download_datasets.py` |
+
+A correcção do item 1 foi **verificada experimentalmente**: num conjunto sintético com
+40 fotos-base e 7 cópias transformadas de cada, o split antigo vazava **100%** do teste;
+o novo vaza **0%**, recuperando exactamente as 40 fotos de origem.
+
+### 0.4 Como refazer o experimento
+
+```bash
+cd backend
+python download_datasets.py --skip-download   # refaz o split, agora agrupado
+python audit_leakage.py                       # quantifica o vazamento do split antigo
+python run_pipeline.py                        # treina → calibra → avalia
+```
+
+**Expectativa honesta:** as métricas vão **cair**, e devem cair. Um valor na casa dos
+85–95% de acurácia balanceada, obtido sem vazamento, vale infinitamente mais — e é
+defensável numa banca — do que 99% que não sobrevivem ao primeiro contacto com uma
+foto real.
+
+Reportar a **acurácia balanceada** (`results/metrics_comparison.csv`) e citar
+`results/leakage_report.json` como justificação da retratação.
+
+---
+
 ## 1. Visão Geral do Sistema
 
 ### Problema
@@ -88,48 +179,103 @@ O dataset inclui também imagens proxy de outras culturas (PlantVillage) para en
 | anomalous | 139.780 | 66,5% |
 | **TOTAL** | **210.832** | 100% |
 
-**Razão de desbalanceamento:** 1:1,97 (≈ 2:1)  
-**Tratamento:** `WeightedRandomSampler` — cada classe é amostrada com probabilidade inversamente proporcional à sua frequência durante o treino, garantindo que o modelo veja ambas as classes com frequência equilibrada.
+**Razão de desbalanceamento:** 1:1,97 (≈ 2:1)
 
-### 2.3 Distribuição por Split (70/15/15 estratificado)
+> ⚠️ **Correcção.** Este documento afirmava que o desbalanceamento era tratado com
+> `WeightedRandomSampler`. **Não era** — no pipeline binário. O `WeightedRandomSampler`
+> existia em `dataset.py`, mas só era usado pelo caminho multi-classe; o binário
+> (`make_binary_folder_loaders`) usava `shuffle=True` simples, sem qualquer
+> compensação, e a loss não tinha pesos de classe.
+>
+> Com `anomalous` a dominar 2:1, o modelo tinha um incentivo real a inclinar-se para
+> "anomalous" — o que é consistente com fotos aleatórias serem classificadas como
+> doentes. **Corrigido:** o pipeline binário passou a usar amostragem balanceada
+> **e** `CrossEntropyLoss(weight=...)`.
+
+### 2.3 Distribuição por Split (70/15/15 estratificado) — ❌ INVÁLIDA
+
+> ⚠️ **Estes números descrevem o split contaminado** (ver Secção 0 — Errata).
+>
+> Duas ressalvas sobre a tabela abaixo:
+>
+> 1. **O total conta cópias, não fotos.** As 210.832 "imagens" incluem múltiplas
+>    variantes transformadas da mesma fotografia. O número de **fotos distintas** é
+>    substancialmente menor e só é conhecido após o agrupamento — fica registado em
+>    `data/split_metadata.json` (campo `n_distinct_photos`).
+>
+> 2. **A afirmação "nunca usado durante otimização" é enganosa.** É verdade que os
+>    ficheiros de teste não foram lidos durante o treino — mas *variantes das mesmas
+>    fotos* foram. Para efeitos de generalização, o modelo tinha visto o conteúdo do
+>    teste.
 
 | Split | healthy | anomalous | Total |
 |-------|---------|-----------|-------|
-| **train** | 49.736 | 97.846 | **147.582** |
-| **val** | 10.658 | 20.967 | **31.625** |
-| **test** | 10.658 | 20.967 | **31.625** |
+| ~~train~~ | ~~49.736~~ | ~~97.846~~ | ~~147.582~~ |
+| ~~val~~ | ~~10.658~~ | ~~20.967~~ | ~~31.625~~ |
+| ~~test~~ | ~~10.658~~ | ~~20.967~~ | ~~31.625~~ |
 
-- Split estratificado com `seed=42` (reprodutível)
-- O test set foi separado **antes** do início do treino e **nunca usado** durante otimização
-- Os caminhos do test set são salvos em `logs/test_split_binary.json` para garantir que todos os modelos são avaliados no **mesmo conjunto exato**
+**Split corrigido (group-aware):** sorteiam-se **grupos de identidade visual**, não
+ficheiros. Todas as variantes de uma foto caem no mesmo split, por construção. Números
+reais em `data/split_metadata.json` após correr `download_datasets.py --skip-download`.
 
 ### 2.4 Data Augmentation
 
-**Treino** (torchvision transforms):
+**Treino** (torchvision transforms) — *versão corrigida*:
 ```python
-RandomResizedCrop(224, scale=(0.7, 1.0))   # crop aleatório com resize
-RandomHorizontalFlip()                       # flip horizontal (p=0.5)
-RandomVerticalFlip()                         # flip vertical
+RandomResizedCrop(224, scale=(0.6, 1.0), ratio=(0.75, 1.333))
+RandomHorizontalFlip()
+RandomVerticalFlip()
+RandomRotation(30)
 ColorJitter(brightness=0.3, contrast=0.3,
-            saturation=0.3, hue=0.05)        # variações de iluminação e cor
-RandomRotation(30)                           # rotação até ±30°
+            saturation=0.15, hue=0.02)       # ← saturação/matiz REDUZIDAS
 ToTensor()
-Normalize(mean=[0.485, 0.456, 0.406],       # normalização ImageNet
+Normalize(mean=[0.485, 0.456, 0.406],
           std=[0.229, 0.224, 0.225])
+RandomErasing(p=0.25, scale=(0.02, 0.15))    # ← oclusão aleatória (novo)
 ```
 
-**Val / Test** (sem augmentation):
+**Val / Test / Inferência** — *versão corrigida*:
 ```python
-Resize((224, 224))
+Resize(256)          # ← preserva a proporção
+CenterCrop(224)
 ToTensor()
 Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ```
 
-**Justificativa científica:** Augmentation é uma forma de regularização — o modelo aprende features robustas a variações de ângulo, iluminação e escala que ocorrem naturalmente em fotos tiradas em campo.
+> ⚠️ **Duas correcções, ambas relevantes para o desempenho em fotos reais.**
+>
+> **(a) A geometria de val/test estava inconsistente com a do treino.** A versão
+> anterior usava `Resize((224, 224))` — um resize para um alvo quadrado, que **esmaga a
+> proporção** da imagem. O treino, porém, usava `RandomResizedCrop`, que *recorta*
+> preservando a proporção. O modelo treinava em folhas com geometria correcta e era
+> servido, em produção, com folhas achatadas. Numa foto de telemóvel (4:3 ou 16:9) a
+> distorção é severa — uma folha redonda chega ao modelo como uma elipse.
+> `Resize(256) + CenterCrop(224)` (convenção ImageNet) elimina a discrepância, e a
+> mesma transformação passou a ser usada em `app/ml/preprocessing.py`.
+>
+> **(b) O `ColorJitter` estava a apagar o sinal a detectar.** Com `saturation=0.3` e
+> `hue=0.05`, o augmentation perturbava agressivamente matiz e saturação — mas clorose
+> (amarelecimento), míldio e oídio (manchas) **são definidos precisamente por desvio de
+> cor**. Perturbar cor com essa intensidade ensina o modelo a ignorar exactamente a
+> evidência de que precisa. Brilho e contraste, que modelam variação de *iluminação* e
+> não de *doença*, foram mantidos generosos.
+
+**Justificativa científica:** Augmentation é regularização — o modelo aprende features
+robustas a variações de ângulo, iluminação e escala que ocorrem naturalmente em campo.
+Mas a augmentation tem de perturbar as **variáveis de ruído** (pose, exposição,
+enquadramento), nunca a **variável de decisão** (a cor e a textura da lesão).
 
 ---
 
 ## 3. Modelos Treinados
+
+> ## ⚠️ Métricas de qualidade desta secção: RETRATADAS
+> Todos os valores de **accuracy, F1, precision e recall** apresentados nas subsecções
+> 3.1–3.3 foram medidos sobre o split contaminado (ver **Secção 0 — Errata**) e **não
+> devem ser citados**.
+>
+> Permanecem válidos: arquitecturas, contagens de parâmetros, hiperparâmetros, tempos
+> de treino e latências — nenhum depende do split.
 
 ### Configuração Comum de Treino
 
@@ -299,17 +445,34 @@ Falsos negativos: **215** — o pior dos 3 modelos na detecção de doenças.
 
 ## 4. Comparação e Modelo de Produção
 
-### 4.1 Tabela Comparativa Final (`metrics_comparison.csv`)
+> ## ⚠️ SECÇÃO RETRATADA
+> As métricas abaixo foram medidas sobre um test set contaminado por duplicados do
+> treino (ver **Secção 0 — Errata**). **Não citar.** A afirmação "nunca visto durante
+> treino ou validação" é falsa: uma fracção substancial destas 31.625 imagens são
+> variantes por *augmentation* de fotos presentes no treino.
+>
+> Mantidas apenas como registo histórico do que foi corrigido.
 
-> Avaliação realizada em 06/06/2026 com `evaluate.py --binary` no test set de 31.625 imagens (nunca visto durante treino ou validação).
+### 4.1 Tabela Comparativa Final (`metrics_comparison.csv`) — ❌ INVÁLIDA
 
-| Modelo | Parâmetros | Accuracy | F1 (macro) | Precision | Recall | Latência (ms) | Treino (h) |
+> ~~Avaliação realizada em 06/06/2026 com `evaluate.py --binary` no test set de 31.625 imagens (nunca visto durante treino ou validação).~~
+
+| Modelo | Parâmetros | ~~Accuracy~~ | ~~F1 (macro)~~ | ~~Precision~~ | ~~Recall~~ | Latência (ms) | Treino (h) |
 |--------|-----------|----------|------------|-----------|--------|--------------|-----------|
-| **EfficientNet-B0** | **5,3M** | **99,01%** | **98,89%** | **98,93%** | **98,85%** | 24,1 | 6,46 |
-| MobileNetV2 | 3,4M | 98,81% | 98,67% | 98,69% | 98,65% | 14,3 | 15,4* |
-| ResNet50 | 25,6M | 98,71% | 98,56% | 98,54% | 98,59% | 16,7 | 11,03 |
+| **EfficientNet-B0** | **5,3M** | ~~99,01%~~ | ~~98,89%~~ | ~~98,93%~~ | ~~98,85%~~ | 24,1 | 6,46 |
+| MobileNetV2 | 3,4M | ~~98,81%~~ | ~~98,67%~~ | ~~98,69%~~ | ~~98,65%~~ | 14,3 | 15,4* |
+| ResNet50 | 25,6M | ~~98,71%~~ | ~~98,56%~~ | ~~98,54%~~ | ~~98,59%~~ | 16,7 | 11,03 |
 
 *MobileNetV2 incluiu overhead de época 1 com laptop throttle; tempo real de treino estável ~6–7h.
+
+> **Nota.** A latência e a contagem de parâmetros **permanecem válidas** — não dependem
+> do split. Só as métricas de qualidade (accuracy, F1, precision, recall) foram
+> invalidadas pelo vazamento.
+>
+> Como as três arquitecturas foram avaliadas sobre o *mesmo* test set contaminado, é
+> plausível que o **ranking relativo** se mantenha; mas isso é uma conjectura, não um
+> resultado — o vazamento pode favorecer arquitecturas com maior capacidade de
+> memorização (ResNet50 tem 4,8× mais parâmetros). O ranking tem de ser re-medido.
 
 ### 4.2 Análise por Classe (Falsos Negativos — mais crítico)
 
@@ -438,7 +601,9 @@ Interface web single-page desenvolvida em React 19 + TypeScript + Tailwind CSS 3
 **Seção Hero:**
 - Logo folha verde + título "Diagnóstico Fitossanitário"
 - Subtítulo: "Detecção automática de anomalias em folhosas · Transfer Learning · Classificação binária"
-- Strip de 3 estatísticas: Acurácia (99,01%), Total de imagens (210.832), Modelo ativo (EfficientNet-B0)
+- ~~Strip de 3 estatísticas: Acurácia (99,01%), Total de imagens (210.832)~~ → **removidas
+  da interface**: eram os números inválidos da Secção 0. O strip mostra agora
+  "em reavaliação" até que o novo treino produza métricas honestas.
 
 **Coluna esquerda — Upload:**
 - `ImageUploader`: drag-and-drop ou click para selecionar imagem (JPG, PNG, WebP, BMP, máx. 10 MB)
@@ -448,13 +613,19 @@ Interface web single-page desenvolvida em React 19 + TypeScript + Tailwind CSS 3
 **Coluna direita — Resultado:**
 - *Placeholder* enquanto sem imagem
 - *Loading* com spinner animado enquanto processa
-- `BinaryResultCard` com:
-  - **Gauge circular SVG** de confiança (animado, 0,7s ease-out)
-  - Título: "Saudável" ou "Anômala" em destaque
-  - Barras de probabilidade: Saudável (verde) + Anômala (vermelho)
-  - Preview da imagem enviada
-  - Badge: modelo + acurácia
-  - Botão "Tentar outra imagem"
+- `BinaryResultCard`, agora com **quatro** resultados possíveis (antes eram dois):
+
+| Resultado | Quando | Aparência |
+|-----------|--------|-----------|
+| **Saudável** | confiança calibrada ≥ limiar | gauge verde |
+| **Anômala** | confiança calibrada ≥ limiar | gauge vermelho |
+| **Inconclusivo** | confiança abaixo do limiar | ícone âmbar + instrução ao utilizador |
+| **Não é uma folha** | a imagem não contém vegetação (ExG) | ícone cinza + instrução |
+
+> Os dois últimos são **novos e deliberados**. A versão anterior devolvia sempre um
+> veredicto binário, com confiança alta, mesmo para imagens que não eram folhas.
+> **Abster-se é a resposta correcta quando o modelo não sabe** — e é isso que distingue
+> um sistema honesto de um que mente com convicção.
 
 ### 6.3 Como a Inferência Funciona
 
@@ -467,16 +638,20 @@ Interface web single-page desenvolvida em React 19 + TypeScript + Tailwind CSS 3
         → valida content-type (JPEG/PNG/WebP/BMP)
         → valida tamanho (máx. 10 MB)
         → preprocess_image(bytes):
-             PIL.Image → RGB → Resize(224×224) → ToTensor()
-             → Normalize(ImageNet mean/std) → unsqueeze(0) → tensor[1,3,224,224]
-        → predict_binary(tensor):
-             load_binary_model() → EfficientNet-B0 + pesos efficientnet_b0_binary.pth
-             → model(tensor) → logits[1,2]
-             → softmax → [healthy_prob, anomalous_prob]
-             → label = argmax
-        → retorna JSON: { label, confidence, healthy_prob, anomalous_prob }
+             PIL.Image → RGB → Resize(256) → CenterCrop(224)   ← preserva a proporção
+             → ToTensor() → Normalize(ImageNet) → tensor[1,3,224,224]
+        → predict_binary(tensor, image):
+             (1) GUARDA DE DOMÍNIO — índice ExG (Excess Green)
+                 vegetação < 10%  →  'not_a_leaf'  (não é folha: não arrisca diagnóstico)
+             (2) model(tensor) → logits[1,2]
+             (3) CALIBRAÇÃO — softmax(logits / T), com T aprendido em calibrate.py
+                 (T > 1 achata as probabilidades: corrige o excesso de confiança)
+             (4) ABSTENÇÃO — confiança < limiar  →  'inconclusive'
+             (5) caso contrário → label = argmax
+        → retorna JSON: { label, confidence, healthy_prob, anomalous_prob,
+                          calibrated, vegetation_fraction, message }
         ↓
-[Frontend: BinaryResultCard] exibe resultado
+[Frontend: BinaryResultCard] exibe um dos 4 estados
 ```
 
 ### 6.4 Outros Componentes Existentes
@@ -496,55 +671,89 @@ Interface web single-page desenvolvida em React 19 + TypeScript + Tailwind CSS 3
 
 ## 7. Resultados e Análise
 
-### 7.1 Significado dos Resultados para o TCC
+### 7.1 Significado dos Resultados para o TCC — ❌ RETRATADA
 
-**Os três modelos superaram 98,7% de acurácia** no test set de 31.625 imagens — um benchmark robusto (≈ acertar 987+ em cada 1000 imagens nunca vistas).
+> **Esta secção continha um erro de raciocínio, e vale a pena preservá-lo como lição.**
 
-A diferença entre val_acc e test_acc é mínima em todos os modelos:
-- EfficientNet-B0: 98,98% → 99,01% (+0,03 pp)
-- MobileNetV2: 98,86% → 98,81% (−0,05 pp)
-- ResNet50: 98,71% → 98,71% (0,00 pp)
+O texto original argumentava:
 
-Isso confirma que **os modelos generalizaram bem** e não sofreram overfitting ao conjunto de validação.
+> ~~"Os três modelos superaram 98,7% de acurácia no test set de 31.625 imagens.~~
+> ~~A diferença entre val_acc e test_acc é mínima (EfficientNet-B0: 98,98% → 99,01%).~~
+> ~~Isso confirma que os modelos generalizaram bem e não sofreram overfitting."~~
 
-### 7.2 Comparação com a Literatura
+**A conclusão está invertida.** A validação e o teste concordavam porque **ambos
+continham duplicados do treino**. A concordância entre dois conjuntos igualmente
+contaminados não demonstra generalização: é um *sintoma* do vazamento.
+
+O sinal de alarme estava à vista e foi lido ao contrário. Um modelo que atinge 99% num
+domínio visualmente difícil, com val e test a coincidirem até à segunda casa decimal, é
+**suspeito**, não excelente. A ausência da queda esperada entre validação e teste era a
+prova de que o teste não era independente.
+
+**Lição metodológica para o TCC:** métricas boas demais são uma hipótese a testar, não
+um resultado a celebrar. A primeira pergunta perante um 99% deve ser *"o que é que o
+conjunto de teste tem que não devia ter?"* — e a resposta chega-se com uma auditoria de
+duplicados (`audit_leakage.py`), não com mais uma época de treino.
+
+### 7.2 Comparação com a Literatura — ❌ RETRATADA
+
+> As linhas do FitoVision nesta tabela **não são comparáveis** com a literatura: os
+> valores publicados por Mohanty, Too e Atila foram obtidos em splits sem vazamento; os
+> do FitoVision, não. Comparar os dois é comparar generalização com memorização.
 
 | Referência | Tarefa | Dataset | Accuracy | F1 |
 |------------|--------|---------|---------|-----|
 | Mohanty et al. (2016) | 26 classes PlantVillage | PlantVillage | 99,35% | — |
 | Too et al. (2019) | Multi-classe Plant Disease | PlantVillage | 98,8% | — |
 | Atila et al. (2021) | Plant Disease (5 classes) | PlantVillage | 97,4% | — |
-| **FitoVision — EfficientNet-B0** | **binário (folhosas)** | **multi-fonte** | **99,01%** | **98,89%** |
-| **FitoVision — MobileNetV2** | binário (folhosas) | multi-fonte | 98,81% | 98,67% |
-| **FitoVision — ResNet50** | binário (folhosas) | multi-fonte | 98,71% | 98,56% |
+| ~~FitoVision — EfficientNet-B0~~ | ~~binário (folhosas)~~ | ~~multi-fonte~~ | ~~99,01%~~ | ~~98,89%~~ |
+| ~~FitoVision — MobileNetV2~~ | ~~binário (folhosas)~~ | ~~multi-fonte~~ | ~~98,81%~~ | ~~98,67%~~ |
+| ~~FitoVision — ResNet50~~ | ~~binário (folhosas)~~ | ~~multi-fonte~~ | ~~98,71%~~ | ~~98,56%~~ |
 
-**Critério original do TCC:** F1 macro ≥ 0,85 em todas as classes.
-**Resultado:** F1 macro = **98,89%** (EfficientNet-B0) — **supera amplamente o critério** em 13,89 pp.
+**Contexto importante para a discussão do TCC.** Mesmo os trabalhos acima, medidos
+correctamente, são conhecidos por **não se transferirem para condições de campo**: a
+literatura reporta que modelos treinados em PlantVillage, com ~99% no seu próprio test
+set, caem para a faixa dos **30–60%** em fotografias reais de lavoura (fundo de terra,
+iluminação natural, múltiplas folhas, oclusão). O *gap de domínio* é um resultado
+estabelecido — e é a razão de fundo pela qual um sistema treinado em fotos de estúdio
+decepciona numa foto de telemóvel, **mesmo depois de eliminado o vazamento**.
 
-O **F1 macro** é a métrica mais relevante aqui porque:
-1. Há desbalanceamento 2:1 entre classes — accuracy sozinha não é suficiente
-2. F1 macro pondera igualmente healthy e anomalous
-3. Um modelo naive que predisse sempre "anomalous" teria ~66% accuracy mas F1 macro ≈ 40%
+Isto dá ao TCC uma discussão muito mais rica do que "atingimos 99%":
+o vazamento explica a *fraude métrica*; o gap de domínio explica o *limite real da
+abordagem*. São dois problemas distintos, e ambos merecem uma secção.
+
+**Critério original do TCC:** F1 macro ≥ 0,85.
+**Estado:** por re-medir. O critério só é significativo sobre o split corrigido.
 
 ### 7.3 Limitações Identificadas
 
 | Limitação | Descrição | Impacto |
 |-----------|-----------|---------|
-| **Dataset proxy** | PlantVillage não tem alface/rúcula; usado como proxy visual de doenças | A acurácia em campo real pode ser diferente |
-| **Condições controladas** | Imagens do dataset são majoritariamente em fundo neutro/estúdio | Fotos de campo com fundo variado podem ser mais difíceis |
+| **Gap de domínio** ⚠️ | Treino em fotos de estúdio (fundo neutro, folha isolada); uso real em fotos de telemóvel na horta | **A limitação mais séria.** A literatura reporta quedas para 30–60% nesta transição. Não se resolve com mais épocas — exige imagens de campo |
+| **Dataset proxy** | PlantVillage não tem alface/rúcula; usa-se tomate/batata/milho como proxy visual | O que o modelo "sabe" sobre alface é transferido, não observado |
+| **Rótulos heurísticos** | O label binário vem de palavras-chave no nome da pasta de origem | Ruído de rotulagem; mapa auditável em `data/label_map_audit.json` |
+| **Redundância do dataset** | O total de 210.832 imagens conta cópias transformadas da mesma foto como imagens distintas | O nº de **fotos distintas** é significativamente menor — é esse que deve ser reportado (`data/split_metadata.json`) |
 | **Classes binárias apenas** | Sistema não informa qual doença específica | Limita diagnóstico detalhado |
-| **Dados brasileiros** | Sem imagens de hortaliças folhosas do contexto agrícola brasileiro | Variabilidade climática/visual regional não representada |
-| **ViT-B/16 não treinado** | Modelo Transformer não foi incluído por limitações de tempo/VRAM | Comparação incompleta com arquiteturas de atenção |
-| **Latência em CPU** | Medições em GPU; latência em CPU (sem CUDA) pode ser 10–50× maior | Deployment em dispositivos sem GPU seria mais lento |
+| **Dados brasileiros** | Sem imagens de hortaliças folhosas do contexto agrícola brasileiro | Variabilidade regional não representada |
+| **ViT-B/16 não treinado** | Não incluído por limitações de tempo/VRAM | Comparação incompleta |
+| **Latência em CPU** | Medições em GPU; em CPU pode ser 10–50× maior | Deployment sem GPU seria mais lento |
 
 ### 7.4 O que Fica para o TCC-II
 
-- [ ] Coletar imagens reais de hortas/estufas do contexto brasileiro para validação em campo
+**Prioridade máxima (decorre da errata):**
+- [ ] **Refazer treino e avaliação sobre o split agrupado** e reportar acurácia balanceada
+- [ ] **Montar um conjunto de teste de campo** — 100–300 fotos de telemóvel de hortas reais,
+      rotuladas por inspecção. É o único número que responde à pergunta *"isto funciona?"*.
+      Reportar as duas métricas lado a lado (test set vs. campo) torna o gap de domínio
+      um **resultado do trabalho**, e não uma fragilidade escondida
+- [ ] Reportar a **calibração** (ECE, diagrama de fiabilidade) e a taxa de abstenção
+
+**Restante:**
 - [ ] Implementar classificação multi-classe (tipo específico de doença)
 - [ ] Treinar ViT-B/16 e incluir na comparação
 - [ ] Implementar Grad-CAM para explicabilidade (código já existe em `gradcam.py`)
 - [ ] Avaliar performance em CPU (dispositivos móveis sem GPU)
-- [ ] Estudar possibilidade de deploimento mobile (ONNX / TorchLite)
+- [ ] Estudar deployment mobile (ONNX / TorchLite)
 
 ---
 

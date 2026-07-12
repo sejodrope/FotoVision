@@ -81,6 +81,7 @@ _BINARY_MODEL_NAME = "efficientnet_b0"
 _BINARY_WEIGHT_FILENAME = f"{_BINARY_MODEL_NAME}_binary.pth"
 _BINARY_CALIB_FILENAME = f"{_BINARY_MODEL_NAME}_binary_calibration.json"
 _BINARY_CLASSES = ["healthy", "anomalous"]  # índice 0 = healthy, 1 = anomalous
+_BINARY_MODEL_NAMES = {"efficientnet_b0", "mobilenet_v2", "resnet50"}
 
 # Calibração carregada de disco (produzida por calibrate.py).
 # Defaults neutros: T=1 (sem correcção) e limiar do config.
@@ -120,15 +121,32 @@ def _load_calibration() -> dict:
     return _calibration
 
 
-def load_binary_model() -> nn.Module:
-    key = "efficientnet_b0_binary"
+def _build_binary_model(name: str) -> nn.Module:
+    # weights=None: a arquitectura é preenchida logo a seguir pelos pesos
+    # treinados, dispensando o download dos pesos ImageNet.
+    if name == "mobilenet_v2":
+        model = models.mobilenet_v2(weights=None)
+        model.classifier[1] = nn.Linear(model.last_channel, 2)
+    elif name == "resnet50":
+        model = models.resnet50(weights=None)
+        model.fc = nn.Linear(model.fc.in_features, 2)
+    elif name == "efficientnet_b0":
+        model = models.efficientnet_b0(weights=None)
+        model.classifier[1] = nn.Linear(model.classifier[1].in_features, 2)
+    else:
+        raise ValueError(f"Modelo binário não suportado: '{name}'. Use: {sorted(_BINARY_MODEL_NAMES)}")
+    return model
+
+
+def load_binary_model_by_name(model_name: str) -> nn.Module:
+    if model_name not in _BINARY_MODEL_NAMES:
+        raise ValueError(f"Modelo binário não suportado: '{model_name}'. Use: {sorted(_BINARY_MODEL_NAMES)}")
+    key = f"{model_name}_binary"
     if key in _model_cache:
         return _model_cache[key]
 
-    model = models.efficientnet_b0(weights=None)
-    model.classifier[1] = nn.Linear(model.classifier[1].in_features, 2)
-
-    weight_path = Path(settings.weights_dir) / _BINARY_WEIGHT_FILENAME
+    model = _build_binary_model(model_name)
+    weight_path = Path(settings.weights_dir) / f"{key}.pth"
     if not weight_path.exists():
         raise FileNotFoundError(f"Pesos binários não encontrados: {weight_path}")
 
@@ -137,8 +155,12 @@ def load_binary_model() -> nn.Module:
     model.to(_device)
     model.eval()
     _model_cache[key] = model
-    logger.info("Modelo binário carregado de %s (device=%s)", weight_path, _device)
+    logger.info("Modelo binário (%s) carregado de %s (device=%s)", model_name, weight_path, _device)
     return model
+
+
+def load_binary_model() -> nn.Module:
+    return load_binary_model_by_name(_BINARY_MODEL_NAME)
 
 
 def vegetation_fraction(image: Image.Image) -> float:
@@ -164,6 +186,28 @@ def vegetation_fraction(image: Image.Image) -> float:
 
     exg = 2.0 * g - r - b
     return float((exg > 0.05).mean())
+
+
+def predict_binary_with_model(model: nn.Module, tensor: torch.Tensor) -> dict:
+    """
+    Predição crua (softmax sem calibração) com um modelo binário arbitrário.
+    Usada pelo endpoint de Grad-CAM, onde o interesse é a explicação visual
+    da decisão do modelo, não um diagnóstico calibrado.
+    """
+    tensor = tensor.to(_device)
+    with torch.no_grad():
+        logits = model(tensor)
+        probs = torch.softmax(logits, dim=1)[0]
+    healthy_prob = float(probs[0])
+    anomalous_prob = float(probs[1])
+    confidence = max(healthy_prob, anomalous_prob)
+    label = "healthy" if healthy_prob >= anomalous_prob else "anomalous"
+    return {
+        "label": label,
+        "confidence": confidence,
+        "healthy_prob": healthy_prob,
+        "anomalous_prob": anomalous_prob,
+    }
 
 
 def predict_binary(tensor: torch.Tensor, image: Image.Image | None = None) -> dict:

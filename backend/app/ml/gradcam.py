@@ -41,10 +41,20 @@ def generate_gradcam(
     from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
     targets = [ClassifierOutputTarget(target_class_idx)]
 
-    grayscale_cam = cam(input_tensor=tensor, targets=targets)[0]
+    grayscale_cam = cam(input_tensor=tensor, targets=targets)[0]  # (224, 224)
 
-    rgb = np.array(original_image.resize((224, 224))).astype(np.float32) / 255.0
-    overlay = show_cam_on_image(rgb, grayscale_cam, use_rgb=True)
+    # Render at higher resolution: preserve original aspect ratio, min 512px wide
+    orig_w, orig_h = original_image.size
+    out_w = max(512, orig_w)
+    out_h = int(out_w * orig_h / orig_w)
+
+    resized_img = original_image.resize((out_w, out_h), Image.LANCZOS)
+    rgb = np.array(resized_img).astype(np.float32) / 255.0
+
+    cam_pil = Image.fromarray((grayscale_cam * 255).astype(np.uint8))
+    cam_upscaled = np.array(cam_pil.resize((out_w, out_h), Image.LANCZOS)).astype(np.float32) / 255.0
+
+    overlay = show_cam_on_image(rgb, cam_upscaled, use_rgb=True, image_weight=0.6)
 
     pil_overlay = Image.fromarray(overlay)
     buffer = io.BytesIO()

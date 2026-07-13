@@ -32,6 +32,7 @@ Sem dependências externas além de Pillow + numpy.
 
 from __future__ import annotations
 
+import json
 import pickle
 from collections import defaultdict
 from pathlib import Path
@@ -167,9 +168,37 @@ class UnionFind:
             self.parent[rb] = ra
 
 
+# Cache persistente das órbitas em JSONL (append-only): hashear ~200k imagens
+# demora horas e o processo pode ser interrompido (sleep, fecho de sessão).
+# Chave = caminho|tamanho|mtime — muda se o ficheiro mudar. Valor null = corrompida.
+_HASH_CACHE_PATH = Path(__file__).parent / "data" / "hash_cache.jsonl"
+
+
+def _cache_key(p: Path) -> str | None:
+    try:
+        st = p.stat()
+    except OSError:
+        return None
+    return f"{p.resolve()}|{st.st_size}|{int(st.st_mtime)}"
+
+
+def _load_hash_cache(cache_path: Path) -> dict[str, tuple[int, ...] | None]:
+    cache: dict[str, tuple[int, ...] | None] = {}
+    if cache_path.exists():
+        with open(cache_path, encoding="utf-8") as f:
+            for line in f:
+                try:
+                    key, orbit = json.loads(line)
+                except (ValueError, TypeError):
+                    continue  # linha truncada por interrupção — recalcula-se
+                cache[key] = tuple(orbit) if orbit is not None else None
+    return cache
+
+
 def hash_images(
     paths: list[Path],
     progress: bool = True,
+    cache_path: Path = _HASH_CACHE_PATH,
 ) -> tuple[dict[Path, tuple[int, ...]], list[Path]]:
     """
     Calcula a órbita D4 de hashes de cada imagem.
@@ -182,17 +211,44 @@ def hash_images(
     orbits: dict[Path, tuple[int, ...]] = {}
     corrupted: list[Path] = []
 
-    total = len(paths)
-    for i, p in enumerate(paths):
-        if progress and total > 500 and i % 2000 == 0:
-            pct = 100.0 * i / total if total else 0.0
-            print(f"    hashing {i:>7}/{total} ({pct:4.1f}%)", flush=True)
-        try:
-            with Image.open(p) as img:
-                orbits[p] = orbit_hashes(img.convert("RGB"))
-        except (UnidentifiedImageError, OSError, ValueError):
-            corrupted.append(p)
+    cache = _load_hash_cache(cache_path)
+    if cache:
+        print(f"    cache de hashes: {len(cache)} entradas em {cache_path.name}", flush=True)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_hits = 0
 
+    total = len(paths)
+    with open(cache_path, "a", encoding="utf-8") as cache_f:
+        for i, p in enumerate(paths):
+            if progress and total > 500 and i % 2000 == 0:
+                pct = 100.0 * i / total if total else 0.0
+                print(f"    hashing {i:>7}/{total} ({pct:4.1f}%)", flush=True)
+
+            key = _cache_key(p)
+            if key is not None and key in cache:
+                cached = cache[key]
+                if cached is None:
+                    corrupted.append(p)
+                else:
+                    orbits[p] = cached
+                cache_hits += 1
+                continue
+
+            try:
+                with Image.open(p) as img:
+                    orbit = orbit_hashes(img.convert("RGB"))
+                orbits[p] = orbit
+            except (UnidentifiedImageError, OSError, ValueError):
+                orbit = None
+                corrupted.append(p)
+
+            if key is not None:
+                cache_f.write(json.dumps([key, list(orbit) if orbit else None]) + "\n")
+                if i % 500 == 0:
+                    cache_f.flush()
+
+    if progress and cache_hits:
+        print(f"    {cache_hits}/{total} órbitas vindas do cache", flush=True)
     return orbits, corrupted
 
 

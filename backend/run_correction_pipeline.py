@@ -58,8 +58,29 @@ def run(args: list[str], fatal: bool = True) -> int:
     return rc
 
 
+def _keep_awake():
+    """Impede o Windows de dormir enquanto o pipeline corre (o processo já foi
+    morto duas vezes por suspensão/fecho de sessão). O estado é automaticamente
+    revertido quando o processo termina."""
+    if sys.platform == "win32":
+        import ctypes
+        ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+        print("[pipeline] Suspensão do sistema bloqueada enquanto o pipeline corre.",
+              flush=True)
+
+
 def main():
     t0 = time.time()
+    _keep_awake()
+
+    # Retoma: se a prova do split antigo já foi gerada, os passos 1-4 já correram
+    # (o staging existente já é o reconstruído com as regras corrigidas — não limpar).
+    old_report = RESULTS / "leakage_report_old_split.json"
+    resume = old_report.exists()
+    if resume:
+        print("[pipeline] Retomada detectada — passos 1-3 já concluídos; "
+              "staging corrigido será mantido.", flush=True)
 
     # ── 1. Backup ──────────────────────────────────────────────────────────
     banner("1/9  Backup dos artefactos do pipeline antigo")
@@ -85,57 +106,81 @@ def main():
             print(f"  logs     → {dest}")
 
     # ── 2. Auditoria do split ANTIGO (a prova para o TCC) ────────────────────
-    banner("2/9  Auditoria de vazamento do split ANTIGO")
-    run(["audit_leakage.py"])
-    old_report = RESULTS / "leakage_report_old_split.json"
-    shutil.copy2(RESULTS / "leakage_report.json", old_report)
+    if resume:
+        banner("2/9  Auditoria do split ANTIGO — já concluída, a saltar")
+    else:
+        banner("2/9  Auditoria de vazamento do split ANTIGO")
+        run(["audit_leakage.py"])
+        shutil.copy2(RESULTS / "leakage_report.json", old_report)
     with open(old_report, encoding="utf-8") as f:
         old = json.load(f)
     print(f"\n  [prova] split antigo: {old['test']['leaked_pct']}% do teste vazado "
           f"(veredicto: {old['verdict']}) → {old_report}", flush=True)
 
     # ── 3. Calibração do modelo antigo (demo continua utilizável) ────────────
-    banner("3/9  Calibração do modelo ANTIGO no val antigo")
-    run(["calibrate.py", "--data", "./data", "--binary", "--model", "efficientnet_b0"],
-        fatal=False)
-    for src, dst in (
-        (WEIGHTS / "efficientnet_b0_binary_calibration.json",
-         RESULTS / "pre_correction" / "efficientnet_b0_binary_calibration_old_split.json"),
-        (RESULTS / "calibration_efficientnet_b0.png",
-         RESULTS / "pre_correction" / "calibration_efficientnet_b0_old_split.png"),
-    ):
-        if src.exists():
-            shutil.copy2(src, dst)
+    if not resume:
+        banner("3/9  Calibração do modelo ANTIGO no val antigo")
+        run(["calibrate.py", "--data", "./data", "--binary", "--model", "efficientnet_b0"],
+            fatal=False)
+        for src, dst in (
+            (WEIGHTS / "efficientnet_b0_binary_calibration.json",
+             RESULTS / "pre_correction" / "efficientnet_b0_binary_calibration_old_split.json"),
+            (RESULTS / "calibration_efficientnet_b0.png",
+             RESULTS / "pre_correction" / "calibration_efficientnet_b0_old_split.png"),
+        ):
+            if src.exists():
+                shutil.copy2(src, dst)
 
-    # ── 4. Limpeza do staging e splits antigos ────────────────────────────────
-    banner("4/9  Limpeza de staging/ e splits antigos (regras de rotulagem erradas)")
-    for d in ("train", "val", "test", "staging"):
-        target = DATA / d
-        if target.exists():
-            print(f"  a remover {target} ...", flush=True)
-            shutil.rmtree(target)
-    print("  limpo.", flush=True)
+    # ── 4. Limpeza ────────────────────────────────────────────────────────────
+    # Primeira execução: staging e splits foram construídos com as regras erradas.
+    # Retomada: o staging já é o corrigido; remove-se apenas um split parcial
+    # (split_metadata.json só é escrito quando o split termina).
+    split_done = (DATA / "split_metadata.json").exists()
+    banner("4/9  Limpeza de dados derivados do pipeline antigo")
+    dirs = ("train", "val", "test") if resume else ("train", "val", "test", "staging")
+    if resume and split_done:
+        print("  split novo já completo — nada a limpar.", flush=True)
+    else:
+        for d in dirs:
+            target = DATA / d
+            if target.exists():
+                print(f"  a remover {target} ...", flush=True)
+                shutil.rmtree(target)
+        print("  limpo.", flush=True)
 
     # ── 5. Reorganização + split agrupado ─────────────────────────────────────
-    banner("5/9  Reorganização do raw/ + split agrupado por identidade visual")
-    run(["download_datasets.py", "--skip-download"])
+    if split_done:
+        banner("5/9  Split agrupado — já concluído, a saltar")
+    else:
+        banner("5/9  Reorganização do raw/ + split agrupado por identidade visual")
+        run(["download_datasets.py", "--skip-download"])
 
     # ── 6. Auditoria do split NOVO — gate ─────────────────────────────────────
-    banner("6/9  Auditoria de vazamento do split NOVO")
-    run(["audit_leakage.py"])
-    with open(RESULTS / "leakage_report.json", encoding="utf-8") as f:
-        new = json.load(f)
-    print(f"\n  split novo: {new['test']['leaked_pct']}% do teste vazado "
-          f"(veredicto: {new['verdict']})", flush=True)
-    if new["verdict"] != "OK":
-        sys.exit("[pipeline] ABORTADO — o split novo ainda vaza. "
-                 "Treinar agora produziria métricas inválidas.")
+    gate_marker = LOGS / "marker_audit_new_ok"
+    if gate_marker.exists() and split_done:
+        banner("6/9  Auditoria do split NOVO — já aprovada, a saltar")
+    else:
+        banner("6/9  Auditoria de vazamento do split NOVO")
+        run(["audit_leakage.py"])
+        with open(RESULTS / "leakage_report.json", encoding="utf-8") as f:
+            new = json.load(f)
+        print(f"\n  split novo: {new['test']['leaked_pct']}% do teste vazado "
+              f"(veredicto: {new['verdict']})", flush=True)
+        if new["verdict"] != "OK":
+            sys.exit("[pipeline] ABORTADO — o split novo ainda vaza. "
+                     "Treinar agora produziria métricas inválidas.")
+        gate_marker.write_text(time.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8")
 
     # ── 7. Treino ──────────────────────────────────────────────────────────
     for m in MODELS:
+        trained_marker = LOGS / f"marker_trained_{m}"
+        if trained_marker.exists():
+            banner(f"7/9  Treino {m} — já concluído, a saltar")
+            continue
         banner(f"7/9  Treino {m} ({EPOCHS} epochs, batch={BATCH})")
         run(["train.py", "--data", "./data", "--binary", "--model", m,
              "--epochs", str(EPOCHS), "--batch-size", str(BATCH), "--workers", "2"])
+        trained_marker.write_text(time.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8")
 
     # ── 8. Calibração ──────────────────────────────────────────────────────
     for m in MODELS:

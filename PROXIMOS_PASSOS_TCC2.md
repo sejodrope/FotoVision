@@ -132,24 +132,24 @@ sair e fotografar.
 
 ---
 
-## Decisão pendente: merge + ciclo 4 de treino
+## Decisão pendente: qual ciclo vai para produção
 
-**Recomendação registrada:** não mergear nem retreinar isoladamente agora.
-Espere as fotos de campo chegarem e faça **um único ciclo 4** com tudo
-junto (dados de espinafre + lettuce downy + fotos de campo novas) — evita
-gastar duas vezes as ~17-22h de treino que os ciclos anteriores levaram.
+O merge e o ciclo 4 **já foram feitos** (22-23/09) — a seção acima tem os
+resultados. O que continua pendente é só a escolha entre ciclo 3 e ciclo 4 para
+produção, e ela **espera as fotos de campo**, para não ser tomada apenas com
+dados de dataset.
 
-Quando for a hora, o merge envolve:
-1. Copiar `dataset/_work/final/{spinach,lettuce_downy_v1}/<split>/<classe>/`
-   para `backend/data/<split>/<healthy|anomalous>/` (renomear
-   `saudavel`→`healthy`, `anomala`→`anomalous`).
-2. Rodar o pipeline de correção normal (`backend/run_correction_pipeline.py`
-   ou os passos manuais do `README.md`/`CORRECOES_METODOLOGICAS.md`).
-3. Atualizar `docs/CORRECOES_METODOLOGICAS.md` com a proveniência nova
-   (§10.9 seria o próximo número de seção, seguindo o padrão dos ciclos
-   anteriores).
-4. Reavaliar campo com as MESMAS fotos de teste anteriores + as novas,
-   documentando antes/depois.
+O que já se sabe hoje, sem as fotos:
+
+| Critério | Vencedor |
+|---|---|
+| Domínio de teste antigo | empate (0,9848 vs 0,9849) |
+| Culturas novas (espinafre, downy) | **ciclo 4**, com folga e significância |
+| Calibração (ECE) | **ciclo 4** (0,053 vs 0,175 no teste novo) |
+| Campo (13 fotos históricas) | ciclo 4 no ponto estimado, mas p=1,00 |
+
+`backend/weights/` tem hoje o **ciclo 4**. Para voltar ao ciclo 3, copiar
+`backend/weights/ciclo3/*` para `backend/weights/`.
 
 ---
 

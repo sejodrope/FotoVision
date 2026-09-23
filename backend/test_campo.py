@@ -19,6 +19,11 @@ ESTRUTURA ESPERADA DAS FOTOS
     <pasta>/anomalous/   *.jpg   ← folhas que VOCÊ sabe estarem doentes
     <pasta>/nao_folha/   *.jpg   ← fotos que não são folha (parede, mão, chão)
 
+Para a campanha multi-espécie do TCC-II, uma subpasta por cultura também funciona
+(a coluna "cultura" do CSV sai preenchida, e é o que analise_campo.py usa em H1):
+
+    <pasta>/alface/healthy/*.jpg,  <pasta>/rucula/anomalous/*.jpg, ...
+
 As pastas são o GABARITO (ground truth). Só é preciso ter as que você tiver fotos.
 
 USO
@@ -67,7 +72,8 @@ def load_and_predict(path: Path) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Teste de campo — FitoVision")
     parser.add_argument("--dir", default=str(BASE_DIR / "campo"),
-                        help="Pasta com subpastas healthy/ anomalous/ nao_folha/")
+                        help="Pasta com subpastas healthy/ anomalous/ nao_folha/ — ou "
+                             "com uma subpasta por cultura, cada uma com essas pastas")
     parser.add_argument("--out", default=str(BASE_DIR / "results" / "campo_resultados.csv"))
     args = parser.parse_args()
 
@@ -78,17 +84,35 @@ def main():
                  f"       e coloque as fotos lá. Ver docs/GUIA_TESTE_DE_CAMPO.md.")
 
     # ── Recolhe as fotos com o seu rótulo verdadeiro ──────────────────────────
-    items: list[tuple[Path, str]] = []
+    # Duas estruturas aceites (a segunda é a da campanha multi-espécie do TCC-II,
+    # docs/ROTEIRO_CAMPO_TCC2_MULTIESPECIE.md §4):
+    #     <root>/<label>/foto.jpg              → cultura = "" (não declarada)
+    #     <root>/<cultura>/<label>/foto.jpg    → cultura = nome da pasta
+    items: list[tuple[Path, str, str]] = []
     for sub in sorted(root.iterdir()):
         if not sub.is_dir():
             continue
         truth = GROUND_TRUTH_DIRS.get(sub.name.lower())
-        if truth is None:
-            print(f"[aviso] pasta ignorada (nome não reconhecido): {sub.name}")
+        if truth is not None:
+            for img in sorted(sub.iterdir()):
+                if img.suffix.lower() in IMAGE_EXTENSIONS:
+                    items.append((img, truth, ""))
             continue
-        for img in sorted(sub.iterdir()):
-            if img.suffix.lower() in IMAGE_EXTENSIONS:
-                items.append((img, truth))
+        # Não é pasta de gabarito: pode ser uma cultura com gabarito lá dentro
+        culture_items = []
+        for label_dir in sorted(sub.iterdir()):
+            if not label_dir.is_dir():
+                continue
+            label_truth = GROUND_TRUTH_DIRS.get(label_dir.name.lower())
+            if label_truth is None:
+                continue
+            for img in sorted(label_dir.iterdir()):
+                if img.suffix.lower() in IMAGE_EXTENSIONS:
+                    culture_items.append((img, label_truth, sub.name.lower()))
+        if culture_items:
+            items.extend(culture_items)
+        else:
+            print(f"[aviso] pasta ignorada (nome não reconhecido): {sub.name}")
 
     if not items:
         sys.exit(f"[ERRO] Nenhuma foto encontrada em {root}. "
@@ -103,7 +127,7 @@ def main():
     confusion = {t: {"healthy": 0, "anomalous": 0, "inconclusive": 0, "not_a_leaf": 0}
                  for t in ("healthy", "anomalous", "nao_folha")}
 
-    for img, truth in items:
+    for img, truth, cultura in items:
         try:
             result = load_and_predict(img)
         except (UnidentifiedImageError, OSError) as exc:
@@ -125,6 +149,7 @@ def main():
 
         rows.append({
             "ficheiro": str(img.relative_to(root)),
+            "cultura": cultura,
             "verdade": truth,
             "resposta": pred,
             "confianca": f"{conf:.4f}",
@@ -206,7 +231,7 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
-            f, fieldnames=["ficheiro", "verdade", "resposta", "confianca",
+            f, fieldnames=["ficheiro", "cultura", "verdade", "resposta", "confianca",
                            "veg_fraction", "acertou"])
         writer.writeheader()
         writer.writerows(rows)

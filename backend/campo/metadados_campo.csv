@@ -1,0 +1,4 @@
+ficheiro,cultura,verdade,tipo_sintoma,categoria_dano,distancia,hora,notas
+IMG_alface_001.jpg,alface,healthy,,,close,09:40,exemplo — apague esta linha
+IMG_alface_010.jpg,alface,anomalous,mancha,cromatico,media,09:55,exemplo — apague esta linha
+IMG_rucula_004.jpg,rucula,anomalous,furo de inseto,estrutural,ampla,10:20,exemplo — apague esta linha

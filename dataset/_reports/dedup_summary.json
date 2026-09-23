@@ -1,0 +1,9 @@
+{
+  "n_crops_novos_hasheados": 58605,
+  "n_corrompidos_novos": 0,
+  "n_existentes_hasheadas": 170772,
+  "grupos_duplicata_interna_novos": 8201,
+  "imagens_redundantes_internas": 40566,
+  "colisoes_com_test_existente": 17,
+  "colisoes_com_train_val_existente": 74
+}

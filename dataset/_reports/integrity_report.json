@@ -1,0 +1,177 @@
+{
+  "per_dataset": {
+    "lettuce_disease_v1": {
+      "n_ok": 2010,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 458,
+      "pct_tiny": 22.8,
+      "width_stats": {
+        "min": 69,
+        "max": 640,
+        "mean": 400.8,
+        "median": 389
+      },
+      "height_stats": {
+        "min": 69,
+        "max": 640,
+        "mean": 400.4,
+        "median": 395
+      },
+      "aspect_ratio_stats": {
+        "min": 0.165,
+        "max": 3.409,
+        "mean": 1.1,
+        "median": 1.0
+      },
+      "formats": {
+        "JPEG": 2010
+      },
+      "color_modes": {
+        "RGB": 2010
+      },
+      "classe_count": {
+        "saudavel": 329,
+        "anomala": 1681
+      }
+    },
+    "lettuce_v1i": {
+      "n_ok": 21571,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 17060,
+      "pct_tiny": 79.1,
+      "width_stats": {
+        "min": 4,
+        "max": 256,
+        "mean": 179.5,
+        "median": 195
+      },
+      "height_stats": {
+        "min": 4,
+        "max": 256,
+        "mean": 179.0,
+        "median": 194
+      },
+      "aspect_ratio_stats": {
+        "min": 0.016,
+        "max": 59.5,
+        "mean": 1.3,
+        "median": 1.0
+      },
+      "formats": {
+        "JPEG": 21571
+      },
+      "color_modes": {
+        "RGB": 21571
+      },
+      "classe_count": {
+        "saudavel": 6387,
+        "anomala": 15184
+      }
+    },
+    "lettuce_v2i": {
+      "n_ok": 23847,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 19014,
+      "pct_tiny": 79.7,
+      "width_stats": {
+        "min": 4,
+        "max": 256,
+        "mean": 179.3,
+        "median": 196
+      },
+      "height_stats": {
+        "min": 4,
+        "max": 256,
+        "mean": 177.9,
+        "median": 191
+      },
+      "aspect_ratio_stats": {
+        "min": 0.016,
+        "max": 59.5,
+        "mean": 1.3,
+        "median": 1.0
+      },
+      "formats": {
+        "JPEG": 23847
+      },
+      "color_modes": {
+        "RGB": 23847
+      },
+      "classe_count": {
+        "saudavel": 7130,
+        "anomala": 16717
+      }
+    },
+    "bokchoy_lettuce_spinach": {
+      "n_ok": 8815,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 2429,
+      "pct_tiny": 27.6,
+      "width_stats": {
+        "min": 32,
+        "max": 640,
+        "mean": 395.5,
+        "median": 365
+      },
+      "height_stats": {
+        "min": 6,
+        "max": 640,
+        "mean": 476.6,
+        "median": 538
+      },
+      "aspect_ratio_stats": {
+        "min": 0.139,
+        "max": 5.667,
+        "mean": 0.8,
+        "median": 0.885
+      },
+      "formats": {
+        "JPEG": 8815
+      },
+      "color_modes": {
+        "RGB": 8815
+      },
+      "classe_count": {
+        "anomala": 8815
+      }
+    },
+    "lettuce_downy_v1": {
+      "n_ok": 2362,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 143,
+      "pct_tiny": 6.1,
+      "width_stats": {
+        "min": 118,
+        "max": 640,
+        "mean": 467.8,
+        "median": 473
+      },
+      "height_stats": {
+        "min": 139,
+        "max": 640,
+        "mean": 473.1,
+        "median": 485
+      },
+      "aspect_ratio_stats": {
+        "min": 0.418,
+        "max": 2.358,
+        "mean": 1.0,
+        "median": 0.981
+      },
+      "formats": {
+        "JPEG": 2362
+      },
+      "color_modes": {
+        "RGB": 2362
+      },
+      "classe_count": {
+        "anomala": 2362
+      }
+    }
+  },
+  "color_modes_geral": {
+    "RGB": 58605
+  },
+  "n_corrupted_total": 0,
+  "n_tiny_total": 39104
+}

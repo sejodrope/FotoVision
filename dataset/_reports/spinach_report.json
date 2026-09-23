@@ -1,0 +1,78 @@
+{
+  "datasets": [
+    {
+      "dataset": "spinach_n56pn9fncw",
+      "n_ok": 603,
+      "n_corrupted": 3,
+      "n_tiny_lt224": 0,
+      "pct_tiny": 0.0,
+      "classe_count": {
+        "saudavel": 150,
+        "anomala": 453
+      },
+      "subpastas_sem_mapeamento": [],
+      "width_stats": {
+        "min": 720,
+        "max": 4640,
+        "mean": 3981.1,
+        "median": 4640
+      },
+      "height_stats": {
+        "min": 960,
+        "max": 4641,
+        "mean": 2986.0,
+        "median": 3472
+      },
+      "aspect_ratio_stats": {
+        "min": 0.748,
+        "max": 1.336,
+        "mean": 1.3,
+        "median": 1.336
+      },
+      "formats": {
+        "JPEG": 603
+      },
+      "color_modes": {
+        "RGB": 603
+      }
+    },
+    {
+      "dataset": "spinach_sy69db2nz5",
+      "n_ok": 3006,
+      "n_corrupted": 0,
+      "n_tiny_lt224": 0,
+      "pct_tiny": 0.0,
+      "classe_count": {
+        "saudavel": 1399,
+        "anomala": 1607
+      },
+      "subpastas_sem_mapeamento": [],
+      "width_stats": {
+        "min": 246,
+        "max": 8064,
+        "mean": 878.9,
+        "median": 900
+      },
+      "height_stats": {
+        "min": 324,
+        "max": 6048,
+        "mean": 1214.5,
+        "median": 1200
+      },
+      "aspect_ratio_stats": {
+        "min": 0.494,
+        "max": 1.333,
+        "mean": 0.7,
+        "median": 0.75
+      },
+      "formats": {
+        "JPEG": 2998,
+        "MPO": 8
+      },
+      "color_modes": {
+        "RGB": 3006
+      }
+    }
+  ],
+  "n_corrupted_total": 3
+}

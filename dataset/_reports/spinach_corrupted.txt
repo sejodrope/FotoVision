@@ -1,0 +1,3 @@
+spinach_n56pn9fncw/healthy/desktop.ini: cannot identify image file 'C:\\Users\\José Pedro\\Documents\\WORK\\PROJECTS\\FitoVision\\dataset\\_work\\spinach_extracted\\n56pn9fncw\\Original Dataset\\healthy\\desktop.ini'
+spinach_n56pn9fncw/anthracnose_leaf_spot/desktop.ini: cannot identify image file 'C:\\Users\\José Pedro\\Documents\\WORK\\PROJECTS\\FitoVision\\dataset\\_work\\spinach_extracted\\n56pn9fncw\\Original Dataset\\anthracnose_leaf_spot\\desktop.ini'
+spinach_n56pn9fncw/straw_mite/desktop.ini: cannot identify image file 'C:\\Users\\José Pedro\\Documents\\WORK\\PROJECTS\\FitoVision\\dataset\\_work\\spinach_extracted\\n56pn9fncw\\Original Dataset\\straw_mite\\desktop.ini'

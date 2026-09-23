@@ -1,0 +1,11 @@
+Estou baixando os datasets e colocando na pasta raiz do projeto!
+
+Projetos RoboFlow:
+
+lettuce-weeds-kdzyn-rrqbr
+
+
+Datasets baixados no roboflow:
+
+https://universe.roboflow.com/ds/fW9hJldzX5?key=BaFbp018MB
+

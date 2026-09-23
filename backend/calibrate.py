@@ -131,13 +131,34 @@ def fit_temperature(logits: torch.Tensor, labels: torch.Tensor) -> float:
     return float(torch.exp(log_t).item())
 
 
-def pick_threshold(probs: np.ndarray, labels: np.ndarray) -> tuple[float, dict]:
+def pick_threshold(
+    probs: np.ndarray,
+    labels: np.ndarray,
+    min_tau: float = 0.85,
+    target_selective_acc: float = 0.98,
+) -> tuple[float, dict]:
     """
     Escolhe o limiar de confiança para abstenção.
 
-    Critério: o menor limiar τ tal que, entre as predições com confiança >= τ,
-    a accuracy seja >= 95%. Ou seja: "quando o sistema se pronuncia, acerta 95%
-    das vezes". As restantes são devolvidas como 'inconclusivo'.
+    Critério: o menor limiar τ >= `min_tau` tal que, entre as predições com
+    confiança >= τ, a accuracy seja >= `target_selective_acc`.
+
+    ATENÇÃO — bug anterior: numa classificação BINÁRIA a confiança (softmax
+    argmax) nunca é menor que 0.5 — é o piso matemático da função. A busca
+    antiga começava em τ=0.50 e parava ali sempre que a accuracy geral do
+    conjunto (que também é a accuracy em τ=0.50) já batesse a meta — o que
+    é quase sempre o caso num val set limpo/in-domain. Resultado: τ=0.50 era
+    escolhido, a abstenção nunca disparava (cobertura=100%) e QUALQUER
+    imagem recebia um veredicto "confiante", mesmo fora do domínio de
+    treino. `min_tau` impõe um piso realista para que o limiar tenha
+    seletividade de facto; `target_selective_acc` mais exigente (98% em vez
+    de 95%) reforça a margem de segurança.
+
+    NOTA: mesmo corrigido, este limiar é calibrado apenas com dados
+    IN-DOMAIN (val set da mesma distribuição do treino). Ele não modela o
+    *gap* de domínio (foto real de campo vs. estúdio) — ver §6 de
+    docs/CORRECOES_METODOLOGICAS.md. Serve para não devolver diagnósticos
+    de baixíssima confiança, não substitui validação de campo.
 
     Devolve (τ, estatísticas de cobertura).
     """
@@ -145,21 +166,34 @@ def pick_threshold(probs: np.ndarray, labels: np.ndarray) -> tuple[float, dict]:
     pred = probs.argmax(axis=1)
     correct = (pred == labels).astype(float)
 
-    best_tau = 0.5
-    stats = {"coverage": 1.0, "selective_accuracy": float(correct.mean())}
+    best_tau = 1.0
+    stats = {"coverage": 0.0, "selective_accuracy": 1.0}
+    found = False
 
-    for tau in np.arange(0.50, 1.00, 0.01):
+    for tau in np.arange(min_tau, 1.00, 0.01):
         mask = conf >= tau
         if mask.sum() < max(20, 0.05 * len(conf)):
             break                                    # cobertura pequena demais para ser útil
         sel_acc = correct[mask].mean()
-        if sel_acc >= 0.95:
+        if sel_acc >= target_selective_acc:
             best_tau = float(tau)
             stats = {
                 "coverage": float(mask.mean()),
                 "selective_accuracy": float(sel_acc),
             }
+            found = True
             break
+
+    if not found:
+        # Nem no piso mínimo a accuracy seletiva bate a meta — usa o piso e
+        # reporta as estatísticas reais nesse ponto (é mais honesto que um
+        # tau=1.0 que rejeitaria tudo).
+        mask = conf >= min_tau
+        best_tau = min_tau
+        stats = {
+            "coverage": float(mask.mean()) if mask.any() else 0.0,
+            "selective_accuracy": float(correct[mask].mean()) if mask.any() else 0.0,
+        }
 
     return best_tau, stats
 

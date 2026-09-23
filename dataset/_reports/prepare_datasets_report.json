@@ -1,0 +1,104 @@
+{
+  "datasets": [
+    {
+      "pasta": "Lettuce Disease.v1i.coco",
+      "nome_curto": "lettuce_disease_v1",
+      "n_imagens_origem": 1536,
+      "n_imagens_sem_anotacao": 0,
+      "n_anotacoes_total": 2010,
+      "categorias_encontradas": [
+        "lettuce-disease",
+        "Bacterial",
+        "Downy_mildew_on_lettuce",
+        "Powdery_mildew_on_lettuce",
+        "Septoria_Blight_on_lettuce",
+        "Viral",
+        "Wilt_and_leaf_blight_on_lettuce",
+        "healthy"
+      ],
+      "categorias_sem_mapeamento": [],
+      "crops_saudavel": 329,
+      "crops_anomala": 1681,
+      "crops_fora_de_escopo_descartados": 0,
+      "crops_categoria_nao_mapeada_descartados": 0,
+      "crops_com_erro": 0
+    },
+    {
+      "pasta": "Lettuce.v1i.coco (1)",
+      "nome_curto": "lettuce_v1i",
+      "n_imagens_origem": 20256,
+      "n_imagens_sem_anotacao": 981,
+      "n_anotacoes_total": 21606,
+      "categorias_encontradas": [
+        "lettuce-disease",
+        "Bacterial",
+        "Downy_mildew_on_lettuce",
+        "Septoria_Blight_on_lettuce",
+        "normal"
+      ],
+      "categorias_sem_mapeamento": [],
+      "crops_saudavel": 6387,
+      "crops_anomala": 15184,
+      "crops_fora_de_escopo_descartados": 0,
+      "crops_categoria_nao_mapeada_descartados": 0,
+      "crops_com_erro": 35
+    },
+    {
+      "pasta": "Lettuce.v2i.coco",
+      "nome_curto": "lettuce_v2i",
+      "n_imagens_origem": 22396,
+      "n_imagens_sem_anotacao": 1051,
+      "n_anotacoes_total": 23882,
+      "categorias_encontradas": [
+        "lettuce-disease",
+        "Bacterial",
+        "Downy_mildew_on_lettuce",
+        "Septoria_Blight_on_lettuce",
+        "normal"
+      ],
+      "categorias_sem_mapeamento": [],
+      "crops_saudavel": 7130,
+      "crops_anomala": 16717,
+      "crops_fora_de_escopo_descartados": 0,
+      "crops_categoria_nao_mapeada_descartados": 0,
+      "crops_com_erro": 35
+    },
+    {
+      "pasta": "Bok Choy- Lettuce- Spinach- Diseased.v1i.coco",
+      "nome_curto": "bokchoy_lettuce_spinach",
+      "n_imagens_origem": 8561,
+      "n_imagens_sem_anotacao": 0,
+      "n_anotacoes_total": 12128,
+      "categorias_encontradas": [
+        "Spinach-Diseased-Bok-Choy-Diseased-Lettuce-Diseased",
+        "Bok-Choy-Diseased",
+        "Lettuce-Diseased",
+        "Spinach-Diseased"
+      ],
+      "categorias_sem_mapeamento": [],
+      "crops_saudavel": 0,
+      "crops_anomala": 8815,
+      "crops_fora_de_escopo_descartados": 3313,
+      "crops_categoria_nao_mapeada_descartados": 0,
+      "crops_com_erro": 0
+    },
+    {
+      "pasta": "lettuce.v1i.coco",
+      "nome_curto": "lettuce_downy_v1",
+      "n_imagens_origem": 2093,
+      "n_imagens_sem_anotacao": 0,
+      "n_anotacoes_total": 2362,
+      "categorias_encontradas": [
+        "disease",
+        "Downy-mildew-lettuce - v1 2024-02-19 11-55pm"
+      ],
+      "categorias_sem_mapeamento": [],
+      "crops_saudavel": 0,
+      "crops_anomala": 2362,
+      "crops_fora_de_escopo_descartados": 0,
+      "crops_categoria_nao_mapeada_descartados": 0,
+      "crops_com_erro": 0
+    }
+  ],
+  "n_corrupted_sources": 0
+}

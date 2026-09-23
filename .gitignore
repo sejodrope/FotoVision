@@ -45,3 +45,13 @@ backend/test_results/
 backend/logs/
 backend/results/
 backend/data/
+
+# Área de trabalho de datasets (~9 GB de imagens) — só os relatórios/manifestos entram
+dataset/*
+!dataset/_reports/
+
+# Pesos de qualquer ciclo (backup incluído) — grandes demais para o repo
+**/*.pth
+
+# Build artifacts
+frontend/tsconfig.tsbuildinfo

@@ -2,6 +2,13 @@
 
 ### TCC · UNIVILLE · Como fotografar, testar, anotar e refinar o modelo
 
+> **Atualização 23/09/2026 — comece por aqui:** para a coleta em hortas
+> comunitárias do TCC-II, leia primeiro o
+> [`GUIA_CAMPO_HORTAS_COMUNITARIAS.md`](GUIA_CAMPO_HORTAS_COMUNITARIAS.md), que é o
+> passo a passo prático e atualizado (estado do projeto, o que fotografar, quais
+> comandos rodar). Este documento aqui continua válido como **referência
+> detalhada** de fotografia, anotação e refino.
+>
 > Este guia serve para produzir o **conjunto de teste de campo** previsto na §7 do
 > `CORRECOES_METODOLOGICAS.md` — o experimento que mais valor acrescenta ao TCC-II.
 > O objetivo não é "provar que o modelo é bom". É **medir honestamente** o quanto ele
@@ -198,13 +205,31 @@ Guarde, em `docs/` ou numa pasta `experimentos/`:
 
 ## 6. Checklist rápido
 
-- [ ] Pipeline de treino terminou (os 3 modelos + calibração + avaliação)
-- [ ] `results/metrics_comparison.csv` conferido (acurácia balanceada de teste)
-- [ ] uvicorn reiniciado **na GPU** (sem `CUDA_VISIBLE_DEVICES=-1`) para inferência rápida
-- [ ] 20–40 fotos tiradas, variando distância e sanidade, com 2–3 "pega-ratão"
-- [ ] Fotos organizadas em `campo/<label>/` (o gabarito)
-- [ ] Script de teste de campo criado (me pedir) OU testes manuais pela UI
-- [ ] Planilha preenchida
-- [ ] Acurácia de campo vs teste calculada e registada
-- [ ] Erros analisados por tipo
-- [ ] Ajustes testados com antes/depois anotado
+- [x] Pipeline de treino terminou — **3 ciclos completos** (ciclo 1: baseline;
+      ciclo 2: dataset expandido com bug de rótulo; ciclo 3: rótulo corrigido, em
+      produção agora), ver `docs/CORRECOES_METODOLOGICAS.md` §10
+- [x] `results/metrics_comparison.csv` conferido (ciclo 3, activo: EfficientNet-B0
+      98,49% bal.acc no domínio de teste)
+- [x] Pesos/calibração do ciclo 3 já activos em `backend/weights/` (escritos
+      directamente pelo treino) — reiniciar o uvicorn quando for usar a API/frontend,
+      para carregar os pesos em memória
+- [ ] 20–40 fotos tiradas — **13/20-40** usáveis até agora (5 healthy + 8 anomalous,
+      0 "pega-ratão" ainda). **Agora bloqueante** (§10.8) — sem mais fotos não dá
+      pra decidir com confiança entre versões de modelo
+- [x] Fotos organizadas em `campo/<label>/` (o gabarito) — 13 fotos de `dataset/alface 27.07/`
+- [x] Script de teste de campo criado e usado (`test_campo.py`)
+- [ ] Planilha preenchida (o CSV `results/campo_resultados.csv` já tem os dados brutos;
+      falta a análise qualitativa por linha — distância, tipo de doença, observações)
+- [x] Acurácia de campo vs teste calculada e registada — **87,5% (ciclo 1) → 77,5%
+      (ciclo 2) → 73,3% (ciclo 3)**, sempre N=13, ver §10.2/§10.7 de
+      `CORRECOES_METODOLOGICAS.md`. **IC95% de Wilson dos ciclos se sobrepõem —
+      diferenças não são estatisticamente significativas com esta amostra.**
+      Ampliar N passou a ser bloqueante (§10.8).
+- [x] Erros analisados por tipo — `alface_04.jpg` (healthy→anomalous) persiste nos
+      3 ciclos; `alface_01.jpg`/`alface_05.png` (anomalous→healthy) novos no ciclo 3.
+      Grad-CAM gerado mas inconclusivo (artefacto na visualização — ver §10.7).
+      Hipótese aberta: modelo pode pesar mais cor (clorose/necrose) que estrutura
+      (furos/murcha) — precisa de mais dados pra confirmar.
+- [x] Ajustes testados com antes/depois anotado — limiar de abstenção corrigido
+      (0,50→0,85 nos 3 modelos, §10.1); bug de rotulagem de alface corrigido
+      (~4.000 imagens, §10.6); ambos documentados com antes/depois

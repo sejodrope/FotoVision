@@ -1,0 +1,20 @@
+[
+  {
+    "group_id": 87604,
+    "crops_novos": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (262).jpg"
+    ],
+    "existentes_test": [
+      "backend\\data\\test\\anomalous\\nirmalsankalana_plant-diseases-training-dataset__data_Apple___alternaria_leaf_spot_113076.jpg [anomalous]"
+    ]
+  },
+  {
+    "group_id": 93147,
+    "crops_novos": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (524).jpg"
+    ],
+    "existentes_test": [
+      "backend\\data\\test\\anomalous\\nirmalsankalana_plant-diseases-training-dataset__data_Orange___citrus_greening_61573.jpg [anomalous]"
+    ]
+  }
+]

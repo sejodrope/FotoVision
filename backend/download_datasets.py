@@ -45,6 +45,12 @@ KAGGLE_DATASETS = [
     # misrakahmed/vegetable-image-dataset removido: classifica tipo de vegetal,
     # nao tem labels de doenca — inutilizavel para pipeline binario healthy/anomalous
     "nirmalsankalana/plant-diseases-training-dataset",
+    # Adicionados para reduzir o gap de dominio: PlantVillage nao tem alface,
+    # rucula, espinafre, acelga nem couve — estes tres cobrem alface
+    # especificamente (cultura-alvo do TCC), nao so como proxy visual.
+    "santoshshaha/lettuce-plant-disease-dataset",
+    "iqrapervez2000/lettuce-disease-dataset",
+    "ramadhanihsaniyulfa/tomato-and-lettuce-diseases-dataset",
 ]
 
 # Datasets Kaggle para IGNORAR no staging (nao tem labels de doenca utilizaveis)
@@ -607,7 +613,16 @@ def _collect_labeled_dirs(root: Path) -> tuple[list[tuple[Path, str]], list[Path
                              nenhuma regra. Estas são REPORTADAS, não adivinhadas:
                              rotular à sorte é como o dataset ganhou ruído.
 
-    Não desce dentro de uma pasta já rotulada.
+    Não desce dentro de uma pasta já rotulada — EXCETO quando a própria pasta
+    tem subpastas que resolvem para um rótulo próprio (ex.: um dataset
+    embrulhado como "Lettuce_disease_datasets/{Healthy,Bacterial,Fungal}/" —
+    o nome do container casa com "disease" e seria rotulado "anomalous" por
+    inteiro, engolindo a subpasta "Healthy" lá dentro). Bug real encontrado em
+    27/07/2026: isto rotulou ~1.123 imagens saudáveis de alface (48% do
+    dataset `ashishjstar_lettuce-diseases`, a única fonte específica de
+    alface do projeto) como "anomalous" desde o ciclo 1 — nunca corrigido
+    porque `label_map_audit.json` mostra o nome do container, não o conteúdo.
+    Quando os filhos têm rótulo próprio mais específico, eles têm prioridade.
     """
     labeled: list[tuple[Path, str]] = []
     unrecognized: list[Path] = []
@@ -617,13 +632,15 @@ def _collect_labeled_dirs(root: Path) -> tuple[list[tuple[Path, str]], list[Path
         d = queue.pop(0)
         label = _infer_label(d.name)
 
+        subdirs = [d2 for d2 in sorted(d.iterdir()) if d2.is_dir()]
+        children_have_own_labels = any(_infer_label(d2.name) is not None for d2 in subdirs)
+
         if label == "ignore":
             continue
-        if label is not None:
+        if label is not None and not children_have_own_labels:
             labeled.append((d, label))
             continue
 
-        subdirs = [d2 for d2 in sorted(d.iterdir()) if d2.is_dir()]
         if subdirs:
             queue.extend(subdirs)
         else:

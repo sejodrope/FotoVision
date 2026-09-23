@@ -1,0 +1,8 @@
+{
+  "n_crops_espinafre": 3609,
+  "grupos_duplicata_interna": 137,
+  "imagens_redundantes_internas": 304,
+  "grupos_internos_cruzando_os_2_datasets_espinafre": 5,
+  "colisoes_com_test_existente": 2,
+  "colisoes_com_train_val_existente": 22
+}

@@ -1,0 +1,1544 @@
+[
+  {
+    "group_id": 97656,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (117).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (71).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (84).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97679,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (138).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (34).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97709,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (3).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (48).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (127).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw",
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 97720,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (40).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (223).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97725,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (45).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (226).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97729,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (5).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (8).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1131).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1175).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (307).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (581).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (585).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (607).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (667).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (723).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (936).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (230).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (170).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw",
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 97748,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (68).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (74).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (75).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (88).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (144).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (318).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (833).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw",
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 97759,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\saudavel\\healthy__healthy (81).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (47).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (228).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97778,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (1).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (356).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw",
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 97821,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (138).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (31).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (78).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97825,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (141).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (161).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (50).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97840,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (156).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (164).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97841,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (157).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (158).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97901,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (213).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (87).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97902,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (214).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (213).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97905,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (24).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1123).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw",
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 97962,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\anthracnose_leaf_spot__anthracnose_leaf_spot (8).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (48).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 97987,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (102).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (103).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 98163,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (52).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (53).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 98186,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (75).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_n56pn9fncw\\anomala\\straw_mite__straw_mite (87).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_n56pn9fncw"
+    ]
+  },
+  {
+    "group_id": 98212,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (10).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (11).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (9).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (468).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98221,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1007).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (332).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98242,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1027).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1032).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1035).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1039).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1044).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1058).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1107).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1110).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1158).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1188).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1287).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1303).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (315).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (329).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (345).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (355).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (356).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (359).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (368).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (408).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (419).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (441).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (449).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (452).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (453).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (459).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (465).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (551).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (555).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (558).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (573).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (577).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (586).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (588).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (596).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (602).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (603).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (608).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (609).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (613).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (614).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (615).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (618).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (621).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (622).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (626).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (629).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (633).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (641).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (647).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (651).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (657).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (661).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (664).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (674).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (679).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (682).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (691).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (702).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (709).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (712).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (717).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (730).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (734).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (742).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (747).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (748).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (756).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (778).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (800).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (805).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (822).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (836).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (578).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (638).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (640).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (642).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (649).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (652).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (695).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (705).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (739).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (231).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (236).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (35).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98245,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (103).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (72).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98250,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1036).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1226).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98252,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1038).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (568).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (654).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98258,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1045).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (738).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98298,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1084).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (602).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (33).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98302,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1088).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1089).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98307,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1093).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (490).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (527).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (580).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (656).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98314,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (110).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1341).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98326,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1112).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (821).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (711).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98342,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1128).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1134).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98343,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1129).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (298).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98347,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1133).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1136).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1142).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1173).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1179).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (296).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98348,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1135).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1150).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1152).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (505).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (172).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98354,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1144).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1176).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (171).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98359,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1153).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (532).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98366,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1160).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1164).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1169).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1230).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1240).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (59).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (63).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (53).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98371,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1167).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1199).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1270).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98404,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1205).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1211).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98405,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1207).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1252).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1256).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98410,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1212).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1232).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (51).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98411,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1213).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (157).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (166).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98418,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1224).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (52).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98427,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1236).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (147).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98446,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1255).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (538).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98493,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1301).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (127).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98501,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1310).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (899).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98525,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1332).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1361).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98528,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1335).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (245).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (56).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98539,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1346).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (279).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98557,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1363).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (107).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98559,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1365).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (293).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98589,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (1392).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (658).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98603,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (145).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (173).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (182).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (184).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (265).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98646,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (190).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (192).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98666,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (209).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (216).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98680,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (222).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (247).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (248).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98705,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (245).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (378).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98712,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (253).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (258).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98733,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (275).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (278).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (295).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (406).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (417).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (418).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (421).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (582).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (652).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (653).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (818).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (611).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98736,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (279).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (111).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98739,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (281).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (289).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (412).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98749,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (291).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (333).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98762,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (304).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (803).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98765,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (308).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (565).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (663).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (645).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98769,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (311).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (738).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98789,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (335).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (367).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (415).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (673).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (612).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98812,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (361).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (435).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98866,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (416).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (616).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98872,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (428).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (582).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98879,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (434).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (594).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (605).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98888,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (444).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (469).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98890,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (446).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (42).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98892,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (448).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (801).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98895,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (451).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (653).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98900,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (458).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (761).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98902,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (460).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (639).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98907,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (466).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (646).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98919,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (478).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (536).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (441).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (478).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98926,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (484).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (613).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98928,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (486).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (544).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98951,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (509).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (591).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98954,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (511).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (823).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98984,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (540).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (593).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98995,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (553).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (713).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (807).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 98998,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (559).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (775).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99007,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (572).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (788).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99016,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (589).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (617).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99019,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (591).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (696).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (574).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99021,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (595).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (677).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99036,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (617).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (795).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99037,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (619).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (694).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99043,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (628).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (699).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99050,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (64).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (66).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99071,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (67).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (68).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99083,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (687).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (169).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99092,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (697).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (229).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99094,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (7).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (450).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99249,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (868).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (918).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99266,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (886).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (983).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99290,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (910).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (914).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (916).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (968).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (333).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (358).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99293,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (913).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (915).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99298,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (922).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (926).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99300,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (924).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (997).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99311,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (937).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (948).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (965).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99312,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (938).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (981).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99316,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (941).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (672).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (678).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99318,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (943).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (946).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (674).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99325,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (952).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (963).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99328,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (955).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (683).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (684).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99330,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (957).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (675).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99336,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (964).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (966).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99342,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (973).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\saudavel\\Healthy-Leaf(1399)__Healthy-Leaf (982).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (331).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99367,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (102).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (72).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99392,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (33).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (40).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99407,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (49).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (97).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99430,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (71).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (686).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99436,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (78).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (334).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99446,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Anthracnose(102)__Anthracnose (87).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (191).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (61).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99563,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (196).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (553).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99574,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (205).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (434).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99602,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (230).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (300).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99616,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (243).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (287).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99629,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (256).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (117).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99631,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (258).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (78).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (79).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99867,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (48).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (76).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99938,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (548).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (558).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99957,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (568).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (399).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 99990,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (601).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (604).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100047,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (670).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (348).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100054,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Bacterial-Spot(752)__Bacterial-Spot (680).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (339).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100226,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (170).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (44).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100362,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Downy-Mildew(240)__Downy-Mildew (89).JPG",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (389).JPG"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100434,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (161).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (173).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  },
+  {
+    "group_id": 100759,
+    "crops": [
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (481).jpg",
+      "dataset\\_work\\spinach_classified\\spinach_sy69db2nz5\\anomala\\Pest-Damage(513)__Pest-Damage (482).jpg"
+    ],
+    "origem_datasets": [
+      "spinach_sy69db2nz5"
+    ]
+  }
+]

@@ -15,6 +15,10 @@ Uso:
     # Google Colab (mais workers, batch maior)
     python train.py --data ./data --binary --model all --batch-size 64 --workers 2
 
+    # ViT-B/16 (ver run_vit.py e docs/GUIA_TREINO_VIT_COLAB.md): transformers não
+    # toleram o LR das CNNs; --resume retoma do último checkpoint se a sessão cair
+    python train.py --data ./data --binary --model vit_b_16 --batch-size 64         --lr 5e-5 --weight-decay 0.05 --warmup-epochs 2 --grad-clip 1.0 --resume
+
 Saida:
     weights/<model_name>.pth         — melhor modelo (multi-classe)
     weights/<model_name>_binary.pth  — melhor modelo (binario)
@@ -32,7 +36,7 @@ import torch
 import torch.nn as nn
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from torch.optim import AdamW
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, LinearLR, SequentialLR
 from torchvision import models
 from tqdm import tqdm
 
@@ -72,6 +76,10 @@ def train_one_model(
     patience: int = 10,
     weights_suffix: str = "",
     class_weights: torch.Tensor | None = None,
+    weight_decay: float = 1e-4,
+    warmup_epochs: int = 0,
+    grad_clip: float = 0.0,
+    resume: bool = False,
 ) -> dict:
     print(f"\n{'='*60}")
     print(f"  Modelo : {model_name}")
@@ -82,8 +90,19 @@ def train_one_model(
     print(f"{'='*60}")
 
     model = build_model(model_name, num_classes).to(device)
-    optimizer = AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
-    scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=lr * 0.01)
+    optimizer = AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    if warmup_epochs > 0:
+        # Aquecimento linear antes do cosseno. As CNNs não precisam (warmup_epochs=0
+        # mantém o agendamento dos ciclos 1-4); é a prática usual no ajuste fino de
+        # transformers.
+        scheduler = SequentialLR(
+            optimizer,
+            [LinearLR(optimizer, start_factor=0.1, total_iters=warmup_epochs),
+             CosineAnnealingLR(optimizer, T_max=max(1, epochs - warmup_epochs), eta_min=lr * 0.01)],
+            milestones=[warmup_epochs],
+        )
+    else:
+        scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=lr * 0.01)
 
     # label_smoothing ajuda na calibração das probabilidades — útil para o TCC.
     # class_weights compensa o desbalanceamento healthy/anomalous.
@@ -105,8 +124,30 @@ def train_one_model(
     history          = []
     t_start          = time.time()
     log_path         = logs_dir / f"{model_name}{weights_suffix}_history.json"
+    start_epoch      = 1
 
-    for epoch in range(1, epochs + 1):
+    # ─── Retomada ─────────────────────────────────────────────────────────────
+    # O .pth guarda só o melhor modelo. Para continuar um treino interrompido
+    # (sessão do Colab que cai) é preciso também o estado do optimizador, do
+    # agendador e do histórico — fica em <modelo>_last.pt, regravado a cada época.
+    last_path = weights_dir / f"{model_name}{weights_suffix}_last.pt"
+    if resume and last_path.exists():
+        ckpt = torch.load(last_path, map_location=device, weights_only=False)
+        model.load_state_dict(ckpt["model"])
+        optimizer.load_state_dict(ckpt["optimizer"])
+        scheduler.load_state_dict(ckpt["scheduler"])
+        scaler.load_state_dict(ckpt["scaler"])
+        best_val_f1, best_epoch = ckpt["best_val_f1"], ckpt["best_epoch"]
+        best_metrics, patience_counter = ckpt["best_metrics"], ckpt["patience_counter"]
+        history = ckpt["history"]
+        t_start = time.time() - ckpt["elapsed_s"]
+        start_epoch = ckpt["epoch"] + 1
+        print(f"  Retomando da época {start_epoch} (melhor F1 até aqui: "
+              f"{best_val_f1:.4f} @ época {best_epoch})")
+        if ckpt.get("stopped"):
+            start_epoch = epochs + 1
+
+    for epoch in range(start_epoch, epochs + 1):
         # ---------- Treino ----------
         model.train()
         t_loss, t_correct, t_total = 0.0, 0, 0
@@ -117,6 +158,9 @@ def train_one_model(
                 out  = model(imgs)
                 loss = criterion(out, labels)
             scaler.scale(loss).backward()
+            if grad_clip > 0:
+                scaler.unscale_(optimizer)
+                nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
             scaler.step(optimizer)
             scaler.update()
             t_loss    += loss.item() * imgs.size(0)
@@ -175,9 +219,21 @@ def train_one_model(
             torch.save(model.state_dict(), weights_dir / f"{model_name}{weights_suffix}.pth")
         else:
             patience_counter += 1
-            if patience_counter >= patience:
-                print(f"  Early stopping após {epoch} épocas (patience={patience}).")
-                break
+        stop = patience_counter >= patience
+
+        if resume:
+            torch.save({
+                "epoch": epoch, "stopped": stop,
+                "model": model.state_dict(), "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(),
+                "best_val_f1": best_val_f1, "best_epoch": best_epoch,
+                "best_metrics": best_metrics, "patience_counter": patience_counter,
+                "history": history, "elapsed_s": time.time() - t_start,
+            }, last_path)
+
+        if stop:
+            print(f"  Early stopping após {epoch} épocas (patience={patience}).")
+            break
 
         with open(log_path, "w") as _f:
             json.dump({"model": model_name, "best_val_f1": best_val_f1,
@@ -213,12 +269,22 @@ def main():
     parser.add_argument("--batch-size",  type=int,   default=32)
     parser.add_argument("--lr",          type=float, default=1e-3)
     parser.add_argument("--patience",    type=int,   default=10)
+    parser.add_argument("--weight-decay", type=float, default=1e-4)
+    parser.add_argument("--warmup-epochs", type=int,  default=0,
+                        help="Épocas de aquecimento linear do LR (0 = só cosseno)")
+    parser.add_argument("--grad-clip",   type=float, default=0.0,
+                        help="Norma máxima do gradiente (0 = sem clipping)")
+    parser.add_argument("--resume",      action="store_true",
+                        help="Grava <modelo>_last.pt a cada época e retoma dele se existir")
     parser.add_argument("--val-split",   type=float, default=0.15)
     parser.add_argument("--test-split",  type=float, default=0.15)
     # No Windows, num_workers>0 pode causar problemas; use 2+ no Colab/Linux
     parser.add_argument("--workers",     type=int,   default=0)
     parser.add_argument("--binary",      action="store_true",
                         help="Pipeline binario: healthy vs anomalous (pre-split em train/val/test/)")
+    parser.add_argument("--amostragem",  choices=("classe", "cultura"), default="classe",
+                        help="classe = equilibra healthy/anomalous (ciclos 1-4); "
+                             "cultura = equilibra os rótulos dentro de cada cultura (ciclo 5)")
     parser.add_argument("--mapping",     default=None,
                         help="JSON de mapeamento pasta->classe (ex: plantvillage_map.json)")
     parser.add_argument("--weights-dir", default="./weights")
@@ -233,8 +299,8 @@ def main():
 
     weights_dir = Path(args.weights_dir)
     logs_dir    = Path(args.logs_dir)
-    weights_dir.mkdir(exist_ok=True)
-    logs_dir.mkdir(exist_ok=True)
+    weights_dir.mkdir(parents=True, exist_ok=True)
+    logs_dir.mkdir(parents=True, exist_ok=True)
 
     data_path = Path(args.data)
     if not data_path.exists():
@@ -257,6 +323,7 @@ def main():
             data_dir=data_path,
             batch_size=args.batch_size,
             num_workers=args.workers,
+            amostragem=args.amostragem,
         )
         num_classes     = 2
         weights_suffix  = "_binary"
@@ -332,6 +399,10 @@ def main():
             patience=args.patience,
             weights_suffix=weights_suffix,
             class_weights=class_weights,
+            weight_decay=args.weight_decay,
+            warmup_epochs=args.warmup_epochs,
+            grad_clip=args.grad_clip,
+            resume=args.resume,
         )
 
     print("\n\n=== Resumo de Validacao ===")

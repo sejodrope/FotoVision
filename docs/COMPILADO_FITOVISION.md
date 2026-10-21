@@ -2,6 +2,15 @@
 ### Seminário III (TCC-I) · UNIVILLE · 2026
 
 > Gerado automaticamente em 06/06/2026. Use como base para a apresentação e para os capítulos de metodologia e resultados do TCC.
+>
+> **Nota de 13/10/2026.** Documento do TCC-I, mantido como registro. Além das métricas retratadas (errata abaixo), não
+> valem mais: as contagens de parâmetros (5,3 / 3,4 / 25,6 M são das arquiteturas de 1.000 classes; os modelos treinados
+> têm 4,0 / 2,2 / 23,5 M), o lote de 32 dos comandos (os treinos usaram 64) e a descrição do dataset. Os fatos conferidos
+> estão em [`FICHA_TECNICA_FITOVISION.md`](FICHA_TECNICA_FITOVISION.md).
+>
+> **Nota de 14/10/2026.** Depois deste documento vieram os ciclos 1 a 5; o mais recente (ciclo 5, pipeline corrigido,
+> quatro arquiteturas) está em [`CORRECOES_METODOLOGICAS.md`](CORRECOES_METODOLOGICAS.md) §15 e no artigo v8
+> (`Entregas Finais/TCC2_Artigo_FitoVision_v8.docx`).
 
 ---
 
@@ -735,7 +744,7 @@ abordagem*. São dois problemas distintos, e ambos merecem uma secção.
 | **Redundância do dataset** | O total de 210.832 imagens conta cópias transformadas da mesma foto como imagens distintas | O nº de **fotos distintas** é significativamente menor — é esse que deve ser reportado (`data/split_metadata.json`) |
 | **Classes binárias apenas** | Sistema não informa qual doença específica | Limita diagnóstico detalhado |
 | **Dados brasileiros** | Sem imagens de hortaliças folhosas do contexto agrícola brasileiro | Variabilidade regional não representada |
-| **ViT-B/16 não treinado** | Não incluído por limitações de tempo/VRAM | Comparação incompleta |
+| ~~ViT-B/16 não treinado~~ | Treinado no Colab em 13/10/2026 (ver `docs/HISTORICO_COMPLETO_TCC.md` §9-D) | Empata com o EfficientNet-B0 |
 | **Latência em CPU** | Medições em GPU; em CPU pode ser 10–50× maior | Deployment sem GPU seria mais lento |
 
 ### 7.4 O que Fica para o TCC-II
@@ -750,7 +759,7 @@ abordagem*. São dois problemas distintos, e ambos merecem uma secção.
 
 **Restante:**
 - [ ] Implementar classificação multi-classe (tipo específico de doença)
-- [ ] Treinar ViT-B/16 e incluir na comparação
+- [x] Treinar ViT-B/16 e incluir na comparação (13/10/2026)
 - [ ] Implementar Grad-CAM para explicabilidade (código já existe em `gradcam.py`)
 - [ ] Avaliar performance em CPU (dispositivos móveis sem GPU)
 - [ ] Estudar deployment mobile (ONNX / TorchLite)

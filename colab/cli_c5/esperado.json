@@ -1,0 +1,18 @@
+{
+ "fitovision_dados_test.zip": [
+  626500691,
+  "e7ce5817f3ca3f4deb241e9ece0b558e0fbe808bc3fe5704322421e32ea2bc94"
+ ],
+ "fitovision_dados_retida.zip": [
+  1295734971,
+  "c69968ef13e8c0c78befceb7995e31a39e72660b8e7013cc593f5d2ae8d0a341"
+ ],
+ "fitovision_dados_val.zip": [
+  631167715,
+  "a107e8015032083fba1e3f5f91d6d18023974f64a4dc8ed3eeb11834d1972ea7"
+ ],
+ "fitovision_dados_train.zip": [
+  6904901049,
+  "a66eea38ea36b695e3396ec8994d3b544c09d3482acdd2e68a9309b0769414d9"
+ ]
+}

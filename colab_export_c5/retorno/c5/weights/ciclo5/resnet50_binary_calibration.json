@@ -1,0 +1,10 @@
+{
+  "model": "resnet50",
+  "temperature": 0.637281,
+  "threshold": 0.85,
+  "ece_before": 0.046045,
+  "ece_after": 0.007987,
+  "val_accuracy": 0.972831,
+  "coverage_at_threshold": 0.9715,
+  "selective_accuracy": 0.9845
+}

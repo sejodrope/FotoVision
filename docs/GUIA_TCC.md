@@ -1,5 +1,10 @@
 # FitoVision — Guia Completo do TCC
 
+> **Nota de 13/10/2026.** Guia do TCC-I (seis classes), mantido como registro. O projeto passou a ser binário
+> (saudável × anômalo); os comandos, os números e o estado descritos aqui foram superados. Ver
+> [`FICHA_TECNICA_FITOVISION.md`](FICHA_TECNICA_FITOVISION.md) e [`../PROXIMOS_PASSOS_TCC2.md`](../PROXIMOS_PASSOS_TCC2.md).
+> Estado em 14/10/2026: ciclo 5 treinado nas quatro arquiteturas; artigo v8 e monografia v5, de 16/10 (`Entregas Finais/`).
+
 > **Objetivo:** Treinar e comparar 4 redes neurais (MobileNetV2, ResNet-50, EfficientNet-B0, ViT-B/16)
 > para detectar 6 condições fitossanitárias em hortaliças folhosas, com foco em cultivos da região de Joinville/SC.
 

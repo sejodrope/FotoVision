@@ -1,0 +1,10 @@
+{
+  "model": "efficientnet_b0",
+  "temperature": 0.654588,
+  "threshold": 0.85,
+  "ece_before": 0.048019,
+  "ece_after": 0.004041,
+  "val_accuracy": 0.980933,
+  "coverage_at_threshold": 0.9884,
+  "selective_accuracy": 0.9857
+}

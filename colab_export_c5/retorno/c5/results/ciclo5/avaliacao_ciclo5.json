@@ -1,0 +1,626 @@
+{
+  "efficientnet_b0": {
+    "temperatura": 0.654588,
+    "tau": 0.85,
+    "subconjuntos": {
+      "teste_inteiro": {
+        "n": 18413,
+        "healthy": 4480,
+        "anomalous": 13933,
+        "bal_acc": 0.9742,
+        "ic95": [
+          0.9714,
+          0.977
+        ],
+        "fn": 276,
+        "fp": 142,
+        "ece": 0.0059,
+        "erros_interceptados": 115,
+        "abstencao_pct": 1.4
+      },
+      "coletanea_lavoura": {
+        "n": 4530,
+        "healthy": 580,
+        "anomalous": 3950,
+        "bal_acc": 0.8883,
+        "ic95": [
+          0.8725,
+          0.9034
+        ],
+        "fn": 229,
+        "fp": 96,
+        "ece": 0.0451,
+        "erros_interceptados": 84,
+        "abstencao_pct": 3.9
+      },
+      "coletanea_demais": {
+        "n": 10061,
+        "healthy": 2920,
+        "anomalous": 7141,
+        "bal_acc": 0.9968,
+        "ic95": [
+          0.9955,
+          0.998
+        ],
+        "fn": 21,
+        "fp": 10,
+        "ece": 0.0098,
+        "erros_interceptados": 9,
+        "abstencao_pct": 0.2
+      },
+      "plantvillage": {
+        "n": 2659,
+        "healthy": 652,
+        "anomalous": 2007,
+        "bal_acc": 0.998,
+        "ic95": [
+          0.9954,
+          0.9998
+        ],
+        "fn": 2,
+        "fp": 2,
+        "ece": 0.0101,
+        "erros_interceptados": 1,
+        "abstencao_pct": 0.0
+      },
+      "alface_uma_por_foto": {
+        "n": 176,
+        "healthy": 161,
+        "anomalous": 15,
+        "bal_acc": 0.9667,
+        "ic95": [
+          0.9,
+          1.0
+        ],
+        "fn": 1,
+        "fp": 0,
+        "ece": 0.0159,
+        "erros_interceptados": 1,
+        "abstencao_pct": 0.6
+      },
+      "espinafre": {
+        "n": 400,
+        "healthy": 167,
+        "anomalous": 233,
+        "bal_acc": 0.866,
+        "ic95": [
+          0.8309,
+          0.8998
+        ],
+        "fn": 15,
+        "fp": 34,
+        "ece": 0.0651,
+        "erros_interceptados": 18,
+        "abstencao_pct": 12.0
+      },
+      "antes_nao_reconhecidas": {
+        "n": 414,
+        "healthy": 0,
+        "anomalous": 414,
+        "bal_acc": 0.9807,
+        "ic95": null,
+        "fn": 8,
+        "fp": 0,
+        "ece": 0.0076,
+        "erros_interceptados": 2,
+        "abstencao_pct": 1.2
+      },
+      "mildio_recortes_descritivo": {
+        "n": 173,
+        "healthy": 0,
+        "anomalous": 173,
+        "bal_acc": 1.0,
+        "ic95": null,
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0107,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre_fonte_retida": {
+        "n": 574,
+        "healthy": 135,
+        "anomalous": 439,
+        "bal_acc": 0.8792,
+        "ic95": [
+          0.8439,
+          0.912
+        ],
+        "fn": 28,
+        "fp": 24,
+        "ece": 0.0438,
+        "erros_interceptados": 26,
+        "abstencao_pct": 10.5
+      },
+      "comparavel_com_ciclo4": {
+        "n": 17250,
+        "healthy": 4152,
+        "anomalous": 13098,
+        "bal_acc": 0.9774,
+        "ic95": [
+          0.9747,
+          0.9801
+        ],
+        "fn": 252,
+        "fp": 108,
+        "ece": 0.0052,
+        "erros_interceptados": 94,
+        "abstencao_pct": 1.2
+      }
+    },
+    "ciclo4_x_ciclo5": {
+      "n": 17250,
+      "so_ciclo4_acerta": 139,
+      "so_ciclo5_acerta": 106,
+      "p_mcnemar_exato": 0.0406947180365947
+    }
+  },
+  "vit_b_16": {
+    "temperatura": 0.675933,
+    "tau": 0.85,
+    "subconjuntos": {
+      "teste_inteiro": {
+        "n": 18413,
+        "healthy": 4480,
+        "anomalous": 13933,
+        "bal_acc": 0.9691,
+        "ic95": [
+          0.9658,
+          0.9723
+        ],
+        "fn": 146,
+        "fp": 230,
+        "ece": 0.0047,
+        "erros_interceptados": 45,
+        "abstencao_pct": 0.6
+      },
+      "coletanea_lavoura": {
+        "n": 4530,
+        "healthy": 580,
+        "anomalous": 3950,
+        "bal_acc": 0.8446,
+        "ic95": [
+          0.8261,
+          0.8628
+        ],
+        "fn": 124,
+        "fp": 162,
+        "ece": 0.0416,
+        "erros_interceptados": 35,
+        "abstencao_pct": 1.9
+      },
+      "coletanea_demais": {
+        "n": 10061,
+        "healthy": 2920,
+        "anomalous": 7141,
+        "bal_acc": 0.9955,
+        "ic95": [
+          0.9938,
+          0.9971
+        ],
+        "fn": 8,
+        "fp": 23,
+        "ece": 0.0115,
+        "erros_interceptados": 4,
+        "abstencao_pct": 0.1
+      },
+      "plantvillage": {
+        "n": 2659,
+        "healthy": 652,
+        "anomalous": 2007,
+        "bal_acc": 0.9992,
+        "ic95": [
+          0.9977,
+          1.0
+        ],
+        "fn": 0,
+        "fp": 1,
+        "ece": 0.0125,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "alface_uma_por_foto": {
+        "n": 176,
+        "healthy": 161,
+        "anomalous": 15,
+        "bal_acc": 1.0,
+        "ic95": [
+          1.0,
+          1.0
+        ],
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0131,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre": {
+        "n": 400,
+        "healthy": 167,
+        "anomalous": 233,
+        "bal_acc": 0.8447,
+        "ic95": [
+          0.8078,
+          0.8801
+        ],
+        "fn": 11,
+        "fp": 44,
+        "ece": 0.1027,
+        "erros_interceptados": 6,
+        "abstencao_pct": 4.8
+      },
+      "antes_nao_reconhecidas": {
+        "n": 414,
+        "healthy": 0,
+        "anomalous": 414,
+        "bal_acc": 0.9928,
+        "ic95": null,
+        "fn": 3,
+        "fp": 0,
+        "ece": 0.01,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "mildio_recortes_descritivo": {
+        "n": 173,
+        "healthy": 0,
+        "anomalous": 173,
+        "bal_acc": 1.0,
+        "ic95": null,
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0125,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre_fonte_retida": {
+        "n": 574,
+        "healthy": 135,
+        "anomalous": 439,
+        "bal_acc": 0.8584,
+        "ic95": [
+          0.82,
+          0.8949
+        ],
+        "fn": 17,
+        "fp": 33,
+        "ece": 0.0612,
+        "erros_interceptados": 7,
+        "abstencao_pct": 2.6
+      },
+      "comparavel_com_ciclo4": {
+        "n": 17250,
+        "healthy": 4152,
+        "anomalous": 13098,
+        "bal_acc": 0.9726,
+        "ic95": [
+          0.9692,
+          0.9758
+        ],
+        "fn": 132,
+        "fp": 186,
+        "ece": 0.0031,
+        "erros_interceptados": 39,
+        "abstencao_pct": 0.5
+      }
+    },
+    "ciclo4_x_ciclo5": {
+      "n": 17250,
+      "so_ciclo4_acerta": 115,
+      "so_ciclo5_acerta": 109,
+      "p_mcnemar_exato": 0.7384057149811339
+    }
+  },
+  "mobilenet_v2": {
+    "temperatura": 0.647025,
+    "tau": 0.85,
+    "subconjuntos": {
+      "teste_inteiro": {
+        "n": 18413,
+        "healthy": 4480,
+        "anomalous": 13933,
+        "bal_acc": 0.969,
+        "ic95": [
+          0.9661,
+          0.9718
+        ],
+        "fn": 466,
+        "fp": 128,
+        "ece": 0.0098,
+        "erros_interceptados": 260,
+        "abstencao_pct": 3.1
+      },
+      "coletanea_lavoura": {
+        "n": 4530,
+        "healthy": 580,
+        "anomalous": 3950,
+        "bal_acc": 0.9009,
+        "ic95": [
+          0.8877,
+          0.9133
+        ],
+        "fn": 395,
+        "fp": 57,
+        "ece": 0.0537,
+        "erros_interceptados": 190,
+        "abstencao_pct": 9.0
+      },
+      "coletanea_demais": {
+        "n": 10061,
+        "healthy": 2920,
+        "anomalous": 7141,
+        "bal_acc": 0.9946,
+        "ic95": [
+          0.9931,
+          0.9961
+        ],
+        "fn": 45,
+        "fp": 13,
+        "ece": 0.0096,
+        "erros_interceptados": 23,
+        "abstencao_pct": 0.6
+      },
+      "plantvillage": {
+        "n": 2659,
+        "healthy": 652,
+        "anomalous": 2007,
+        "bal_acc": 0.9992,
+        "ic95": [
+          0.9977,
+          1.0
+        ],
+        "fn": 0,
+        "fp": 1,
+        "ece": 0.01,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "alface_uma_por_foto": {
+        "n": 176,
+        "healthy": 161,
+        "anomalous": 15,
+        "bal_acc": 1.0,
+        "ic95": [
+          1.0,
+          1.0
+        ],
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0104,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre": {
+        "n": 400,
+        "healthy": 167,
+        "anomalous": 233,
+        "bal_acc": 0.795,
+        "ic95": [
+          0.7557,
+          0.834
+        ],
+        "fn": 16,
+        "fp": 57,
+        "ece": 0.0927,
+        "erros_interceptados": 40,
+        "abstencao_pct": 21.2
+      },
+      "antes_nao_reconhecidas": {
+        "n": 414,
+        "healthy": 0,
+        "anomalous": 414,
+        "bal_acc": 0.9783,
+        "ic95": null,
+        "fn": 9,
+        "fp": 0,
+        "ece": 0.0139,
+        "erros_interceptados": 6,
+        "abstencao_pct": 3.6
+      },
+      "mildio_recortes_descritivo": {
+        "n": 173,
+        "healthy": 0,
+        "anomalous": 173,
+        "bal_acc": 0.9942,
+        "ic95": null,
+        "fn": 1,
+        "fp": 0,
+        "ece": 0.0141,
+        "erros_interceptados": 1,
+        "abstencao_pct": 0.6
+      },
+      "espinafre_fonte_retida": {
+        "n": 574,
+        "healthy": 135,
+        "anomalous": 439,
+        "bal_acc": 0.8843,
+        "ic95": [
+          0.8487,
+          0.9174
+        ],
+        "fn": 17,
+        "fp": 26,
+        "ece": 0.0165,
+        "erros_interceptados": 24,
+        "abstencao_pct": 14.5
+      },
+      "comparavel_com_ciclo4": {
+        "n": 17250,
+        "healthy": 4152,
+        "anomalous": 13098,
+        "bal_acc": 0.9747,
+        "ic95": [
+          0.9721,
+          0.9771
+        ],
+        "fn": 440,
+        "fp": 71,
+        "ece": 0.0106,
+        "erros_interceptados": 213,
+        "abstencao_pct": 2.7
+      }
+    },
+    "ciclo4_x_ciclo5": {
+      "n": 17250,
+      "so_ciclo4_acerta": 248,
+      "so_ciclo5_acerta": 125,
+      "p_mcnemar_exato": 1.840796495357316e-10
+    }
+  },
+  "resnet50": {
+    "temperatura": 0.637281,
+    "tau": 0.85,
+    "subconjuntos": {
+      "teste_inteiro": {
+        "n": 18413,
+        "healthy": 4480,
+        "anomalous": 13933,
+        "bal_acc": 0.9691,
+        "ic95": [
+          0.9663,
+          0.972
+        ],
+        "fn": 463,
+        "fp": 128,
+        "ece": 0.0107,
+        "erros_interceptados": 251,
+        "abstencao_pct": 3.0
+      },
+      "coletanea_lavoura": {
+        "n": 4530,
+        "healthy": 580,
+        "anomalous": 3950,
+        "bal_acc": 0.8957,
+        "ic95": [
+          0.882,
+          0.909
+        ],
+        "fn": 388,
+        "fp": 64,
+        "ece": 0.0545,
+        "erros_interceptados": 188,
+        "abstencao_pct": 9.0
+      },
+      "coletanea_demais": {
+        "n": 10061,
+        "healthy": 2920,
+        "anomalous": 7141,
+        "bal_acc": 0.9937,
+        "ic95": [
+          0.992,
+          0.9954
+        ],
+        "fn": 43,
+        "fp": 19,
+        "ece": 0.0089,
+        "erros_interceptados": 27,
+        "abstencao_pct": 0.6
+      },
+      "plantvillage": {
+        "n": 2659,
+        "healthy": 652,
+        "anomalous": 2007,
+        "bal_acc": 0.9977,
+        "ic95": [
+          0.9951,
+          0.9998
+        ],
+        "fn": 3,
+        "fp": 2,
+        "ece": 0.0089,
+        "erros_interceptados": 1,
+        "abstencao_pct": 0.1
+      },
+      "alface_uma_por_foto": {
+        "n": 176,
+        "healthy": 161,
+        "anomalous": 15,
+        "bal_acc": 1.0,
+        "ic95": [
+          1.0,
+          1.0
+        ],
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0097,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre": {
+        "n": 400,
+        "healthy": 167,
+        "anomalous": 233,
+        "bal_acc": 0.8326,
+        "ic95": [
+          0.795,
+          0.8682
+        ],
+        "fn": 18,
+        "fp": 43,
+        "ece": 0.0722,
+        "erros_interceptados": 31,
+        "abstencao_pct": 17.8
+      },
+      "antes_nao_reconhecidas": {
+        "n": 414,
+        "healthy": 0,
+        "anomalous": 414,
+        "bal_acc": 0.9734,
+        "ic95": null,
+        "fn": 11,
+        "fp": 0,
+        "ece": 0.0121,
+        "erros_interceptados": 4,
+        "abstencao_pct": 1.9
+      },
+      "mildio_recortes_descritivo": {
+        "n": 173,
+        "healthy": 0,
+        "anomalous": 173,
+        "bal_acc": 1.0,
+        "ic95": null,
+        "fn": 0,
+        "fp": 0,
+        "ece": 0.0096,
+        "erros_interceptados": 0,
+        "abstencao_pct": 0.0
+      },
+      "espinafre_fonte_retida": {
+        "n": 574,
+        "healthy": 135,
+        "anomalous": 439,
+        "bal_acc": 0.9006,
+        "ic95": [
+          0.8672,
+          0.9314
+        ],
+        "fn": 19,
+        "fp": 21,
+        "ece": 0.0306,
+        "erros_interceptados": 21,
+        "abstencao_pct": 9.8
+      },
+      "comparavel_com_ciclo4": {
+        "n": 17250,
+        "healthy": 4152,
+        "anomalous": 13098,
+        "bal_acc": 0.9732,
+        "ic95": [
+          0.9705,
+          0.9758
+        ],
+        "fn": 434,
+        "fp": 85,
+        "ece": 0.0098,
+        "erros_interceptados": 216,
+        "abstencao_pct": 2.7
+      }
+    },
+    "ciclo4_x_ciclo5": {
+      "n": 17250,
+      "so_ciclo4_acerta": 213,
+      "so_ciclo5_acerta": 101,
+      "p_mcnemar_exato": 2.440092090649834e-10
+    }
+  }
+}

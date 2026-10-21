@@ -1,0 +1,10 @@
+{
+  "model": "mobilenet_v2",
+  "temperature": 0.647025,
+  "threshold": 0.85,
+  "ece_before": 0.046925,
+  "ece_after": 0.008434,
+  "val_accuracy": 0.972104,
+  "coverage_at_threshold": 0.9708,
+  "selective_accuracy": 0.9833
+}

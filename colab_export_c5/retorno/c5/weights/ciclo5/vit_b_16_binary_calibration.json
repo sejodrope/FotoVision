@@ -1,0 +1,10 @@
+{
+  "model": "vit_b_16",
+  "temperature": 0.675933,
+  "threshold": 0.85,
+  "ece_before": 0.04683,
+  "ece_after": 0.003045,
+  "val_accuracy": 0.981322,
+  "coverage_at_threshold": 0.9934,
+  "selective_accuracy": 0.984
+}

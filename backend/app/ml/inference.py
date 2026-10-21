@@ -77,11 +77,11 @@ def predict(model: nn.Module, tensor: torch.Tensor) -> dict:
     }
 
 
-_BINARY_MODEL_NAME = "efficientnet_b0"
+_BINARY_MODEL_NAME = settings.binary_model
 _BINARY_WEIGHT_FILENAME = f"{_BINARY_MODEL_NAME}_binary.pth"
 _BINARY_CALIB_FILENAME = f"{_BINARY_MODEL_NAME}_binary_calibration.json"
 _BINARY_CLASSES = ["healthy", "anomalous"]  # índice 0 = healthy, 1 = anomalous
-_BINARY_MODEL_NAMES = {"efficientnet_b0", "mobilenet_v2", "resnet50"}
+_BINARY_MODEL_NAMES = {"efficientnet_b0", "mobilenet_v2", "resnet50", "vit_b_16"}
 
 # Calibração carregada de disco (produzida por calibrate.py).
 # Defaults neutros: T=1 (sem correcção) e limiar do config.
@@ -133,6 +133,9 @@ def _build_binary_model(name: str) -> nn.Module:
     elif name == "efficientnet_b0":
         model = models.efficientnet_b0(weights=None)
         model.classifier[1] = nn.Linear(model.classifier[1].in_features, 2)
+    elif name == "vit_b_16":
+        model = models.vit_b_16(weights=None)
+        model.heads.head = nn.Linear(model.heads.head.in_features, 2)
     else:
         raise ValueError(f"Modelo binário não suportado: '{name}'. Use: {sorted(_BINARY_MODEL_NAMES)}")
     return model

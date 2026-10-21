@@ -31,6 +31,9 @@ USO
     python test_campo.py --dir ./campo
     python test_campo.py --dir ./campo --out ./results/campo_resultados.csv
 
+    # Outra arquitectura (o modelo e a pasta de pesos vêm do ambiente):
+    BINARY_MODEL=vit_b_16 WEIGHTS_DIR=./weights/vit python test_campo.py         --out ./results/vit/campo_resultados_vit.csv
+
 SAÍDA
 ─────
     results/campo_resultados.csv   — uma linha por foto (para a planilha do TCC)

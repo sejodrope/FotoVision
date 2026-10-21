@@ -13,6 +13,16 @@
 
 ### O que já está pronto
 
+> **Correção de 13/10/2026.** Os números desta tabela são de 23/09 e alguns foram revistos: o ganho nas culturas novas é
+> de 75,4% para 88,4% só no espinafre (N = 484, p de Holm = 5,9×10⁻¹²); o "98,5%" é uma média de 99,7% em foto de estúdio
+> e 86,3% em foto de lavoura; e "o sistema sabe se calar" só vale nas fontes de treino (em campo, os erros saíram com 95%
+> a 99% de confiança). Os valores conferidos estão em [`FICHA_TECNICA_FITOVISION.md`](FICHA_TECNICA_FITOVISION.md).
+>
+> **Para a coleta, três cuidados novos:** (1) guarde os **arquivos originais** do celular, com EXIF — não passe por
+> WhatsApp nem tire captura de tela; (2) anote a **horta** de cada foto, porque a separação entre avaliação e adaptação é
+> por horta; (3) faça de cada planta uma foto **da planta inteira** e outra **de perto**, porque o treino quase só tem
+> close-up de folha.
+
 O modelo passou por **4 ciclos de correção e retreino**. O ciclo 4 terminou em
 23/09/2026 e é o primeiro com um ganho que **passa num teste estatístico**:
 
@@ -66,7 +76,7 @@ visitas curtas rendem mais que uma longa.
 ### Levar
 
 - Celular com bateria e **espaço livre** (200 fotos ocupam bastante).
-- A planilha de metadados aberta no celular — `backend/campo/metadados_campo.csv`
+- A planilha de metadados aberta no celular — `backend/campo_novo/metadados_campo.csv`
   (ou o bloco de notas, e depois você transcreve).
 - Se for usar, um cartão branco ou folha de papel para referência de cor.
 
@@ -130,10 +140,10 @@ inventar um diagnóstico. Guarde em `nao_folha/`.
 
 ### Anote NA HORA — isto não dá para recuperar depois
 
-Para cada foto, na planilha `backend/campo/metadados_campo.csv`:
+Para cada foto, na planilha `backend/campo_novo/metadados_campo.csv`:
 
 ```
-ficheiro, cultura, verdade, tipo_sintoma, categoria_dano, distancia, hora, notas
+ficheiro, horta, cultura, verdade, tipo_sintoma, categoria_dano, distancia, hora, notas
 ```
 
 Duas colunas são as que destravam as hipóteses do artigo:
@@ -146,7 +156,9 @@ Duas colunas são as que destravam as hipóteses do artigo:
 E o mais importante: **se ficar em dúvida se a folha está doente, anote a
 dúvida** ("sintoma leve, conferir") em vez de decidir de memória à noite. Uma
 foto com gabarito duvidoso contamina a medição inteira — é melhor marcar como
-incerta e decidirmos juntos depois.
+incerta e decidirmos juntos depois. **Não descarte a folha por ser ambígua:** fotografe e
+anote. O resultado sai com e sem as duvidosas; jogar fora as difíceis deixa o resultado
+otimista (é a ressalva ao teste externo de Ergün et al., 2026).
 
 ---
 
@@ -154,38 +166,43 @@ incerta e decidirmos juntos depois.
 
 ### 1. Organize as fotos
 
+> **Atualizado em 13/10/2026.** O lote novo passa a ficar em `backend/campo_novo/`,
+> separado das 13 fotos antigas, e a planilha ganhou a coluna `horta`. O passo a passo
+> curto está em `backend/campo_novo/LEIA-ME.md`.
+
 ```
-backend/campo/
+backend/campo_novo/
   alface/
-    healthy/IMG_alface_001.jpg
-    anomalous/IMG_alface_010.jpg
+    healthy/IMG_20261014_093012.jpg
+    anomalous/IMG_20261014_094533.jpg
   rucula/
     healthy/...
     anomalous/...
-  espinafre/
-    healthy/...
-    anomalous/...
   nao_folha/
-    IMG_020.jpg
+    IMG_20261014_101500.jpg
+  metadados_campo.csv
 ```
 
-⚠ As 13 fotos antigas já estão em `backend/campo/{healthy,anomalous}/`. **Não as
-apague** — elas são o "conjunto histórico" e são reportadas à parte. As fotos
-novas vão nas pastas por cultura, ao lado delas.
+Copie os **arquivos originais** do celular (por cabo ou pela nuvem do aparelho), sem
+passar por aplicativo de mensagem. As 13 fotos antigas continuam em `backend/campo/`:
+são o "conjunto histórico" e são reportadas à parte.
 
-### 2. Rode o teste (2 comandos)
+### 2. Rode a conferência e o teste (2 comandos)
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe test_campo.py --dir ./campo --out ./results/campo_resultados_v5.csv
-.venv\Scripts\python.exe analise_campo.py --csv results/campo_resultados_v4.csv:ciclo4 results/campo_resultados_v5.csv:campo_novo --metadados campo/metadados_campo.csv
+.venv\Scripts\python.exe confere_fotos_campo.py
+.venv\Scripts\python.exe roda_campo.py
 ```
 
-O primeiro roda o modelo em todas as fotos e gera a planilha por foto. O segundo
-calcula **tudo o que a Parcial I promete**: acurácia balanceada com intervalo por
-bootstrap, IC de Wilson, McNemar com correção de Holm, ECE, curva risco-cobertura
-e as três hipóteses. Sai um relatório em `results/analise_campo.md`, pronto para
-colar no TCC.
+O primeiro confere cada foto antes de qualquer modelo rodar: se tem EXIF de câmera, se é
+cópia de outra foto do lote ou de imagem do treino, se a pasta bate com a planilha, se
+tem horta, distância e tipo de dano, e lista as fotos com dúvida anotada. O segundo roda
+às cegas cada modelo disponível — EfficientNet-B0 e ViT-B/16 do ciclo 4, e EfficientNet-B0
+e ViT-B/16 do ciclo 5 (treinados em 14/10, antes das fotos) —, e calcula **tudo o que a Parcial I promete**: acurácia balanceada com intervalo por
+bootstrap, IC de Wilson, McNemar com correção de Holm, ECE, curva risco-cobertura e as
+três hipóteses — mais o ECE com e sem a temperatura e o resultado por horta. Os
+relatórios saem em `results/campo_novo/`.
 
 ### 3. O que olhar no resultado
 
@@ -204,10 +221,10 @@ colar no TCC.
 1. **Decidir produção**: ciclo 3 ou ciclo 4, agora com dado de campo na mesa.
    Para voltar ao ciclo 3: copiar `backend/weights/ciclo3/*` para
    `backend/weights/`.
-2. **ViT como experimento exploratório** — comparação de arquiteturas (entra no
-   Q1), treinado no mesmo dataset final. Alinhar com o Prof. Leanderson.
-   Não precisa de Colab Pro: ViT-S/DeiT-S cabe na RTX 3050 com AMP, e o Kaggle dá
-   GPU grátis.
+2. ~~ViT como experimento exploratório~~ — **feito em 13/10/2026**: ViT-B/16
+   treinado no Colab Pro, empata com o EfficientNet-B0 no teste intra-fonte
+   (`docs/HISTORICO_COMPLETO_TCC.md` §9-D). O mesmo caminho (`colab/cli/orq.sh`)
+   serve para retreinar com as fotos desta coleta.
 3. **Texto**: metodologia do ciclo 4 (§10.9 já escrito, é só adaptar), a
    ressalva de que o espinafre é *Basella alba* (Malabar) e não *Spinacia
    oleracea*, e o downy mildew contado como **49 fotos originais**, não 1.142.
@@ -236,4 +253,4 @@ colar no TCC.
 | Detalhe de como fotografar/anotar/refinar | `docs/GUIA_TESTE_DE_CAMPO.md` |
 | Metas da campanha multi-espécie | `docs/ROTEIRO_CAMPO_TCC2_MULTIESPECIE.md` |
 | Estado do projeto e checklist | `PROXIMOS_PASSOS_TCC2.md` |
-| Como preencher a planilha | `backend/campo/LEIA-ME_metadados.md` |
+| Como preencher a planilha e onde pôr as fotos | `backend/campo_novo/LEIA-ME.md` |

@@ -55,3 +55,16 @@ dataset/*
 
 # Build artifacts
 frontend/tsconfig.tsbuildinfo
+
+# Zips gerados por backend/empacota_colab.py (~11 GB)
+colab_export/
+
+# PDFs de artigos (direitos autorais): só para leitura local
+docs/literatura/
+
+# Ciclo 5: imagens (hardlinks do dataset) e zips do Colab — só manifestos, logs e resultados entram
+backend/data_c5/train/
+backend/data_c5/val/
+backend/data_c5/test/
+backend/data_c5/retida/
+colab_export_c5/**/*.zip

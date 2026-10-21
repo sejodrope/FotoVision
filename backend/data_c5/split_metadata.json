@@ -1,0 +1,96 @@
+{
+  "ciclo": 5,
+  "seed": 42,
+  "base": "partição do ciclo 4 (data/), mantida para a coletânea e o PlantVillage",
+  "regras": [
+    "alface agrupada por foto original (id no nome do arquivo + ligação por hash)",
+    "validação e teste de alface: uma fotografia por foto original, sem variantes",
+    "fora as variantes sobel, laplacian e high_pass e as cópias idênticas de dataset/",
+    "alface sem foto original identificada: só no treino",
+    "pastas não reconhecidas pela rotulagem entram como anomalous",
+    "fonte retida: mendeley_spinach_n56pn9fncw (fora de treino e validação)",
+    "coletânea e PlantVillage mantêm a partição do ciclo 4"
+  ],
+  "images_per_split": {
+    "train": {
+      "healthy": 36753,
+      "anomalous": 75705
+    },
+    "val": {
+      "healthy": 4403,
+      "anomalous": 16209
+    },
+    "test": {
+      "healthy": 4480,
+      "anomalous": 13933
+    },
+    "retida": {
+      "healthy": 135,
+      "anomalous": 439
+    }
+  },
+  "tipos_por_split": {
+    "train": {
+      "espinafre": 1847,
+      "coletanea_demais": 51406,
+      "coletanea_lavoura": 21325,
+      "plantvillage": 12006,
+      "mildio_recorte": 773,
+      "alface_variante": 11957,
+      "alface_original": 4090,
+      "alface_sem_origem": 2324,
+      "praga_alface_sem_origem": 513,
+      "nao_reconhecida": 6217
+    },
+    "val": {
+      "espinafre": 388,
+      "coletanea_demais": 11405,
+      "coletanea_lavoura": 4735,
+      "plantvillage": 2590,
+      "mildio_recorte": 196,
+      "alface_original": 175,
+      "alface_variante": 1,
+      "nao_reconhecida": 1122
+    },
+    "test": {
+      "espinafre": 400,
+      "coletanea_demais": 10061,
+      "coletanea_lavoura": 4530,
+      "plantvillage": 2659,
+      "mildio_recorte": 173,
+      "alface_original": 175,
+      "alface_variante": 1,
+      "nao_reconhecida": 414
+    },
+    "retida": {
+      "espinafre_fonte_retida": 574
+    }
+  },
+  "alface": {
+    "variantes_nao_fotograficas_fora": 3693,
+    "copias_identicas_fora": 20880,
+    "imagens_de_alface_fora_de_val_teste": 6759,
+    "alface_sem_origem_so_no_treino": 2324,
+    "fotos_originais": 1231,
+    "unidades": 1172,
+    "unidades_doentes": 95,
+    "unidades_train": 820,
+    "unidades_doentes_train": 66,
+    "unidades_val": 176,
+    "unidades_doentes_val": 14,
+    "unidades_test": 176,
+    "unidades_doentes_test": 15
+  },
+  "pastas_nao_reconhecidas": {
+    "iqrapervez2000/Pest damage": 513,
+    "nirmalsankalana/Potato___pests": 611,
+    "nirmalsankalana/Rose___slug_sawfly": 4979,
+    "nirmalsankalana/Tomato___spider_mites": 1676,
+    "nirmalsankalana/Sugercane___yellow_leaf": 505,
+    "corrompidas": 0,
+    "novas_que_seguem_duplicata_existente": 21,
+    "novas_com_rotulo_contraditorio_fora": 18
+  },
+  "fonte_retida": "mendeley_spinach_n56pn9fncw",
+  "total": 152057
+}

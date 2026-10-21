@@ -63,6 +63,88 @@ def label_of(path: Path) -> str:
     return path.parent.name
 
 
+_BITS = None
+
+
+def cruzamentos_rapidos(orbits: dict, split_of: dict, max_distance: int,
+                        lote: int = 2000, max_pares: int = 20_000_000) -> dict:
+    """
+    Só o que decide o veredicto: para cada imagem de val e teste, há alguma de treino a
+    distância de órbita <= max_distance? Mesmo critério de orbit_distance (qualquer das
+    oito orientações contra qualquer das oito), mas exacto e vectorizado: pelo princípio
+    da casa dos pombos, duas hashes de 64 bits a distância <= 4 coincidem inteiras em pelo
+    menos uma de 5 fatias, e só os pares que coincidem numa fatia têm a distância medida.
+    O agrupador completo compara par a par em Python e não termina com ~150 mil imagens
+    que têm milhares de folhas quase iguais sobre fundo branco.
+    """
+    import numpy as np
+    global _BITS
+    if _BITS is None:
+        _BITS = np.array([bin(i).count("1") for i in range(256)], dtype=np.uint8)
+    n_fatias = max_distance + 1
+    larg = [64 // n_fatias + (1 if k < 64 % n_fatias else 0) for k in range(n_fatias)]
+    desloc = np.cumsum([0] + larg[:-1])
+
+    def fatia(h, k):
+        return (h >> np.uint64(desloc[k])) & np.uint64((1 << larg[k]) - 1)
+
+    treino = [p for p in orbits if split_of[p] == "train"]
+    T = np.array([orbits[p] for p in treino], dtype=np.uint64).reshape(-1)    # N*8 hashes
+    dono_T = np.repeat(np.arange(len(treino)), 8)
+    rot_treino = np.array([label_of(p) for p in treino])
+    indices = []
+    for k in range(n_fatias):
+        chave = fatia(T, k)
+        ordem = np.argsort(chave, kind="stable")
+        indices.append((chave[ordem], ordem))
+
+    out = {}
+    for split in ("val", "test"):
+        alvos = [p for p in orbits if split_of[p] == split]
+        A = np.array([orbits[p] for p in alvos], dtype=np.uint64).reshape(-1)
+        dono_A = np.repeat(np.arange(len(alvos)), 8)
+        achados = []                                         # pares (alvo, treino) a distância <= max
+        for i in range(0, len(A), lote * 8):
+            a, da = A[i:i + lote * 8], dono_A[i:i + lote * 8]
+            for k, (chaves, ordem) in enumerate(indices):
+                ca = fatia(a, k)
+                lo = np.searchsorted(chaves, ca, "left")
+                hi = np.searchsorted(chaves, ca, "right")
+                cont = hi - lo
+                # expande os intervalos em pares, aos pedaços para caber na memória
+                fim = np.cumsum(cont)
+                ini = 0
+                while ini < len(a):
+                    lim = np.searchsorted(fim, (fim[ini - 1] if ini else 0) + max_pares, "right")
+                    lim = max(lim, ini + 1)
+                    c = cont[ini:lim]
+                    if c.sum():
+                        r = np.repeat(np.arange(ini, lim), c)
+                        base = np.repeat(lo[ini:lim] - np.concatenate(([0], np.cumsum(c)[:-1])), c)
+                        t = ordem[base + np.arange(c.sum())]
+                        x = a[r] ^ T[t]
+                        d = _BITS[x.view(np.uint8).reshape(-1, 8)].sum(axis=1)
+                        ok = d <= max_distance
+                        if ok.any():
+                            achados.append(np.stack([da[r[ok]], dono_T[t[ok]]], axis=1))
+                    ini = lim
+            feitos = min(i // 8 + lote, len(alvos))
+            n_viz = len(np.unique(np.concatenate(achados)[:, 0])) if achados else 0
+            print(f"    {split}: {feitos}/{len(alvos)} ({n_viz} com quase-duplicata no treino)", flush=True)
+        vazadas, conflitos, pares = [], 0, []
+        if achados:
+            P = np.unique(np.concatenate(achados), axis=0)
+            for j in np.unique(P[:, 0]):
+                viz = P[P[:, 0] == j, 1]
+                p = alvos[j]
+                vazadas.append(p)
+                pares.append((p, treino[viz[0]]))
+                if (rot_treino[viz] != label_of(p)).any():
+                    conflitos += 1
+        out[split] = (vazadas, conflitos, pares)
+    return out
+
+
 def main():
     parser = argparse.ArgumentParser(description="Auditoria de data leakage — FitoVision")
     parser.add_argument("--data", default=str(BASE_DIR / "data"))
@@ -72,6 +154,12 @@ def main():
                              "(0 = só duplicados exactos; 4 = default, apanha augmentation)")
     parser.add_argument("--examples", type=int, default=15,
                         help="Quantos pares de exemplo listar")
+    parser.add_argument("--hash-cache", default=None,
+                        help="Cache de hashes a usar (padrão: data/hash_cache.jsonl). O ciclo 5 "
+                             "usa um próprio, semeado por prepara_ciclo5.py, para não refazer os hashes")
+    parser.add_argument("--rapido", action="store_true",
+                        help="Só val/teste contra treino, em bloco com numpy (sem as estatísticas de "
+                             "redundância interna); o agrupador completo não termina no data_c5")
     args = parser.parse_args()
 
     data_dir = Path(args.data)
@@ -99,7 +187,8 @@ def main():
             split_of[p] = split
 
     print(f"\n  Calculando hashes perceptuais de {len(all_images)} imagens...")
-    orbits, corrupted = hash_images(all_images)
+    orbits, corrupted = (hash_images(all_images, cache_path=Path(args.hash_cache)) if args.hash_cache
+                         else hash_images(all_images))
 
     if corrupted:
         print(f"\n  ⚠  {len(corrupted)} imagens corrompidas/ilegíveis (serão ignoradas):")
@@ -107,6 +196,10 @@ def main():
             print(f"       {p}")
         if len(corrupted) > 5:
             print(f"       ... e mais {len(corrupted) - 5}")
+
+    if args.rapido:
+        auditoria_rapida(args, orbits, split_of, split_images, corrupted, results_dir)
+        return
 
     print(f"\n  Agrupando near-duplicates (max_distance={args.max_distance})...")
     groups = group_by_similarity(orbits, max_distance=args.max_distance)
@@ -223,6 +316,40 @@ def main():
         ),
     }
 
+    out = results_dir / "leakage_report.json"
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
+    print(f"\n  Relatório salvo: {out}")
+
+
+def auditoria_rapida(args, orbits, split_of, split_images, corrupted, results_dir: Path):
+    print(f"\n  Val e teste contra o treino, em bloco (max_distance={args.max_distance})...")
+    res = cruzamentos_rapidos(orbits, split_of, args.max_distance)
+    n = {s: len(split_images[s]) for s in ("val", "test")}
+    pct = {s: (100.0 * len(res[s][0]) / n[s]) if n[s] else 0.0 for s in n}
+    print("\n" + "-" * 64)
+    print("  VAZAMENTO ENTRE SPLITS (modo rápido)")
+    print("-" * 64)
+    print(f"  Imagens de TESTE com duplicado no treino : {len(res['test'][0]):>7} / {n['test']}  ({pct['test']:.1f}%)")
+    print(f"  Imagens de VAL   com duplicado no treino : {len(res['val'][0]):>7} / {n['val']}  ({pct['val']:.1f}%)")
+    print(f"  ... e rótulo diferente do vizinho de treino: teste {res['test'][1]}, val {res['val'][1]}")
+    verdict = "GRAVE" if pct["test"] >= 20 else "MODERADO" if pct["test"] >= 5 else "OK"
+    print(f"\n  Veredicto: {verdict}")
+    for test_p, train_p in res["test"][2][:args.examples]:
+        print(f"    TESTE  {test_p.parent.name}/{test_p.name}\n    TREINO {train_p.parent.name}/{train_p.name}\n")
+    report = {
+        "modo": "rapido (val/teste contra treino; sem redundância interna)",
+        "max_distance": args.max_distance,
+        "n_images": len(orbits),
+        "n_corrupted": len(corrupted),
+        "test": {"total": n["test"], "leaked": len(res["test"][0]), "leaked_pct": round(pct["test"], 2),
+                 "label_conflicts": res["test"][1]},
+        "val": {"total": n["val"], "leaked": len(res["val"][0]), "leaked_pct": round(pct["val"], 2),
+                "label_conflicts": res["val"][1]},
+        "exemplos_teste": [[f"{a.parent.name}/{a.name}", f"{b.parent.name}/{b.name}"]
+                           for a, b in res["test"][2][:200]],
+        "verdict": verdict,
+    }
     out = results_dir / "leakage_report.json"
     with open(out, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)

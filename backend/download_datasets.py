@@ -140,6 +140,13 @@ ANOMALOUS_KEYWORDS = [
     "scab", "mite", "mold", "anthracnose", "blast", "nematode",
     "mottle", "greening", "measles", "phytophthora",
     "tungro", "streak", "septoria", "leafroll", "deficiency",
+    # Dano por praga. O casamento é por token, e a lista só tinha "mite", no singular:
+    # 'Tomato___spider_mites', 'Potato___pests', 'Rose___slug_sawfly' e 'Pest damage'
+    # (7.779 imagens) ficavam sem rótulo e fora do dataset — justamente o dano
+    # estrutural da hipótese H2 (auditoria de 13/10/2026, CORRECOES_METODOLOGICAS §14.5).
+    # No ciclo 5 essas pastas entram por lista explícita em prepara_ciclo5.py; os termos
+    # ficam aqui para que um staging refeito do zero já as reconheça.
+    "pest", "pests", "mites", "sawfly", "insect", "insects",
 ]
 
 # Pastas cujo nome casa com estes termos são DESCARTADAS (não são nem healthy

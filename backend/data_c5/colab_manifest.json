@@ -1,0 +1,21 @@
+{
+  "gerado_em": "2026-10-14 02:53:26",
+  "imagens": {
+    "train": {
+      "healthy": 36753,
+      "anomalous": 75705
+    },
+    "val": {
+      "healthy": 4403,
+      "anomalous": 16209
+    },
+    "test": {
+      "healthy": 4480,
+      "anomalous": 13933
+    },
+    "retida": {
+      "healthy": 135,
+      "anomalous": 439
+    }
+  }
+}

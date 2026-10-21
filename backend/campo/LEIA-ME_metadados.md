@@ -1,5 +1,9 @@
 # Planilha de metadados das fotos de campo
 
+> **Atualizado em 13/10/2026.** Esta pasta guarda as 13 fotos do TCC-I, o conjunto
+> histórico. **O lote novo vai em `backend/campo_novo/`**, com a planilha de lá (que tem
+> a coluna `horta`) e as instruções de `backend/campo_novo/LEIA-ME.md`.
+
 Preencha **na hora da coleta** (ver `docs/ROTEIRO_CAMPO_TCC2_MULTIESPECIE.md`).
 Sem ela, o `analise_campo.py` calcula tudo menos as hipóteses H2 e H3.
 

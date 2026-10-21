@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     demo_mode: bool = True
     database_url: str = "sqlite+aiosqlite:///./fitovision.db"
     weights_dir: str = "./weights"
+    # Arquitectura servida pelo /predict e usada no teste de campo. Muda-se por
+    # variável de ambiente (BINARY_MODEL=vit_b_16 WEIGHTS_DIR=./weights/vit) para
+    # avaliar outro modelo sem tocar no código.
+    binary_model: str = "efficientnet_b0"
     num_classes: int = 6
     cors_origins: str = "http://localhost:5173"
     max_upload_bytes: int = 10 * 1024 * 1024  # 10 MB

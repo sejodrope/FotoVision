@@ -27,7 +27,8 @@ Helper de loaders: make_loaders()
 
 import logging
 import random
-from collections import defaultdict
+import re
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Optional
 
@@ -270,6 +271,27 @@ def make_loaders(
 
 BINARY_CLASSES = ["healthy", "anomalous"]  # label: 0=healthy, 1=anomalous
 
+# Cultura de cada imagem, lida do nome do arquivo no split (<fonte>__<caminho>).
+# A auditoria de 13/10/2026 (docs/CORRECOES_METODOLOGICAS.md §14.3) mostrou que cultura
+# e rótulo estavam associados no treino; a amostragem por cultura usa esta função.
+_FONTES_ALFACE = ("ashishjstar", "shuvokumarbasak", "santoshshaha", "iqrapervez", "roboflow_lettuce")
+_RX_CULTURA_COLETANEA = re.compile(r"__data_([^_]+(?:_pepper)?)___")
+_RX_CULTURA_PLANTVILLAGE = re.compile(r"__pv_([A-Za-z]+)")
+
+
+def cultura_do_arquivo(nome: str) -> str:
+    if nome.startswith(_FONTES_ALFACE):
+        return "Lettuce"
+    if nome.startswith("mendeley_spinach"):
+        return "Spinach"
+    m = _RX_CULTURA_COLETANEA.search(nome)
+    if m:
+        return m.group(1)
+    m = _RX_CULTURA_PLANTVILLAGE.search(nome)
+    if m:
+        return "Bell_pepper" if m.group(1) == "Pepper" else m.group(1)
+    return "outra"
+
 
 class BinaryFolderDataset(Dataset):
     """
@@ -346,11 +368,32 @@ def binary_weighted_sampler(dataset: "BinaryFolderDataset") -> WeightedRandomSam
     return WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
 
 
+def binary_crop_sampler(dataset: "BinaryFolderDataset") -> WeightedRandomSampler:
+    """
+    Equilibra os rótulos DENTRO de cada cultura, mantendo a fatia de cada cultura.
+
+    Com o sampler por classe, a alface entrava 87% saudável e as demais culturas 75%
+    anômalas: "é alface" bastava para acertar o rótulo na maior parte das vezes. Aqui
+    cada cultura que tem os dois rótulos é amostrada meio a meio; as que só têm um
+    rótulo (arroz, laranja, soja...) ficam como estão, porque não há o que equilibrar.
+    """
+    celulas = [(cultura_do_arquivo(p.name), lbl) for p, lbl in dataset.samples]
+    n_celula = Counter(celulas)
+    n_cultura: Counter = Counter()
+    rotulos: dict[str, set[int]] = defaultdict(set)
+    for (cultura, lbl), n in n_celula.items():
+        n_cultura[cultura] += n
+        rotulos[cultura].add(lbl)
+    weights = [n_cultura[c] / (len(rotulos[c]) * n_celula[(c, lbl)]) for c, lbl in celulas]
+    return WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
+
+
 def make_binary_folder_loaders(
     data_dir: str | Path,
     batch_size: int = 32,
     num_workers: int = 0,
     use_albumentations: bool = False,
+    amostragem: str = "classe",
 ) -> tuple[DataLoader, DataLoader, DataLoader, torch.Tensor]:
     """
     Cria train/val/test DataLoaders para o pipeline binário a partir de:
@@ -393,21 +436,30 @@ def make_binary_folder_loaders(
             #
             # WeightedRandomSampler equaliza a probabilidade de amostragem por
             # classe; class_weights faz o mesmo na loss (cinto e suspensórios).
-            sampler = binary_weighted_sampler(ds)
-            loader  = DataLoader(ds, batch_size=batch_size, sampler=sampler,
-                                 num_workers=num_workers, pin_memory=pin,
-                                 drop_last=True)
-
             n_h = dist.get("healthy", 0)
             n_a = dist.get("anomalous", 0)
             total = n_h + n_a
-            if n_h > 0 and n_a > 0:
-                class_weights = torch.tensor([total / (2 * n_h), total / (2 * n_a)],
-                                             dtype=torch.float)
-            ratio = (max(n_h, n_a) / min(n_h, n_a)) if n_h and n_a else float("inf")
-            print(f"  {split:<6}: {len(ds):>6} imgs  {dist}  "
-                  f"(ratio {ratio:.2f}:1 → sampler balanceado, "
-                  f"pesos da loss = [{class_weights[0]:.2f}, {class_weights[1]:.2f}])")
+            if amostragem == "cultura":
+                # O sampler já entrega os rótulos equilibrados dentro de cada cultura;
+                # pesar a loss por cima disso compensaria duas vezes.
+                sampler = binary_crop_sampler(ds)
+                w = torch.as_tensor(list(sampler.weights))
+                lbl = torch.tensor([l for _, l in ds.samples])
+                frac_h = float(w[lbl == 0].sum() / w.sum())
+                print(f"  {split:<6}: {len(ds):>6} imgs  {dist}  "
+                      f"(sampler por cultura → {frac_h:.1%} healthy esperado, loss sem pesos)")
+            else:
+                sampler = binary_weighted_sampler(ds)
+                if n_h > 0 and n_a > 0:
+                    class_weights = torch.tensor([total / (2 * n_h), total / (2 * n_a)],
+                                                 dtype=torch.float)
+                ratio = (max(n_h, n_a) / min(n_h, n_a)) if n_h and n_a else float("inf")
+                print(f"  {split:<6}: {len(ds):>6} imgs  {dist}  "
+                      f"(ratio {ratio:.2f}:1 → sampler balanceado, "
+                      f"pesos da loss = [{class_weights[0]:.2f}, {class_weights[1]:.2f}])")
+            loader  = DataLoader(ds, batch_size=batch_size, sampler=sampler,
+                                 num_workers=num_workers, pin_memory=pin,
+                                 drop_last=True)
         else:
             loader = DataLoader(ds, batch_size=batch_size, shuffle=False,
                                 num_workers=num_workers, pin_memory=pin)

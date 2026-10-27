@@ -1,6 +1,6 @@
 # FitoVision — Próximos Passos (TCC-II)
 
-### Última atualização: 16/10/2026 · literatura lida na íntegra (7 de 9 artigos); artigo v8 e monografia v5; coleta de campo a partir de 16/10
+### Última atualização: 27/10/2026 · primeiro lote de campo com fundo real (10 fotos de alface sadia); artigo v10 (entrega da conclusão: v9) e monografia v6
 
 > **Leia este arquivo primeiro** quando voltar a trabalhar no projeto — ele
 > resume onde paramos e o que fazer a seguir. Para a **coleta de fotos em hortas
@@ -19,8 +19,10 @@ treinado no Colab em 12–13/10 e empata com o EfficientNet-B0 no teste intra-fo
 orientador comentou o artigo v4; as correções dele e as da auditoria de 13/10 estão no
 v6. Em 14/10 o ciclo 5 (pipeline corrigido) foi treinado nas quatro arquiteturas e
 entrou no artigo v7. Em 16/10 a literatura foi lida na íntegra e corrigiu duas
-leituras (artigo v8, monografia v5). O que responde à questão central continua pendente:
-coletar fotos de campo com fundo real (a partir de 16/10).**
+leituras (artigo v8, monografia v5). Em 27/10 a conclusão foi entregue (artigo v9) e veio
+o primeiro lote de campo com fundo real: 10 fotos de alface sadia, nenhum falso alarme nas
+quatro versões (artigo v10, monografia v6). O que falta para a questão central é a outra
+metade do campo: folhas doentes fotografadas na horta.**
 
 > A frase que estava aqui até 08/10 ("+9 a +14 pontos, p ≈ 10⁻¹³, sem perder nada no
 > domínio antigo") foi corrigida duas vezes: o ganho é de +9 a +13 pontos só no
@@ -33,6 +35,58 @@ coletar fotos de campo com fundo real (a partir de 16/10).**
 > transformadas de fotos de alface com outra variante no treino.** E "70% do treino
 > deriva do PlantVillage" estava errado (é no máximo 47,7%). O artigo atual é o **v6**;
 > os fatos conferidos estão em `docs/FICHA_TECNICA_FITOVISION.md`.
+
+---
+
+## 🌱 27/10/2026 — primeiro lote de campo; artigo v9 (conclusão) e v10; monografia v6
+
+- **Entrega "Postagem IV - parcial II - 5. Conclusão"** postada pelo José com o artigo **v9**
+  (Seção 5 reescrita como conclusão completa, antes das fotos).
+- **Campo, 27/10:** 10 fotos numa horta (`horta_27out`), alface crespa, todas sadias, de cima,
+  vários pés por quadro. As quatro versões acertam as 10 (Wilson 72,2%–100%), também em
+  recortes de ½ e ¼ do lado (`backend/testa_recortes_campo.py`). **Fundo real não gerou
+  falso alarme.** Mas sem folha doente na horta a sensibilidade e o *domain gap* de campo
+  continuam sem medida. Detalhe: CORRECOES §15.13 e ficha §14.
+- **Lote de casa (18/10):** as 3 folhas sadias saem anômalas em todas as versões; uma delas
+  (`IMG_20261018_192328`) tem pontos escuros — rótulo a conferir pelo José (o gabarito da
+  coleta vale; a dúvida está registrada, não trocar o rótulo depois da inferência).
+- **A horta não tinha nenhuma folha doente** (dito pelo José em 27/10): não foi falha da coleta.
+  O artigo v10 já trata isso como limitação; **não precisa mudar nada** no que foi para o
+  orientador se não houver mais coleta.
+- **Origem das fotos de 27/10:** celular → Google Drive → download no notebook → zip. O Drive
+  apagou modelo, data e exposição do EXIF; resolução e `Software` batem com o POCO X6 Pro.
+  Registrado em CORRECOES §15.13 e ficha §12/§14.
+- **Artigo v10** (`docs/Entregas Finais/TCC2_Artigo_FitoVision_v10.docx`, 11 páginas no
+  LibreOffice): resumo, 3.2, parágrafo novo no fim da Seção 4 e conclusão com o lote. É a
+  versão para o MS Loop do Prof. Leanderson.
+- **Monografia v6** (`TCC_FitoVision_ATUALIZADO_v6.docx`): nota de 27/10 e seção 9.7.
+
+### ▶ Ponto de retomada (fim de 27/10/2026)
+
+**Feito e entregue:** v9 postada (disciplina); v10 é a do MS Loop — **o José ainda precisa
+subir a v10 no Loop** (abrir no Word e conferir as 11 páginas antes). Nada foi commitado em
+27/10 (artigos v9/v10, monografia v6, fotos, `testa_recortes_campo.py`, docs).
+
+**Se houver nova coleta**, ao voltar: pôr as fotos em `backend/campo_novo/<cultura>/<classe>/`,
+uma linha por foto em `metadados_campo.csv` (horta nova = nome novo), e rodar
+`confere_fotos_campo.py` → `roda_campo.py` → `testa_recortes_campo.py`. Depois: artigo v11
+(gerador novo a partir do v10; cortar só nas págs. 8–9, porque a Tabela 2 abre a pág. 8 e
+o que vem antes é absorvido), monografia v7, CORRECOES §15.14, ficha §14, guia da banca
+(Ato 8, slide 11, perguntas 15/15b).
+
+**Se não houver nova coleta:** o trabalho se sustenta com especificidade de campo medida
+e sensibilidade de campo como limitação declarada. Focar na apresentação (`docs/GUIA_BANCA_TCC2.md`).
+
+**Próximo passo (o que falta para Q3), em ordem de importância:**
+1. Fotografar **folhas com problema na horta** (mínimo útil 15). Procurar nas **folhas de
+   baixo e de fora do pé** (mais velhas: manchas, amarelado, furo de inseto, ponta seca) e
+   perguntar ao responsável se algum canteiro teve praga ou doença. Folha de feira ou de casa
+   **não** é campo (fica à parte, como o lote de 18/10).
+2. Uma **segunda horta** (separação avaliação × adaptação) e **couve** (H1).
+3. 2–3 fotos **sem folha** por horta (guarda de vegetação).
+4. ~~Confirmar a origem das fotos de 27/10~~ — celular → Drive → notebook; o Drive apagou o EXIF. Nas próximas, copiar por cabo USB.
+5. Copiar as fotos **por cabo USB** (mantém o EXIF).
+6. Depois disso: `confere_fotos_campo.py`, `roda_campo.py`, `testa_recortes_campo.py`.
 
 ---
 

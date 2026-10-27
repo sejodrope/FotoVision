@@ -67,8 +67,9 @@
    mesmo resultado. E a confiança calibrada não avisa quando o modelo erra fora do domínio.
 7. **Conclusão.** O valor do trabalho é o protocolo: auditoria de vazamento (por
    semelhança e por proveniência), avaliação em níveis (por subconjunto, fonte retida,
-   campo) e estatística adequada a amostras pequenas. **[ATUALIZAR com o resultado da
-   coleta de campo.]**
+   campo) e estatística adequada a amostras pequenas. No campo, até 27/10: nenhum falso
+   alarme em 10 fotos de horta com fundo real; a sensibilidade de campo ainda não foi
+   medida. **[ATUALIZAR quando houver folhas doentes fotografadas na horta.]**
 
 ### 5 minutos
 
@@ -221,6 +222,15 @@ modelo viu: 85,8% a 90,1%.
 
 ### Ato 8 — O campo **[ATUALIZAR depois da coleta]**
 
+**Parcial, 27/10/2026** (CORRECOES §15.13, ficha §14). Dez fotos de uma horta, alface
+crespa, todas sadias, tiradas de cima com vários pés no quadro. As quatro versões (Eff e
+ViT, ciclos 4 e 5) acertam as 10, com confiança ≥ 0,98 — Wilson 72% a 100% —, e também
+os recortes de ½ e ¼ do lado. Frase para a banca: *"No primeiro contato com fundo real,
+solo, mato e vários pés no quadro não geraram nenhum falso alarme. O que ainda não medi é
+o contrário: se o modelo reconhece a doença na horta, porque nesse dia não havia folha
+doente."* Não usar a acurácia balanceada das 20 fotos juntas nem o p de H3: os dois lotes
+(horta e casa) confundem classe, cena e distância.
+
 Espaço reservado: N por cultura, acurácia balanceada com intervalo, taxa de abstenção, ECE
 em campo, resultado de H1, H2 e H3, e a comparação, nas mesmas fotos, entre o ciclo 4 e
 o ciclo 5 — os dois congelados antes da coleta. Um ciclo 6 adaptado com fotos de horta só
@@ -260,7 +270,7 @@ Decore os da primeira tabela. Os da segunda, saiba onde achar.
 | **+7 a +12 / −2 a −5** | Ciclo 5 nas três CNNs, na lavoura: pontos de especificidade ganhos / de sensibilidade perdidos |
 | **85,8–90,1%** | Lote de espinafre que nenhum modelo do ciclo 5 viu |
 | **176 (15 doentes)** | Fotos de alface no teste honesto do ciclo 5; os modelos acertam de 96,7% a 100% |
-| **13** | Fotos de campo até agora **[ATUALIZAR]** |
+| **13 + 10** | Fotos de campo: 13 históricas e 10 com fundo real (27/10, todas sadias; 10 de 10 nas quatro versões, Wilson 72–100%) **[ATUALIZAR]** |
 
 ### Para consultar
 
@@ -709,14 +719,16 @@ A banca vai perguntar "e daí?". Tenha uma resposta de três partes.
 ### 7.4 O que você **não** pode afirmar
 
 - Que o sistema ajuda produtores. Não houve estudo com usuários.
-- Que funciona em campo. **[ATUALIZAR depois da coleta.]**
+- Que funciona em campo. Até agora há só especificidade: 10 fotos de horta sadias, nenhum
+  falso alarme. A sensibilidade em campo não foi medida. **[ATUALIZAR depois de fotografar
+  folhas doentes na horta.]**
 - Que o protocolo é novo. Workneh et al. (2026) fazem algo muito parecido. A novidade está
   na aplicação a hortaliças folhosas e na documentação completa do processo.
 
 ### 7.5 Vale colocar isso no artigo?
 
-Sim, com parcimônia. O artigo está no limite de 11 páginas e as Seções 4 e 5 serão
-reescritas com os dados de campo. A sugestão é entrar, nessa reescrita, com **duas
+Já entrou. A Conclusão do artigo v9 (entregue em 27/10) e da v10 tem a frase de
+contribuição e a de trabalhos futuros. Para referência, a sugestão era **duas
 frases na Conclusão**: uma de contribuição (o protocolo em três níveis e o caso
 documentado de vazamento) e uma de trabalhos futuros (backbone congelado, adaptação com
 fotos de campo, recalibração). O desenvolvimento completo cabe na monografia e na
@@ -729,8 +741,9 @@ apresentação.
 Apresente as limitações você mesmo, em um slide. Banca que encontra uma limitação
 escondida desconta; banca que a ouve do candidato pergunta sobre trabalhos futuros.
 
-1. **Campo com N = 13**, de uma só cultura, com procedência não registrada.
-   **[ATUALIZAR.]**
+1. **Campo pequeno:** 13 fotos históricas (uma cultura, procedência não registrada) e 10
+   com fundo real (27/10), todas de alface sadia. Sem folha doente na horta, não há
+   sensibilidade de campo nem *domain gap* medido. **[ATUALIZAR.]**
 2. **Teste intra-fonte, com vazamento por proveniência.** O 98,48% não mede
    generalização, e 23% do teste são variantes de fotos de alface que estão no treino.
    Sem essa fonte, o teste dá 97,8%.
@@ -830,7 +843,7 @@ humano–IA em apoio à decisão.
 | 9 | Q2 — calibração e abstenção | 1:30 | Dois terços dos erros saem confiantes |
 | 10 | O teste por dentro e por fora | 2:00 | 99,7% em estúdio · 86% em lavoura · 75% em fonte nova |
 | 10b | Corrigir o atalho (ciclo 5) | 1:30 | Menos falsos alarmes, mais doenças perdidas |
-| 11 | Q3 — campo | 2:00 | **[ATUALIZAR]** |
+| 11 | Q3 — campo | 2:00 | Fundo real não gera falso alarme; doença em campo ainda sem medida **[ATUALIZAR]** |
 | 12 ◇ | O que a literatura diz | 1:00 | O mesmo padrão, em outras culturas |
 | 13 | Limitações | 1:00 | Ditas por você |
 | 14 | Conclusão e contribuições | 1:30 | O limite está nos dados; o protocolo é a entrega |
@@ -912,9 +925,12 @@ de espinafre que nenhum modelo viu, todos ficam entre 86% e 90%."
 sensibilidade na lavoura.*
 
 **11. Q3 — campo. [ATUALIZAR]**
-*Versão atual, com 13 fotos:* "Em treze fotos de horta, 83,8%, com intervalo de 58% a 96%.
-Com essa amostra, as versões do modelo são estatisticamente indistinguíveis. E os erros de
-campo saíram com confiança entre 95% e 99%."
+*Versão atual (27/10):* "Nas treze fotos do TCC-I, o EfficientNet-B0 acerta 84,6%, com
+intervalo de 58% a 96%, e as versões são estatisticamente indistinguíveis; os erros saíram
+com confiança entre 95% e 99%. Na primeira horta com fundo real, dez fotos de alface sadia,
+nenhuma versão deu falso alarme, nem com o quadro recortado. O que falta é a outra metade:
+folhas doentes na horta."
+*Gráfico:* duas fotos da horta (inteira e recorte) com o veredicto das quatro versões.
 *Versão final:* N por cultura, intervalo, abstenção, ECE em campo, H1 a H3.
 
 **12. ◇ O que a literatura diz.**
@@ -965,7 +981,9 @@ Treine as respostas em voz alta. Cada uma cabe em 30 a 45 segundos.
 **1. "Então o seu sistema não funciona?"**
 Funciona nas fontes em que foi treinado e ainda não foi medido com amostra suficiente em
 campo. O que o trabalho mostra é que o número que a literatura costuma reportar não mede
-uso real — e mede o quanto falta. **[ATUALIZAR com o resultado de campo.]**
+uso real — e mede o quanto falta. Na primeira horta com fundo real, não deu nenhum falso
+alarme em dez fotos de alface sadia; se reconhece doença na horta, ainda não sei.
+**[ATUALIZAR com o resultado de campo.]**
 
 **2. "Qual é a contribuição, se o resultado é negativo?"**
 Três: um caso documentado de vazamento com retratação; um protocolo de avaliação em três
@@ -1058,6 +1076,13 @@ pasta para rótulo. Validação por fitopatologista está nos trabalhos futuros.
 **15. "Por que só 13 fotos?"** **[ATUALIZAR]**
 Era a amostra do TCC-I, e ela cumpriu um papel: revelou o defeito de rotulagem. Mas não
 tem poder para comparar modelos, e o trabalho demonstra isso com o intervalo de Wilson.
+Em 27/10 entraram 10 com fundo real; a horta tinha poucos pés, todos sadios.
+
+**15b. "Suas fotos de horta são todas saudáveis. Isso prova o quê?"**
+Prova uma coisa só: que o fundo real — solo, mato, vários pés — não faz o modelo acusar
+doença onde não há. É especificidade, com intervalo de 72% a 100%. Não prova que ele
+reconhece doença na horta; por isso não calculo acurácia balanceada de campo com essas
+fotos, e o artigo diz isso.
 
 **16. "Por que a acurácia de campo caiu quando você corrigiu os bugs?"**
 Não caiu de forma detectável. Os intervalos dos ciclos se sobrepõem entre 64,6% e 90,3%.

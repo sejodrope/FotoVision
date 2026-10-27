@@ -18,7 +18,8 @@ não depois, olhando a foto.
 
 ## Cinco regras que as 13 fotos antigas não cumpriram
 
-1. **Arquivo original do celular.** Copie por cabo ou pela nuvem do próprio celular.
+1. **Arquivo original do celular.** Copie **por cabo USB**: o envio pelo Google Drive (lote
+   de 27/10) apagou modelo, data e exposição do EXIF.
    Não mande por WhatsApp, não tire captura de tela, não edite. O conferidor avisa quando
    a foto vem sem EXIF de câmera. Se o celular grava em HEIC, exporte em JPG.
 2. **Nome único para cada foto.** O nome que o celular dá (`IMG_20261014_093012.jpg`)

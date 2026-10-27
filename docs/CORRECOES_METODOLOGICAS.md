@@ -1819,3 +1819,77 @@ sem elas, em vez de excluídas) e continua com 11 páginas no LibreOffice. O gui
 o LEIA-ME de `backend/campo_novo/` seguem a mesma regra. A monografia v5 (`_gerador/build_mono_v5.py`, a partir da v4)
 ganha a nota de 16/10, a seção 9.6, seis referências e o sumário com a nota de 14/10 e o
 capítulo 9, que a v4 não tinha acrescentado.
+
+### 15.13 Primeiro lote de campo com fundo real; artigo v9 e v10 (27/10/2026)
+
+**O que foi fotografado.** Em 27/10, às 16h35, 10 fotografias numa horta (`horta_27out`
+em `backend/campo_novo/metadados_campo.csv`): canteiros de alface crespa, todos os pés
+sadios segundo o José, tiradas de cima, com vários pés por quadro (a horta tinha poucos
+pés e eles estavam encostados, então não deu para isolar um). Fundo real: solo, mato e
+trevo. Distância "ampla" em nove e "média" em uma. O lote de casa de 18/10
+(`casa_colhida_18out`: um pé colhido na chuva, fotografado sobre toalha branca, 3 folhas
+sadias e 7 anômalas) continua na pasta e é reportado à parte, por não ser de campo.
+
+**Conferência** (`confere_fotos_campo.py`): nenhum problema que impeça a medição. As 10
+fotos novas vêm **sem EXIF de câmera** (as de 18/10 têm: Xiaomi POCO X6 Pro 5G), embora
+estejam em resolução cheia (4624×3472, 6–10 MB). Origem confirmada pelo José em 27/10:
+celular → Google Drive → download no notebook → descompactação. A resolução é a mesma do
+lote de 18/10 e o campo `Software` ainda diz "MediaTek Camera Application", o mesmo das
+fotos do POCO X6 Pro; o envio apagou fabricante, modelo, data e exposição, mas não há
+sinal de recompressão nem de edição. Duas têm um furo pequeno numa folha, anotado
+como "conferir" na planilha **antes** da inferência; o rótulo continua `healthy`.
+
+**Resultado às cegas** (`roda_campo.py`, `results/campo_novo/`):
+
+| Versão | Horta 27/10 (10 sadias) | Casa 18/10 (3 sadias, 7 anômalas) |
+|---|---|---|
+| EfficientNet-B0, ciclo 4 | 10 de 10, confiança ≥ 0,996 | 7 de 10 (as 3 sadias dadas como anômalas) |
+| EfficientNet-B0, ciclo 5 | 10 de 10, ≥ 0,988 | 7 de 10 |
+| ViT-B/16, ciclo 4 | 10 de 10, ≥ 0,994 | 7 de 10 |
+| ViT-B/16, ciclo 5 | 10 de 10, ≥ 0,986 | 7 de 9 (1 inconclusiva) |
+
+Na horta: IC de Wilson 72,2% a 100% para a especificidade, sem abstenção. Nenhuma
+diferença entre versões (McNemar, todas as discordâncias são zero).
+
+**Recortes** (`testa_recortes_campo.py`, `results/campo_novo/recortes/`): recortes centrais
+com metade e um quarto do lado de cada foto. Na horta, 10 de 10 nas duas escalas e nas
+quatro versões: a resposta não depende de haver vários pés no quadro. No lote de casa, os
+erros continuam nos recortes, ou seja, não vêm da toalha nas bordas.
+
+**Como ler.** 
+
+1. *O que o lote mostra:* fundo real (solo, mato, vários pés) não provoca falso alarme
+   em alface sadia, nas quatro versões e em três enquadramentos. Era o risco mais óbvio
+   do *domain gap* e não apareceu.
+2. *O que o lote não mostra:* não há folha doente em campo, então a **sensibilidade em
+   campo, a acurácia balanceada de campo e o *domain gap* continuam sem medida**. O
+   "88,5% de acurácia balanceada" que `analise_campo.md` imprime para as 20 fotos juntas
+   **não deve ser citado**: todas as anômalas são do lote de casa e quase todas as sadias
+   são da horta, então a métrica mistura classe e cena.
+3. *O efeito da cena não se separa do da folha.* Os modelos dizem "sadia" para tudo na
+   horta e "anômala" para tudo em casa (com confiança ≥ 0,97). Pode ser a folha, pode ser
+   a cena (luz artificial, folha molhada e machucada da colheita). Só fotos de folhas
+   doentes **na horta** desfazem essa confusão.
+4. *H3 (distância):* o Cochran-Armitage de `analise_campo.md` dá p = 0,03, mas é artefato:
+   todas as fotos "amplas" são da horta e sadias, e as "close" são de casa. Não citar.
+5. *Rótulo a conferir (observação posterior à inferência, não altera o gabarito):*
+   `healthy/IMG_20261018_192328.jpg` mostra pontos escuros e a base amarronzada, e
+   `IMG_20261018_192548.jpg` é uma folha interna quase branca. Os modelos chamam as duas
+   de anômalas. Pelo protocolo, o rótulo da coleta vale; a observação vai para o José.
+6. *Calibração:* os 3 erros de cada versão no lote de casa têm confiança acima do
+   limiar τ, como os nove erros do conjunto histórico (Tabela 2 do artigo): fora da
+   distribuição de treino, o limiar não intercepta os erros. Com 20 fotos de duas cenas,
+   o ECE (0,09 a 0,14) não é estimativa útil.
+7. *Recalibração:* **não foi feita**. Pelo protocolo, a adaptação usa uma horta separada
+   da de avaliação, e com uma horta e uma só classe não há o que ajustar.
+
+**No artigo.** A v9 (27/10, entrega "Postagem IV - parcial II - 5. Conclusão",
+`_gerador/build_v9.py`) reescreveu a Seção 5 como conclusão completa, antes das fotos. A
+v10 (`_gerador/build_v10.py`, a partir da v9) traz o lote: uma frase no resumo e no
+abstract, uma na Seção 3.2, um parágrafo no fim da Seção 4 e a conclusão atualizada (Q3
+respondida só em parte). Continua com 11 páginas no LibreOffice; para caber, as frases da
+Seção 4 foram enxugadas sem mudar números.
+
+**O que falta para Q3:** folhas doentes fotografadas na horta (mínimo de 15 por
+cultura), uma segunda horta para a adaptação, fotos sem folha para a guarda de
+vegetação, e outra cultura (couve) para H1.

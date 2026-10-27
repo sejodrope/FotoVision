@@ -363,6 +363,11 @@ esperado do *label smoothing*, que deixa a rede pouco confiante nas fontes de tr
 4. ~~**Lançar o treino do ciclo 5.**~~ Lançado no Colab em 14/10 às 06:06, antes das fotos
    de campo (Seção 13). Falta trazer os resultados e preencher esta ficha.
 5. **Monografia.** Atualizar depois da coleta, com esta ficha ao lado.
+6. ~~**As 10 fotos de 27/10 vieram sem EXIF de câmera.**~~ Origem confirmada: celular →
+   Google Drive → notebook (zip). Mesma resolução e mesmo `Software` do POCO X6 Pro; o envio
+   apagou modelo e data. Próximas coletas: copiar por cabo USB para manter o EXIF.
+7. **Rótulo de `healthy/IMG_20261018_192328.jpg`** (lote de casa): a foto mostra pontos
+   escuros e a base amarronzada. O gabarito da coleta vale; a dúvida fica registrada.
 
 ## 13. Ciclo 5 — pipeline corrigido (preparado em 13/10; treino lançado no Colab em 14/10)
 
@@ -433,3 +438,23 @@ Treino no Colab (L4) em 14/10, 06:06–17:52, cerca de 22 unidades.
 Mantidos de propósito: arquiteturas, hiperparâmetros, aumento de dados e a partição da
 coletânea e do PlantVillage, para que ciclo 4 e ciclo 5 sejam comparáveis foto a foto
 nessas 17.250 imagens de teste.
+
+## 14. Campo com fundo real — primeiro lote (27/10/2026)
+
+Detalhe e leitura em `docs/CORRECOES_METODOLOGICAS.md` §15.13; saídas em
+`backend/results/campo_novo/` (`analise_campo.md`, `calibracao_e_hortas.md`,
+`recortes/recortes.md`).
+
+| Lote | Fotos | Ciclo 4 Eff | Ciclo 5 Eff | Ciclo 4 ViT | Ciclo 5 ViT |
+|---|---|---|---|---|---|
+| `horta_27out` (campo, fundo real) | 10 sadias | 10 de 10 | 10 de 10 | 10 de 10 | 10 de 10 |
+| `casa_colhida_18out` (não é campo) | 3 sadias, 7 anômalas | 7 de 10 | 7 de 10 | 7 de 10 | 7 de 9 + 1 inconcl. |
+
+- Horta: especificidade 10/10, IC de Wilson **72,2% a 100%**; confiança ≥ 0,986 em todas as
+  versões; recortes centrais (½ e ¼ do lado): 10 de 10 nas duas escalas, nas quatro versões.
+- Casa: as 3 sadias saem anômalas em todas as versões, com confiança ≥ 0,97; os erros
+  continuam nos recortes.
+- **Não citar** a acurácia balanceada das 20 fotos juntas (88,5%) nem o teste de H3
+  (p = 0,03): classe, cena e distância estão confundidas entre os dois lotes.
+- Sensibilidade em campo e *domain gap*: **sem medida** (nenhuma folha doente na horta).
+

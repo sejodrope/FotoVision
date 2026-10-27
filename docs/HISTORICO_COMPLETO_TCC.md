@@ -1001,6 +1001,16 @@ ficam fora por virem de só 5 fotos — ver §9-B.3):
 
 ---
 
+### 10.5 Campo com fundo real — primeiro lote (27/10/2026)
+
+Dez fotos numa horta, alface crespa, todas sadias, tiradas de cima com vários pés por
+quadro. Às cegas, as quatro versões (EfficientNet-B0 e ViT-B/16 dos ciclos 4 e 5) dão as
+10 como sadias, com confiança ≥ 0,98 (Wilson 72,2%–100%), e o resultado se mantém em
+recortes centrais de ½ e ¼ do lado. O lote de casa de 18/10 (um pé colhido, toalha branca;
+não é campo) sai inteiro como anômalo, inclusive as 3 folhas sadias. Leitura: fundo real
+não gera falso alarme; a sensibilidade em campo e o *domain gap* continuam sem medida,
+porque não houve folha doente na horta. Detalhe em CORRECOES §15.13.
+
 ## 11. As lições metodológicas
 
 *(a colecção completa, juntando `docs/CORRECOES_METODOLOGICAS.md` §9 com o que se
@@ -1195,8 +1205,9 @@ Em ordem de prioridade real (não de facilidade):
 | Auditoria de consistência: script e resultados | `backend/auditoria_consistencia.py`, `backend/results/auditoria/auditoria_13out.{json,md}` |
 | Guia de preparação para a banca e roteiro da apresentação | `docs/GUIA_BANCA_TCC2.md` |
 | Revisão da literatura na Web of Science (três rodadas) | `docs/REVISAO_LITERATURA_WOS.md` |
-| Artigo do TCC-II, versão atual (substitui as linhas anteriores) | `docs/Entregas Finais/TCC2_Artigo_FitoVision_v8.docx` (16/10, v7 + correções da literatura); as anteriores ficam ao lado; gerador em `docs/Entregas Finais/_gerador/build_v8.py` |
-| Monografia, versão atual | `docs/Entregas Finais/TCC_FitoVision_ATUALIZADO_v5.docx` (16/10); gerador `build_mono_v5.py` |
+| Artigo do TCC-II, versão atual (substitui as linhas anteriores) | `docs/Entregas Finais/TCC2_Artigo_FitoVision_v10.docx` (27/10, com o primeiro lote de campo); a v9 (27/10, conclusão reescrita) foi a entregue na "Postagem IV - parcial II"; as anteriores ficam ao lado; geradores em `docs/Entregas Finais/_gerador/build_v9.py` e `build_v10.py` |
+| Monografia, versão atual | `docs/Entregas Finais/TCC_FitoVision_ATUALIZADO_v6.docx` (27/10, seção 9.7); gerador `build_mono_v6.py` |
+| Campo com fundo real, primeiro lote (27/10) | `backend/campo_novo/` (fotos e `metadados_campo.csv`), `backend/results/campo_novo/` (`analise_campo.md`, `calibracao_e_hortas.md`, `recortes/`); scripts `confere_fotos_campo.py`, `roda_campo.py`, `testa_recortes_campo.py`; leitura em `docs/CORRECOES_METODOLOGICAS.md` §15.13 |
 | Leitura do texto completo da literatura (16/10) | `docs/REVISAO_LITERATURA_WOS.md`, Parte 4 |
 | Ciclo 5: split, auditoria, pesos | `backend/data_c5/split_metadata.json`, `backend/results/ciclo5/leakage_report.json`, `backend/weights/ciclo5/` |
 | Ciclo 5: avaliação por subconjunto e ciclo 4 × ciclo 5 | `backend/results/ciclo5/avaliacao_ciclo5.md`, `backend/results/ciclo5/ciclo4_x_ciclo5.md` (de `avalia_ciclo5.py` e `compara_c4_c5.py`) |

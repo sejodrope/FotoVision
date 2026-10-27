@@ -216,6 +216,21 @@ relatórios saem em `results/campo_novo/`.
 
 ---
 
+## Lições da primeira coleta (27/10/2026)
+
+- **A horta pode estar toda sadia.** Em 27/10 não havia nenhuma folha doente. Isso não é
+  erro: fotografe as sadias mesmo assim (medem falso alarme) e anote na planilha.
+- **Onde procurar folha com problema:** nas folhas **de baixo e de fora** do pé, as mais
+  velhas — manchas, amarelado, furo de inseto, ponta seca, borda queimada. Pergunte ao
+  responsável se algum canteiro teve praga ou doença recente.
+- **Pés encostados:** se não der para isolar um pé, foto de cima com vários pés serve (a
+  análise de 27/10 mostrou que o resultado não muda com recortes); anote "vários pés" e
+  "ampla". Quando puder, tire também uma de perto de uma folha só.
+- **Fotos sem folha:** 2 ou 3 por horta (chão, mão). Em 27/10 ficaram faltando.
+- **Transferência:** por **cabo USB**. Pelo Google Drive o EXIF (modelo, data) se perde.
+- **Folha de feira ou fotografada em casa não é campo** — vai numa "horta" própria e é
+  reportada à parte.
+
 ## Parte 5 — Depois da coleta, o que ainda falta no TCC-II
 
 1. **Decidir produção**: ciclo 3 ou ciclo 4, agora com dado de campo na mesa.

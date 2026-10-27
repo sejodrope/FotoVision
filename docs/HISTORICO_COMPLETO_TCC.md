@@ -1205,7 +1205,7 @@ Em ordem de prioridade real (não de facilidade):
 | Auditoria de consistência: script e resultados | `backend/auditoria_consistencia.py`, `backend/results/auditoria/auditoria_13out.{json,md}` |
 | Guia de preparação para a banca e roteiro da apresentação | `docs/GUIA_BANCA_TCC2.md` |
 | Revisão da literatura na Web of Science (três rodadas) | `docs/REVISAO_LITERATURA_WOS.md` |
-| Artigo do TCC-II, versão atual (substitui as linhas anteriores) | `docs/Entregas Finais/TCC2_Artigo_FitoVision_v10.docx` (27/10, com o primeiro lote de campo); a v9 (27/10, conclusão reescrita) foi a entregue na "Postagem IV - parcial II"; as anteriores ficam ao lado; geradores em `docs/Entregas Finais/_gerador/build_v9.py` e `build_v10.py` |
+| Artigo do TCC-II, versão atual (substitui as linhas anteriores) | `docs/Entregas Finais/TCC2_Artigo_FitoVision_v11.docx` (27/10, 10 páginas a pedido do orientador; a v10 tem o mesmo conteúdo em 11); a v9 (27/10, conclusão reescrita) foi a entregue na "Postagem IV - parcial II"; as anteriores ficam ao lado; geradores em `docs/Entregas Finais/_gerador/build_v9.py`, `build_v10.py` e `build_v11.py` |
 | Monografia, versão atual | `docs/Entregas Finais/TCC_FitoVision_ATUALIZADO_v6.docx` (27/10, seção 9.7); gerador `build_mono_v6.py` |
 | Campo com fundo real, primeiro lote (27/10) | `backend/campo_novo/` (fotos e `metadados_campo.csv`), `backend/results/campo_novo/` (`analise_campo.md`, `calibracao_e_hortas.md`, `recortes/`); scripts `confere_fotos_campo.py`, `roda_campo.py`, `testa_recortes_campo.py`; leitura em `docs/CORRECOES_METODOLOGICAS.md` §15.13 |
 | Leitura do texto completo da literatura (16/10) | `docs/REVISAO_LITERATURA_WOS.md`, Parte 4 |

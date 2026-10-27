@@ -1,6 +1,6 @@
 # FitoVision — Próximos Passos (TCC-II)
 
-### Última atualização: 27/10/2026 · primeiro lote de campo com fundo real (10 fotos de alface sadia); artigo v10 (entrega da conclusão: v9) e monografia v6
+### Última atualização: 27/10/2026 · primeiro lote de campo com fundo real (10 fotos de alface sadia); artigo v11 em 10 páginas (pedido do orientador; entrega da conclusão: v9) e monografia v6
 
 > **Leia este arquivo primeiro** quando voltar a trabalhar no projeto — ele
 > resume onde paramos e o que fazer a seguir. Para a **coleta de fotos em hortas
@@ -63,15 +63,18 @@ metade do campo: folhas doentes fotografadas na horta.**
 
 ### ▶ Ponto de retomada (fim de 27/10/2026)
 
-**Feito e entregue:** v9 postada (disciplina); v10 é a do MS Loop — **o José ainda precisa
-subir a v10 no Loop** (abrir no Word e conferir as 11 páginas antes). Nada foi commitado em
-27/10 (artigos v9/v10, monografia v6, fotos, `testa_recortes_campo.py`, docs).
+**Feito e entregue:** v9 postada (disciplina). **O orientador pediu 10 páginas** (27/10): a
+**v11** (`docs/Entregas Finais/TCC2_Artigo_FitoVision_v11.docx`, gerador `build_v11.py` a
+partir da v10) tem 10 páginas no LibreOffice e é a do MS Loop — **o José ainda precisa subir a
+v11 no Loop** (abrir no Word e conferir as 10 páginas antes). Saiu o Quadro 2 (objetivos ×
+dados × técnicas) e o texto foi enxugado sem mudar resultados (CORRECOES §15.14). Tudo de
+27/10 está no GitHub, no ramo `tcc2-campo-27out` (ainda não juntado ao `master`).
 
 **Se houver nova coleta**, ao voltar: pôr as fotos em `backend/campo_novo/<cultura>/<classe>/`,
 uma linha por foto em `metadados_campo.csv` (horta nova = nome novo), e rodar
-`confere_fotos_campo.py` → `roda_campo.py` → `testa_recortes_campo.py`. Depois: artigo v11
-(gerador novo a partir do v10; cortar só nas págs. 8–9, porque a Tabela 2 abre a pág. 8 e
-o que vem antes é absorvido), monografia v7, CORRECOES §15.14, ficha §14, guia da banca
+`confere_fotos_campo.py` → `roda_campo.py` → `testa_recortes_campo.py`. Depois: artigo v12
+(gerador novo a partir da v11; **limite de 10 páginas, sem folga**: qualquer acréscimo exige
+corte equivalente, de preferência em linhas curtas no fim de parágrafo), monografia v7, CORRECOES §15.14, ficha §14, guia da banca
 (Ato 8, slide 11, perguntas 15/15b).
 
 **Se não houver nova coleta:** o trabalho se sustenta com especificidade de campo medida

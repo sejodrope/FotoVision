@@ -1893,3 +1893,25 @@ Seção 4 foram enxugadas sem mudar números.
 **O que falta para Q3:** folhas doentes fotografadas na horta (mínimo de 15 por
 cultura), uma segunda horta para a adaptação, fotos sem folha para a guarda de
 vegetação, e outra cultura (couve) para H1.
+
+### 15.14 Artigo em 10 páginas (v11, 27/10/2026)
+
+O orientador pediu que o artigo tenha **10 páginas** (o limite de 11 tinha sido liberado pelo
+José em 13/10). A v11 (`_gerador/build_v11.py`, a partir da v10) tem 10 páginas no
+LibreOffice, sem folga. Nenhum número ou resultado mudou; saiu o que estava repetido ou era
+detalhe:
+
+- **Quadro 2** (objetivos × dados × técnicas): a Seção 3.3 já descreve as técnicas por
+  pergunta (Q1 a Q3). É a única peça inteira que saiu; se o orientador quiser de volta, é
+  preciso cortar ~12 linhas em outro lugar.
+- Parágrafo de abertura da Introdução (contexto geral de IA) e a frase de abertura da Seção 2.
+- Detalhes: contagem de parâmetros das versões originais das CNNs (os do modelo treinado
+  estão na Tabela 1), IC do espinafre após o ciclo 4, IC da lavoura na discussão, a frase do
+  ViT com Shafay na Seção 4 (Shafay segue citado na Introdução e na 2.3), a frase de abertura
+  da Seção 4, a lista de causas prováveis do Grad-CAM e linhas curtas em quase todas as seções.
+- Todas as referências continuam citadas no texto (conferido).
+
+Lição de paginação: a página só encolhe quando o corte vem depois do último bloco que não
+quebra (tabela ou quadro) antes do fim do texto; cortes antes disso são absorvidos pelo
+espaço que sobra no pé da página anterior à tabela.
+

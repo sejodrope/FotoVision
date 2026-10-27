@@ -77,8 +77,8 @@ nota = [
       'fotografias de canteiros de alface sadia, tiradas em uma horta em 27 de outubro. As quatro versões avaliadas (o '
       'EfficientNet-B0 e o ViT-B/16 do quarto e do quinto ciclos) classificaram as 10 como sadias, e solo, mato e vários '
       'pés no quadro não provocaram falso alarme. Como não houve folhas doentes nesse lote, a sensibilidade em campo e o '
-      '*domain gap* ainda não puderam ser medidos. O artigo passou à versão 10, e a conclusão da versão 9 foi a entregue '
-      'na disciplina em 27 de outubro.'),
+      '*domain gap* ainda não puderam ser medidos. O artigo passou à versão 11, reduzida a 10 páginas a pedido do '
+      'orientador; a conclusão da versão 9 foi a entregue na disciplina em 27 de outubro.'),
     QUEBRA,
 ]
 

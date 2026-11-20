@@ -1,6 +1,18 @@
 # FitoVision — Próximos Passos (TCC-II)
 
-### Última atualização: 27/10/2026 · primeiro lote de campo com fundo real (10 fotos de alface sadia); artigo v11 em 10 páginas (pedido do orientador; entrega da conclusão: v9) e monografia v6
+### Última atualização: 20/11/2026 · tudo salvo no git; próxima sessão = simulado da banca
+
+> **▶ Ponto de retomada (20/11/2026).** Correções do orientador aplicadas (artigo **v14**, slides **v2**, roteiro,
+> guia v6, quadro de atendimento) — detalhe na seção de 19/11 abaixo. **Próxima sessão: simulado da banca**:
+> (1) ensaio cronometrado da fala com `docs/apresentacao_banca/ROTEIRO_FALAS_20MIN.md` (meta 19:15, limite 20 min)
+> e os slides `TCC2_Apresentacao_FitoVision_v2.pptx`; (2) arguição simulada com as 41 perguntas do
+> `docs/GUIA_BANCA_TCC2.md` (Seção 11) e da página de estudo https://claude.ai/artifact/5C2CAHzoe1j4CTUUHfNd9S,
+> no tom de banca, com correção de cada resposta; (3) ajustar falas/slides com o que travar. Plano de ensaios na
+> Seção 13 do guia (ensaio 1 em 17–23/11). Pendências do José antes disso: conferir o v14 no Word e enviar ao
+> orientador pelo MS Loop (lista "Falta (José)" abaixo). Linguagem da banca: sem Q1–Q3; "no teste / na
+> calibração / no campo"; "fotos de campo" (não "de horta") para as 13 históricas.
+> Ficaram **fora do git de propósito** (repositório público): `docs/correção final apra banca/` (artigo com as
+> observações do orientador + Guia), os protocolos de orientação, os modelos do curso e `_tmp_fotos/`.
 
 > **Leia este arquivo primeiro** quando voltar a trabalhar no projeto — ele
 > resume onde paramos e o que fazer a seguir. Para a **coleta de fotos em hortas
@@ -37,6 +49,45 @@ metade do campo: folhas doentes fotografadas na horta.**
 > os fatos conferidos estão em `docs/FICHA_TECNICA_FITOVISION.md`.
 
 ---
+
+## ✏️ 19/11/2026 — correções do orientador (entrega 1) e Guia de Trabalhos Acadêmicos
+
+O Prof. Leanderson devolveu o artigo (`docs/correção final apra banca/Leanderson_JosePVS_(entrega 1)...docx`,
+observações em texto laranja, sem comentários do Word) e pediu para seguir o
+`Guia-Trabalhos-Academicos-2019.pdf` da Univille. As 25 observações entraram no **artigo v14**:
+
+- **Arquivo:** `docs/Entregas Finais/TCC2_Artigo_FitoVision_v14.docx` (prévia
+  `..._v14_previa_libreoffice.pdf`, **10 páginas no LibreOffice, ~3 linhas de folga**). Gerador:
+  `docs/Entregas Finais/_gerador/build_v14.py` (+ `base_markup.py`), a partir de `TCC2_Artigo_FitoVision.docx`
+  (a versão que ele revisou = v13 com o título curto do José).
+- **Conteúdo:** sem Q1–Q3 e sem objetivo geral/específicos; **um objetivo**, igual no resumo, na introdução, na
+  metodologia e na conclusão ("avaliar em que medida um sistema de triagem fitossanitária ... mantém desempenho
+  confiável em fotografias de campo"); resumo e abstract no passado, com palavras-chave/keywords; metodologia e
+  resultados no passado; texto introdutório na Seção 2; cada tabela apresentada e comentada; conclusão reescrita
+  (contexto, questão, objetivo, resultados, trabalhos futuros, sem frases categóricas). O parágrafo do Grad-CAM saiu
+  (não havia resultado) e, com ele, Selvaraju et al. (2017).
+- **Forma (Guia/ABNT):** espaçamento simples, 0 antes/depois, recuo de 1,25 cm; citações entre parênteses em
+  maiúsculas; legendas "Tabela 1 – ..." acima, nota e fonte abaixo, alinhadas à esquerda; tabelas inteiras numa
+  página; referências alinhadas à esquerda, uma linha em branco entre elas, eventos com local e editora, DOI.
+  Mantido do template do curso: numeração "1. Introdução" e o bloco Abstract/Resumo no topo.
+- **Apresentação:** `roteiro_data.py` sem Q1–Q3 (backup em `roteiro_data_v13_backup.py`) →
+  `TCC2_Apresentacao_FitoVision_v2.pptx`, `ROTEIRO_FALAS_20MIN.md` (19:15), página de estudo republicada
+  (https://claude.ai/artifact/5C2CAHzoe1j4CTUUHfNd9S); `GUIA_BANCA_TCC2.md` versão 6 (perguntas 40 e 41); doc
+  "FitoVision: preparação para a defesa" (https://claude.ai/artifact/ATSZnYmtz1E5v5TMhFBCQR) com a seção nova.
+
+**Revisão de conformidade (19/11, tarde):** siglas por extenso, símbolos das equações definidos, itálico nos
+títulos, tabelas abertas nas laterais (quadro fechado), abreviaturas nas notas, 21 DOIs conferidas no Crossref
+(fascículo e número de artigo completados), "horta real" retirado do 73,3%, métrica nomeada no Quadro 1, falsos
+alarmes do lote de casa explícitos, ECE de campo como indicativo. O gerador agora reordena o XML no padrão OOXML e
+`_gerador/valida_ooxml.py` confere isso (sem a reordenação, o Word poderia acusar o arquivo como corrompido).
+**Quadro de atendimento** às 25 observações: `docs/Entregas Finais/TCC2_Atendimento_Observacoes_Orientador.docx`
+(gerador `_gerador/gera_atendimento.py`), com 4 pontos para a decisão do orientador no fim.
+
+**Falta (José), nesta ordem:** (1) abrir o v14 no **Word** e conferir 10 páginas, tabelas inteiras e fontes logo
+abaixo; (2) ler o artigo inteiro uma vez; (3) salvar PDF pelo Word e conferir as páginas citadas no quadro de
+atendimento; (4) subir artigo (.docx + PDF) e quadro no MS Loop e registrar na tabela de reuniões; (5) pedir
+decisão sobre os 4 pontos do quadro (numeração "1." do template, ordem Abstract/Resumo, DOI × "Disponível em",
+ano da Workneh: volume 256 é de jan/2027).
 
 ## 🌱 27/10/2026 — primeiro lote de campo; artigo v9 (conclusão) e v10; monografia v6
 

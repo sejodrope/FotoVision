@@ -1,0 +1,168 @@
+<title>Defesa FitoVision</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: caderno de ensaio. Barra fixa com abas e relógio; coluna única de leitura; a fala em serifa, o resto em sans. */
+:root{
+  --bg:#f4f6f1; --surface:#ffffff; --ink:#1d2a22; --muted:#5d6b62; --line:#d9dfd6;
+  --green:#1f5130; --leaf:#5b9a2c; --leaf-soft:#e3f1d6; --warn:#b4560a; --warn-soft:#fbe9d7;
+  --ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --read:"Source Serif 4",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#121814; --surface:#1b231d; --ink:#e7ede8; --muted:#9aa89f; --line:#2e3a31;
+  --green:#9fd08a; --leaf:#8cc763; --leaf-soft:#243422; --warn:#f0a35c; --warn-soft:#3a2a1a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#121814; --surface:#1b231d; --ink:#e7ede8; --muted:#9aa89f; --line:#2e3a31;
+  --green:#9fd08a; --leaf:#8cc763; --leaf-soft:#243422; --warn:#f0a35c; --warn-soft:#3a2a1a; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding-block:10px}
+.brand{font-weight:700;color:var(--green);letter-spacing:-.01em;margin-right:auto}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:12px;letter-spacing:0}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+nav a{padding:6px 12px;border-radius:999px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px}
+nav a[aria-current="page"]{background:var(--green);color:var(--surface)}
+nav a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+main{padding-block:24px 64px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:26px;line-height:1.2;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h2{font-size:18px;margin:0;line-height:1.3;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted);max-width:65ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+button{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;cursor:pointer}
+button.pri{background:var(--green);border-color:var(--green);color:var(--surface)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tag{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+/* relógio */
+.clock{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.clock .big{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.clock .meta{display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0}
+.track{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;background:var(--leaf);width:0}
+.late{color:var(--warn)}
+/* slides */
+.slide{scroll-margin-top:140px}
+.slide.now{border-color:var(--leaf);box-shadow:0 0 0 2px var(--leaf-soft)}
+.slide header{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.slide .n{font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
+.slide .t{margin-left:auto;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.msg{background:var(--leaf-soft);border-radius:8px;padding:8px 12px;font-weight:600;color:var(--green)}
+.fala{font-family:var(--read);font-size:18px;line-height:1.6;max-width:65ch}
+.trans{color:var(--muted);font-style:italic}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;color:var(--muted)}
+details p{margin-top:6px;max-width:70ch}
+/* números */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.flash{text-align:left;display:flex;flex-direction:column;gap:6px;min-height:118px;padding:14px 16px;border-radius:12px}
+.flash b.v{font-size:24px;letter-spacing:-.01em;color:var(--green);font-variant-numeric:tabular-nums;line-height:1.15}
+.flash span{font-weight:400;color:var(--ink);font-size:14px}
+.flash.hid span{color:transparent;background:repeating-linear-gradient(135deg,var(--line) 0 6px,transparent 6px 12px);border-radius:6px;user-select:none}
+/* perguntas */
+.q h2{font-family:var(--read);font-weight:600;font-size:19px}
+.q .a{max-width:68ch}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border-radius:999px;padding:5px 12px;font-size:13px}
+.chips button[aria-pressed="true"]{background:var(--green);color:var(--surface);border-color:var(--green)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto}
+code{font-size:.9em;background:var(--leaf-soft);padding:1px 5px;border-radius:4px}
+@media (max-width:520px){.clock .big{font-size:32px}.fala{font-size:17px}}
+@media (prefers-reduced-motion:no-preference){.track i{transition:width .4s linear}}
+</style>
+
+<header class="bar"><div class="wrap">
+  <div class="brand">Defesa FitoVision<small>TCC-II · banca em 08/12/2026 · até 20 minutos</small></div>
+  <nav id="nav">
+    <a href="#roteiro">Roteiro</a><a href="#numeros">Números</a><a href="#perguntas">Perguntas</a><a href="#limites">Limitações</a>
+  </nav>
+</div></header>
+
+<div class="wrap"><main id="app"></main></div>
+
+<script>
+const D = /*DADOS*/null;
+const $ = (h) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
+const mmss = (s) => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const app = document.getElementById('app');
+const total = D.slides.reduce((a, s) => a + s.tempo, 0);
+const fim = []; D.slides.reduce((a, s, i) => (fim[i] = a + s.tempo), 0);
+const st = { run: false, t0: 0, acc: 0, cur: 0, cat: 'Todas', timer: null };
+const elapsed = () => st.acc + (st.run ? (Date.now() - st.t0) / 1000 : 0);
+
+function viewRoteiro() {
+  app.append($(`<div><h1>Roteiro de falas</h1><p class="lead">Quinze slides, ${mmss(total)} em ritmo calmo. Ligue o relógio, fale em voz alta e avance quando terminar cada slide. O relógio mostra se você está adiantado ou atrasado em relação ao plano.</p></div>`));
+  const c = $(`<section class="card" aria-label="Relógio do ensaio"><div class="clock">
+    <div class="big num" id="ck">0:00</div>
+    <div class="meta"><b id="ckS"></b><span id="ckD" class="num"></span></div>
+    <div class="row"><button class="pri" id="bGo">Iniciar</button><button id="bNext">Próximo slide</button><button id="bZero">Zerar</button></div>
+  </div><div class="track"><i id="bar"></i></div></section>`);
+  app.append(c);
+  D.slides.forEach((s, i) => {
+    app.append($(`<article class="card slide" id="s${i}">
+      <header><span class="n">Slide ${i + 1}</span><h2>${s.titulo}</h2><span class="t">${mmss(s.tempo)} · termina em ${mmss(fim[i])}${s.pagina ? ' · artigo ' + s.pagina : ''}</span></header>
+      <p class="msg">${s.mensagem}</p>
+      <p class="fala">${s.fala}</p>
+      ${s.transicao ? `<p class="trans">Transição: “${s.transicao}”</p>` : ''}
+      ${s.se_perguntarem ? `<details><summary>Cola para perguntas</summary><p>${s.se_perguntarem}</p></details>` : ''}
+    </article>`));
+  });
+  const go = c.querySelector('#bGo');
+  go.onclick = () => { if (st.run) { st.acc = elapsed(); st.run = false; } else { st.t0 = Date.now(); st.run = true; } tick(); };
+  c.querySelector('#bNext').onclick = () => { if (st.cur < D.slides.length - 1) { st.cur++; tick(); document.getElementById('s' + st.cur).scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+  c.querySelector('#bZero').onclick = () => { st.run = false; st.acc = 0; st.cur = 0; tick(); };
+  clearInterval(st.timer); st.timer = setInterval(() => st.run && tick(), 500); tick();
+}
+function tick() {
+  const ck = document.getElementById('ck'); if (!ck) return;
+  const e = elapsed(), s = D.slides[st.cur], alvo = fim[st.cur], dif = e - alvo;
+  ck.textContent = mmss(e); ck.classList.toggle('late', e > 20 * 60);
+  document.getElementById('ckS').textContent = `Slide ${st.cur + 1} de ${D.slides.length}: ${s.titulo}`;
+  const d = document.getElementById('ckD');
+  d.textContent = dif > 0 ? `Este slide deveria ter terminado há ${mmss(dif)}` : `Este slide termina em ${mmss(-dif)} (plano: ${mmss(alvo)})`;
+  d.classList.toggle('late', dif > 0);
+  document.getElementById('bar').style.width = Math.min(100, e / (20 * 60) * 100) + '%';
+  document.getElementById('bGo').textContent = st.run ? 'Pausar' : (e > 0 ? 'Continuar' : 'Iniciar');
+  document.querySelectorAll('.slide').forEach((el, i) => el.classList.toggle('now', i === st.cur));
+}
+function viewNumeros() {
+  app.append($(`<div><h1>Cartão de números</h1><p class="lead">Os ${D.numeros.length} números para saber de cor. Toque em um cartão para ver o que ele significa; tente dizer antes de abrir.</p></div>`));
+  const r = $(`<div class="row"><button id="bAll">Mostrar todos</button><button id="bHide">Esconder todos</button></div>`);
+  const g = $(`<div class="grid"></div>`);
+  D.numeros.forEach((n) => { const b = $(`<button class="flash hid" aria-expanded="false"><b class="v">${n.n}</b><span>${n.o}</span></button>`); b.onclick = () => { const h = b.classList.toggle('hid'); b.setAttribute('aria-expanded', String(!h)); }; g.append(b); });
+  r.querySelector('#bAll').onclick = () => g.querySelectorAll('.flash').forEach((b) => { b.classList.remove('hid'); b.setAttribute('aria-expanded', 'true'); });
+  r.querySelector('#bHide').onclick = () => g.querySelectorAll('.flash').forEach((b) => { b.classList.add('hid'); b.setAttribute('aria-expanded', 'false'); });
+  app.append(r, g);
+}
+function viewPerguntas() {
+  const cats = ['Todas', ...new Set(D.perguntas.map((p) => p.c))];
+  app.append($(`<div><h1>Perguntas prováveis da banca</h1><p class="lead">${D.perguntas.length} perguntas com resposta de 30 a 45 segundos. Responda em voz alta antes de abrir. Se não souber: “Não medi isso. O que tenho de mais próximo é… e o experimento que responderia seria…”.</p></div>`));
+  const bar = $(`<div class="row"><div class="chips" role="group" aria-label="Filtrar por assunto"></div><button class="pri" id="bSort">Sortear uma</button></div>`);
+  const list = $(`<div style="display:flex;flex-direction:column;gap:12px"></div>`);
+  const draw = (only) => { list.innerHTML = ''; D.perguntas.filter((p) => only ? p === only : (st.cat === 'Todas' || p.c === st.cat)).forEach((p) => list.append($(`<article class="card q"><span class="tag">${p.c} · nº ${p.k}</span><h2>“${p.p}”</h2><details${only ? '' : ''}><summary>Ver resposta</summary><p class="a">${p.r}</p></details></article>`))); };
+  cats.forEach((c) => { const b = $(`<button aria-pressed="${c === st.cat}">${c}</button>`); b.onclick = () => { st.cat = c; bar.querySelectorAll('.chips button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); draw(); }; bar.querySelector('.chips').append(b); });
+  bar.querySelector('#bSort').onclick = () => draw(D.perguntas[Math.floor(Math.random() * D.perguntas.length)]);
+  app.append(bar, list); draw();
+}
+function viewLimites() {
+  app.append($(`<div><h1>Limitações do estudo</h1><p class="lead">As cinco que estão no artigo e no slide 13, na ordem em que você fala. Diga antes que perguntem, sem pedir desculpas.</p></div>`));
+  app.append($(`<section class="card"><div class="scroll"><table><thead><tr><th>#</th><th>Limitação</th><th>O que dizer</th><th>Fonte</th></tr></thead><tbody>${D.limit.map((l, i) => `<tr><td class="num">${i + 1}</td><td><b>${l.t}</b></td><td>${l.d}</td><td>${l.f}</td></tr>`).join('')}</tbody></table></div></section>`));
+  app.append($(`<section class="card"><h2>A frase que resume a postura</h2><p class="fala">Este trabalho não entrega um modelo pronto para o campo. Entrega a medida honesta de quanto falta, a explicação de por que falta e o caminho para chegar lá.</p></section>`));
+  app.append($(`<section class="card"><h2>Regras de palco</h2><p>Não leia o slide: conte a história do número grande. Diga os intervalos em voz alta (“84,6%, com intervalo de 58 a 96”). Não diga “laboratório” para o 98,48%: diga “intra-fonte”. Pare dois segundos depois do slide 6 e do slide 9.</p></section>`));
+}
+const views = { roteiro: viewRoteiro, numeros: viewNumeros, perguntas: viewPerguntas, limites: viewLimites };
+function route() {
+  const v = views[location.hash.slice(1)] ? location.hash.slice(1) : 'roteiro';
+  app.innerHTML = ''; views[v]();
+  document.querySelectorAll('#nav a').forEach((a) => a.getAttribute('href') === '#' + v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  window.scrollTo(0, 0);
+}
+addEventListener('hashchange', route); route();
+</script>

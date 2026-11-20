@@ -1,6 +1,6 @@
 # FitoVision — Guia de preparação para a banca
 
-### TCC-II · Engenharia de Software · Univille · Banca em 08/12/2026, 20 minutos de fala · Versão 4, de 16/10/2026 (com a leitura do texto completo da literatura e o artigo v8)
+### TCC-II · Engenharia de Software · Univille · Banca em 08/12/2026, 20 minutos de fala · Versão 6, de 19/11/2026 (artigo v14, com as correções do Prof. Leanderson; slides v2 e roteiro atualizados)
 
 > **O que é este documento.** O guia de estudo e o roteiro da apresentação. Ele junta a
 > história do projeto, os conceitos que você precisa dominar, a posição do trabalho na
@@ -15,6 +15,52 @@
 > (Partes 1 e 2) e a Parte 3 deste guia. Os números dos artigos externos foram lidos nos
 > **resumos** da Web of Science; antes da banca, leia o texto completo dos sete marcados
 > com ★ na Seção 6.
+
+> **Novidades da versão 6 (19/11/2026): correções do orientador.** O Prof. Leanderson devolveu o artigo
+> (`docs/correção final apra banca/`) com 25 observações e pediu para seguir o *Guia para Trabalhos Acadêmicos*
+> da Univille (2019). Tudo entrou no **artigo v14** (`docs/Entregas Finais/TCC2_Artigo_FitoVision_v14.docx`, 10
+> páginas no LibreOffice; gerador `_gerador/build_v14.py`):
+> - **Uma questão e um objetivo, iguais em todo o trabalho.** Saíram as perguntas Q1–Q3 ("se tem mais 3 questões,
+>   serão 4 TCCs") e o objetivo geral e os específicos ("no TCC II não há objetivo geral nem específicos; são
+>   tópicos do TCC I"). O objetivo agora é **avaliar em que medida o sistema mantém desempenho confiável em
+>   fotografias de campo**, e aparece no resumo, na introdução, na metodologia e na conclusão. As três situações de
+>   avaliação (teste das mesmas fontes, fonte nunca vista, campo) são o **método**, não perguntas.
+>   **Na banca, não diga "Q1", "Q2" nem "Q3".** Diga "no teste", "na calibração", "no campo".
+> - **Resumo e abstract no passado**, com objetivo, método, resultados e conclusão, e com **palavras-chave**
+>   (Visão computacional. Doenças de plantas. *Domain gap*.) e *keywords*.
+> - **Formatação:** espaçamento simples, 0 antes e depois, recuo de 1,25 cm na primeira linha. Texto
+>   introdutório na Seção 2. Citações entre parênteses em maiúsculas, como pede a NBR 10520 (ex.: "(BARBEDO,
+>   2018)"); referências alinhadas à esquerda, com uma linha em branco entre elas e local e editora nos eventos.
+> - **Tabelas e quadro:** título acima ("Tabela 1 – ..."), nota e fonte abaixo, alinhadas à esquerda, e cada um
+>   apresentado e comentado no texto.
+> - **Conclusão reescrita:** retoma o contexto, a questão e o objetivo, diz o que se concluiu, sugere trabalhos
+>   futuros e evita afirmações categóricas ("o EfficientNet-B0 é a arquitetura indicada" virou "mostrou-se a opção
+>   mais adequada neste estudo"; "o limite está nos dados" saiu).
+> - O Grad-CAM saiu da metodologia (não há resultado de Grad-CAM no artigo), e Selvaraju et al. (2017) saiu das
+>   referências.
+> - **Slides v2** (`TCC2_Apresentacao_FitoVision_v2.pptx`) e **roteiro** (`ROTEIRO_FALAS_20MIN.md`) acompanham:
+>   slide 3 com questão e objetivo, sem Q1–Q3; títulos dos slides 7, 8 e 11 sem "Q"; conclusão no passado.
+>   Perguntas novas: 40 e 41.
+>
+> **Revisão de 19/11 (tarde), antes de enviar ao orientador.** O v14 foi conferido item a item contra o Guia e a
+> ABNT: siglas por extenso (TCC, ViT, IC, ROC, GPU), símbolos das equações definidos, termos estrangeiros em itálico
+> também nos títulos, tabelas abertas nas laterais (o quadro continua fechado), abreviaturas das tabelas definidas
+> nas notas, as 21 DOIs conferidas no Crossref (volume, fascículo, número do artigo). Conteúdo: o 73,3% deixou de
+> dizer "horta real" (a procedência das 13 fotos não foi registrada); o Quadro 1 nomeia a métrica em cada célula;
+> o lote de casa diz "três falsos alarmes"; o ECE de campo (0,146) é "valor indicativo, N = 13". **Na banca, diga
+> assim também.** O quadro de atendimento às observações está em
+> `docs/Entregas Finais/TCC2_Atendimento_Observacoes_Orientador.docx`.
+
+> **Novidades da versão 5 (12/11/2026).**
+> - **Artigo v13** (`docs/Entregas Finais/TCC2_Artigo_FitoVision_v13.docx`, 10 páginas, no template de 2026): ganhou o
+>   parágrafo **“Limitações do estudo”** no fim da Seção 4, com quatro fontes novas, e perdeu oito referências
+>   antigas (os métodos continuam citados pelo nome). Detalhe na Seção 8 deste guia.
+> - **Slides**: `docs/Entregas Finais/TCC2_Apresentacao_FitoVision_v1.pptx`, 16 slides no modelo da Univille, com a
+>   fala de cada slide nas anotações do orador.
+> - **Roteiro de falas**: `docs/apresentacao_banca/ROTEIRO_FALAS_20MIN.md` (19:15 em ritmo calmo). A Seção 10 deste
+>   guia agora só traz o mapa; o texto das falas está lá.
+> - **Campo**: continua como em 27/10 (13 fotos históricas + 10 com fundo real, todas sadias). Os trechos
+>   **[ATUALIZAR]** só mudam se houver nova coleta.
 
 ---
 
@@ -46,7 +92,7 @@
 > não. No teste elas acertam 98,5%. Só que esse número é uma média: 99,7% em foto de
 > estúdio e 86% em foto de lavoura, dentro do mesmo teste. Numa fonte que o modelo nunca
 > viu, cai para 75%, e em horta os erros saem com 99% de confiança. O trabalho mostra,
-> com teste estatístico, que o limite está nos dados e na forma de avaliar, não na
+> com teste estatístico, que, nos meus dados, o que pesou foi a forma de avaliar, não a
 > arquitetura — e propõe um protocolo para medir isso direito."
 
 ### 2 minutos
@@ -738,6 +784,37 @@ apresentação.
 
 ## 8. Limitações — diga antes que perguntem
 
+### As cinco que estão no artigo (v14) e no slide 13
+
+São estas que você diz na apresentação, nesta ordem. A lista longa, mais abaixo, é para a arguição.
+
+| # | Limitação | O que dizer | Fonte que sustenta |
+|---|---|---|---|
+| 1 | **Campo pequeno** | 23 fotos, só de alface; o lote com fundo real não tem folhas doentes. Sensibilidade e *domain gap* em campo sem medida. | Os próprios dados (Tabela 2; lote de 27/10) |
+| 2 | **Mesmas fontes públicas** | Treino e teste da mesma origem; os conjuntos públicos da área estão longe das condições reais de uso; parte das culturas é só *proxy* visual. | Xu et al. (2024), *Frontiers in Plant Science* 15 |
+| 3 | **Calibração fora do campo** | Do laboratório para a lavoura, o *temperature scaling* reduz o ECE, mas a confiança segue bem acima da acurácia. Aqui: ECE de 0,146 em campo. | Xiang; Shi; Zhu (2026), *Frontiers in Plant Science* 17 |
+| 4 | **Tarefa binária** | Não nomeia a doença; sintomas parecidos podem ter causas diferentes. | Barbedo (2016), *Biosystems Engineering* 144 |
+| 5 | **Uma semente por modelo** | O desempenho de uma rede varia entre sementes; o empate EfficientNet-B0 × ViT pode não se repetir. | Coakley; Gundersen (2026), *Scientific Reports* 16 |
+
+**O que cada fonte nova mostrou, para você saber de cor:**
+
+- **Xiang; Shi; Zhu (2026).** ResNet-50 treinada no PlantVillage e testada em fotos de campo (PlantDoc): de 99,73% para
+  32,05%, com confiança média de 79,76%. Com *temperature scaling*, o ECE cai de 0,476 para 0,365 e continua alto.
+  É o trabalho mais parecido com o seu resultado de calibração.
+- **Xu et al. (2024).** Artigo de perspectiva: os conjuntos públicos de doenças de plantas foram montados para servir
+  aos modelos e não parecem com o uso real; propõe uma taxonomia de conjuntos.
+- **Barbedo (2016).** Revisão dos desafios do diagnóstico por imagem: fundo, iluminação, sintomas que variam e
+  doenças diferentes com sintomas parecidos. Autor da Embrapa; é o mesmo do Barbedo (2018) que você já cita.
+- **Coakley; Gundersen (2026).** 186 experimentos, cada um treinado 100 vezes com sementes diferentes (ResNet, ViT e
+  modelos de séries temporais). O desempenho é uma distribuição; a média sozinha não basta para escolher modelo.
+
+**Referências que saíram do artigo na v13** (para não ser pego de surpresa): McNemar (1947), Holm (1979), Wilson
+(1927), Efron e Tibshirani (1993), Newcombe (1998), Agresti (2013), Naeini et al. (2015) e Russell e Norvig (2022).
+Os métodos continuam no texto; se perguntarem a origem, você sabe dizer: McNemar é de 1947 e Dietterich (1998) o
+recomenda para comparar classificadores; o intervalo de Wilson é de 1927; o *bootstrap* é de Efron.
+
+### A lista completa, para a arguição
+
 Apresente as limitações você mesmo, em um slide. Banca que encontra uma limitação
 escondida desconta; banca que a ouve do candidato pergunta sobre trabalhos futuros.
 
@@ -772,11 +849,11 @@ escondida desconta; banca que a ouve do candidato pergunta sobre trabalhos futur
 
 | Ação | Custo | O que responde |
 |---|---|---|
-| Coleta de campo separada por horta (avaliação e adaptação), com os arquivos originais e os metadados | Dias | Q3; é o que falta |
+| Coleta de campo separada por horta (avaliação e adaptação), com os arquivos originais e os metadados | Dias | A parte de campo; é o que falta |
 | Refazer o split por proveniência e sem as variantes que não são fotografias | Horas | Tira o vazamento que o hash não vê |
 | Rotular as pastas de dano por praga; equilibrar a amostragem por cultura e rótulo | Horas + retreino | Sintomas estruturais; atalho da cultura |
 | Avaliar o ciclo 4 congelado, às cegas, em todas as fotos novas | Horas | Tamanho do *domain gap* |
-| ECE, cobertura e erros interceptados em campo | Horas | Q2 no domínio de uso |
+| ECE, cobertura e erros interceptados em campo | Horas | Calibração no domínio de uso |
 | ECE de campo com *T* = 1 e com *T* ajustado | Minutos | Se a calibração está inflando a confiança fora do domínio |
 | Recalibrar *T* e τ no conjunto de adaptação | Minutos | Se a abstenção volta a proteger |
 | Teste de fundo: mesma imagem com fundo removido e com folha removida | Horas | Hipótese do fundo |
@@ -820,147 +897,38 @@ humano–IA em apoio à decisão.
 
 ## 10. Roteiro da apresentação
 
-> **Confirme com o orientador** o tempo de fala e o de arguição. O roteiro abaixo é para
-> **20 minutos**; os slides marcados com ◇ saem na versão de 15. Regra prática: um slide
-> por minuto e meio, uma ideia por slide.
+> **O texto das falas, slide a slide, está em `docs/apresentacao_banca/ROTEIRO_FALAS_20MIN.md`** e nas anotações do
+> orador de `docs/Entregas Finais/TCC2_Apresentacao_FitoVision_v2.pptx`. Aqui fica só o mapa.
 >
-> O deck do Seminário 2 (nove slides: capa, problema, sistema, objetivo, erros, domínio,
-> resultados, conclusão, próximos) é a base. O roteiro abaixo o amplia.
->
-> Com o slide 10b (ciclo 5), a soma completa passa de 20 minutos; sem os dois ◇ (7 e 12)
-> fica em 20:00 exatos. Se o orientador preferir manter o slide 7, junte o 10 e o 10b.
+> São 15 slides de conteúdo e o de agradecimento. A soma dá 19:15 em ritmo calmo; em ritmo normal de fala, de 15 a
+> 17 minutos. **Confirme com o orientador** o tempo de fala e o de arguição.
 
-| # | Slide | Tempo | Mensagem única |
-|---|---|---|---|
-| 1 | Capa | 0:30 | Título, você, orientador |
-| 2 | O problema | 1:30 | 99% no papel, 70–85% no campo |
-| 3 | Questão e objetivos | 1:30 | Quanto vale em uso real? Q1, Q2, Q3 |
-| 4 | O sistema | 1:30 | Quatro saídas, não duas |
-| 5 | Dados e método | 1:30 | 175 mil imagens, quatro arquiteturas, estatística pareada |
-| 6 | O 99,01% e o vazamento | 2:00 | 57% do teste já tinha sido visto |
-| 7 ◇ | Os bugs que só o campo mostrou | 1:30 | Abstenção desligada; 3.972 rótulos trocados |
-| 8 | Q1 — arquiteturas | 1:30 | EfficientNet-B0 e ViT empatam; arquitetura não é o gargalo |
-| 9 | Q2 — calibração e abstenção | 1:30 | Dois terços dos erros saem confiantes |
-| 10 | O teste por dentro e por fora | 2:00 | 99,7% em estúdio · 86% em lavoura · 75% em fonte nova |
-| 10b | Corrigir o atalho (ciclo 5) | 1:30 | Menos falsos alarmes, mais doenças perdidas |
-| 11 | Q3 — campo | 2:00 | Fundo real não gera falso alarme; doença em campo ainda sem medida **[ATUALIZAR]** |
-| 12 ◇ | O que a literatura diz | 1:00 | O mesmo padrão, em outras culturas |
-| 13 | Limitações | 1:00 | Ditas por você |
-| 14 | Conclusão e contribuições | 1:30 | O limite está nos dados; o protocolo é a entrega |
-| 15 | Trabalhos futuros | 0:30 | Três itens |
+| # | Slide | Tempo | Relógio | Mensagem única |
+|---|---|---|---|---|
+| 1 | Capa | 0:30 | 0:30 | Quem sou, o que é o trabalho e a pergunta em uma frase. |
+| 2 | 99% no papel, 70% a 85% no campo | 1:15 | 1:45 | Existe uma distância entre o resultado de laboratório e o de campo, e ela tem custo para o produtor. |
+| 3 | Questão de pesquisa e objetivo | 1:15 | 3:00 | Uma questão de pesquisa e um objetivo, avaliados em três situações cada vez mais longe do treino. |
+| 4 | O sistema: quatro respostas, não duas | 1:15 | 4:15 | É uma triagem com quatro veredictos; dois deles existem para o sistema poder dizer “não sei”. |
+| 5 | Dados, modelos e avaliação | 1:15 | 5:30 | 175 mil imagens deduplicadas, quatro arquiteturas, estatística pareada e três níveis de avaliação. |
+| 6 | O 99,01% estava errado | 1:45 | 7:15 | 57,35% do teste do TCC-I já estava no treino. O número foi descartado. |
+| 7 | Arquiteturas · Empate no teste intra-fonte | 1:30 | 8:45 | EfficientNet-B0 e ViT-B/16 empataram; o ViT é 21 vezes maior e chegou ao mesmo lugar. |
+| 8 | Calibração · Calibrado na média, cego nos erros | 1:30 | 10:15 | A calibração funcionou, mas a abstenção interceptou só 31% e 15% dos erros. |
+| 9 | O teste por dentro e por fora | 1:45 | 12:00 | O 98,48% é uma média: 99,7% em estúdio, 86,3% em lavoura e 75,4% em uma fonte nunca vista. |
+| 10 | Corrigir o atalho tem custo | 1:30 | 13:30 | O ciclo 5 reduz falsos alarmes na lavoura e perde um pouco de sensibilidade: é outro ponto de operação. |
+| 11 | Campo · O que foi possível medir | 1:45 | 15:15 | Fundo real não gerou falso alarme; a sensibilidade em campo ainda não foi medida. |
+| 12 | O mesmo padrão em outras culturas | 0:45 | 16:00 | A queda fora da fonte é regra na literatura; a lacuna é reunir tudo isso em hortaliças folhosas. |
+| 13 | Limitações do estudo | 1:15 | 17:15 | Cinco ressalvas, ditas por mim antes que a banca pergunte. |
+| 14 | O que o trabalho responde | 1:30 | 18:45 | O desempenho dependeu mais do protocolo de avaliação do que da arquitetura; a entrega é o protocolo. |
+| 15 | Trabalhos futuros | 0:30 | 19:15 | Cinco próximos passos, todos saídos das limitações. |
 
-### Fala, slide a slide
-
-**1. Capa.**
-"Boa tarde. Sou José Pedro, e este é o meu trabalho de conclusão, orientado pelo professor
-Leanderson André: detecção automática de anomalias fitossanitárias em hortaliças folhosas."
-
-**2. O problema.**
-"Diagnosticar doença de planta por foto é uma das aplicações mais estudadas de visão
-computacional na agricultura. O artigo que abriu a área, em 2016, reportou mais de 99%.
-Só que essas fotos são de estúdio: folha isolada, fundo liso, luz controlada. Quando os
-mesmos modelos vão para a lavoura, a literatura registra entre 70% e 85%. E isso importa
-porque 77% dos estabelecimentos rurais do Brasil são de agricultura familiar, onde o
-diagnóstico ainda é feito no olho."
-*Transição:* "A minha pergunta parte daí."
-
-**3. Questão e objetivos.**
-"Em que medida um sistema desse tipo, treinado com imagens públicas, mantém desempenho
-confiável em fotos reais de campo? Dividi em três perguntas. Q1: qual arquitetura é
-melhor, com significância estatística. Q2: a confiança do modelo avisa quando ele erra.
-Q3: de quanto é a queda em campo e do que ela depende."
-
-**4. O sistema.**
-"O sistema recebe uma foto e devolve uma de quatro respostas: saudável, anômalo,
-inconclusivo ou não é folha. As duas últimas existem porque uma rede binária sempre
-responde alguma coisa, mesmo para a foto de uma parede."
-*Se houver demonstração, é aqui (Seção 12).*
-
-**5. Dados e método.**
-"São 175 mil imagens de fontes públicas, quatro arquiteturas — três redes convolucionais e
-um Vision Transformer — e, para comparar modelos, teste de McNemar com correção para
-comparações múltiplas. Todas as métricas têm intervalo de confiança."
-
-**6. O 99,01% e o vazamento.**
-"No TCC-I cheguei a 99,01%. Em fotos novas, o sistema errava de forma errática. A pergunta
-que mudou o trabalho foi: por que o número é bom demais? A resposta: o conjunto de dados
-tinha 210 mil arquivos, mas só 106 mil fotografias distintas. Cinquenta e sete por cento
-do teste eram fotos que o modelo já tinha visto no treino, com outro nome. Refiz a divisão
-agrupando as fotos quase idênticas, e o vazamento caiu para 0,04%. O 99% foi retratado."
-*Pausa aqui. É o momento mais forte da apresentação.*
-
-**7. ◇ Os bugs que só o campo mostrou.**
-"Com o teste limpo, apareceram dois defeitos que as métricas não mostravam. O limiar de
-abstenção nunca disparava. E quase quatro mil fotos de alface saudável estavam rotuladas
-como doentes, por causa do nome de uma pasta. Esse segundo só apareceu porque treze fotos
-de horta se comportaram de forma estranha."
-
-**8. Q1 — arquiteturas.**
-"No teste, EfficientNet-B0 e ViT empatam em 98,48%, e os dois superam MobileNetV2 e
-ResNet-50. O ViT tem vinte e uma vezes mais parâmetros e é quase três vezes mais lento.
-Chega exatamente ao mesmo lugar. A arquitetura não é o gargalo."
-
-**9. Q2 — calibração e abstenção.**
-"A calibração funciona: o erro de calibração cai de 0,05 para 0,003. Mas o limiar de
-abstenção intercepta só 31% dos erros do EfficientNet e 15% dos erros do ViT. Mais de dois
-terços dos erros saem com confiança alta."
-
-**10. O teste por dentro e por fora.**
-"E aqui está o resultado central. O 98,5% é uma média. Quando separo o teste pelo tipo de
-foto, dentro da mesma fonte, as culturas fotografadas em estúdio dão 99,7% e as
-fotografadas em lavoura dão 86%. Oitenta e um por cento dos erros estão ali. E quando
-testei em uma fonte que o modelo nunca tinha visto — espinafre, também em estúdio — a
-acurácia foi de 75%. Um teste sem duplicatas continua sendo um teste da mesma
-distribuição."
-*Gráfico: três barras com intervalo de confiança — estúdio, lavoura, fonte nova.*
-
-**10b. Corrigir o atalho (ciclo 5).**
-"Uma auditoria mostrou por que a lavoura errava: a cultura estava associada ao rótulo, e
-variantes da mesma foto de alface estavam dos dois lados do split. Corrigi as duas coisas
-e treinei as quatro arquiteturas de novo. Na lavoura, as redes convolucionais passaram a
-errar bem menos em folha sadia — de sete a doze pontos de especificidade — e um pouco mais
-em folha doente. Não é um modelo melhor em tudo: é outro ponto de operação. E numa fonte
-de espinafre que nenhum modelo viu, todos ficam entre 86% e 90%."
-*Gráfico: para cada CNN, duas barras (ciclo 4, ciclo 5) de especificidade e de
-sensibilidade na lavoura.*
-
-**11. Q3 — campo. [ATUALIZAR]**
-*Versão atual (27/10):* "Nas treze fotos do TCC-I, o EfficientNet-B0 acerta 84,6%, com
-intervalo de 58% a 96%, e as versões são estatisticamente indistinguíveis; os erros saíram
-com confiança entre 95% e 99%. Na primeira horta com fundo real, dez fotos de alface sadia,
-nenhuma versão deu falso alarme, nem com o quadro recortado. O que falta é a outra metade:
-folhas doentes na horta."
-*Gráfico:* duas fotos da horta (inteira e recorte) com o veredicto das quatro versões.
-*Versão final:* N por cultura, intervalo, abstenção, ECE em campo, H1 a H3.
-
-**12. ◇ O que a literatura diz.**
-"Esse padrão não é só meu. Em amêndoa, a acurácia cai de 0,98 para 0,56 quando as fontes
-são separadas. Em videira, a mesma EfficientNet faz 73,8% em um conjunto externo. E um
-estudo com cinco famílias de redes mediu 98% em laboratório, 92% em dados mistos e 72% em
-campo, com diferença mínima entre arquiteturas. Os meus 99,7 e 86 contam a mesma história."
-
-**13. Limitações.**
-"Quatro limitações principais. O campo ainda é pequeno. Há um treino por modelo, então
-não tenho variância entre execuções. Só a alface tem dados próprios, e são poucas fotos
-originais — no teste honesto do ciclo 5 são 176 fotos, só 15 doentes. E a correção do
-ciclo 5 troca sensibilidade por especificidade: qual ponto de operação servir depende do
-campo."
-
-**14. Conclusão e contribuições.**
-"Respondendo à pergunta: o sistema é confiável nas fontes em que foi treinado e não
-mantém esse desempenho fora delas. O limite está nos dados, não na arquitetura: corrigir
-os dados mudou o comportamento das redes, e trocar de arquitetura não mudou. O que o
-trabalho entrega é o protocolo: auditoria de vazamento, três níveis de avaliação e
-estatística adequada a amostras pequenas."
-
-**15. Trabalhos futuros.**
-"Os próximos passos são treinar com fotos de fundo real, testar um modelo de fundação
-congelado e recalibrar a confiança no domínio de uso. Obrigado."
+A ordem segue as seções do artigo, como pede o modelo de slides: Introdução (2 e 3), Procedimentos metodológicos
+(4 e 5), Resultados (6 a 11), Discussão (12 e 13) e Conclusão (14 e 15). O rodapé de cada slide traz o número do
+slide e a página do artigo v14 em que o assunto está.
 
 ### Regras de palco
 
 - **Não leia o slide.** Pouco texto, um número grande por slide.
-- **Um gráfico por resultado.** Barras com intervalo de confiança para Q1; três barras
+- **Um gráfico por resultado.** Barras com intervalo de confiança para as arquiteturas; três barras
   para o slide 10.
 - **Diga os intervalos em voz alta.** "83,8%, com intervalo de 58 a 96" soa mais
   competente do que "83,8%".
@@ -1186,6 +1154,39 @@ comuns e raramente reportados: vazamento em 294 artigos de 17 áreas (Kapoor; Na
 Diga a verdade sobre a origem. O que a auditoria garante: nenhuma é duplicata de imagem
 do treino, e elas são tratadas como conjunto histórico, à parte da estimativa final.
 
+**36. "Você treinou cada modelo uma vez só. O empate entre EfficientNet-B0 e ViT vale?"**
+Vale para os dois modelos treinados: o McNemar compara esses dois, nas mesmas 23.967 imagens. Não vale como
+afirmação sobre as arquiteturas em geral, e eu digo isso nas limitações. Coakley e Gundersen (2026) treinaram
+cada configuração 100 vezes e mostraram que o desempenho é uma distribuição. Repetir com várias sementes está nos
+trabalhos futuros.
+
+**37. "Por que a calibração não resolveu em campo?"**
+Porque a temperatura foi ajustada na validação, que tem a mesma distribuição do treino. Fora dela, a confiança
+deixa de acompanhar o acerto: o ECE foi de 0,003 para 0,146. Xiang, Shi e Zhu (2026) mediram o mesmo do
+PlantVillage para o PlantDoc: 32% de acerto com 80% de confiança média, mesmo depois do *temperature scaling*.
+A saída é recalibrar com fotos do domínio de uso, o que exige uma horta de adaptação separada da de avaliação.
+
+**38. "Como foi feita a revisão da literatura?"**
+A busca principal foi na Web of Science, em outubro de 2026, por tópico (doença de plantas e aprendizado profundo
+com generalização em campo, vazamento, calibração e hortaliças folhosas); li o texto completo dos sete trabalhos
+mais próximos. Em novembro, para as limitações, acrescentei quatro artigos de revistas indexadas (*Frontiers in
+Plant Science*, *Scientific Reports* e *Biosystems Engineering*), localizados em base aberta.
+
+**39. "Por que o artigo cita o teste de McNemar sem a referência original?"**
+Por espaço: o limite é de 10 páginas. Mantive Dietterich (1998), que é quem recomenda o McNemar para comparar
+classificadores avaliados no mesmo conjunto. O original é McNemar (1947).
+
+**40. "Por que o trabalho não tem objetivos específicos nem perguntas operacionais?"**
+Porque no TCC-II o trabalho tem uma questão de pesquisa e um objetivo, os mesmos do resumo à conclusão; objetivo
+geral e específicos eram do TCC-I. O objetivo foi avaliar em que medida o sistema mantém desempenho confiável em
+fotografias de campo. O teste das mesmas fontes, a fonte nunca vista e o campo são as três situações em que medi
+isso: são o método, não três perguntas.
+
+**41. "Afinal, a resposta à questão de pesquisa é sim ou não?"**
+É parcial, e eu digo isso no artigo. Nas fontes de treino o sistema é confiável, e na horta sadia não deu nenhum
+falso alarme. A sensibilidade em campo não foi medida, porque a horta não tinha folhas doentes. Prefiro uma
+resposta parcial sustentada pelos dados a uma resposta completa que eles não sustentam.
+
 ### Se não souber responder
 
 "Não medi isso. O que tenho de mais próximo é … e o experimento que responderia seria …"
@@ -1216,7 +1217,7 @@ Oito semanas a partir de 13/10.
 | 13–19/10 | ~~Decidir o ciclo 5~~ (treinado em 14/10; artigo v7). Coleta de campo (adiada de 14/10); enviar o artigo v8 ao orientador | Fotos com metadados por horta |
 | 20–26/10 | Avaliação cega dos ciclos 4 e 5; ECE e abstenção em campo; teste de *T* | Tabela de campo |
 | 27/10–02/11 | Ler os sete artigos ★; teste de fundo; Grad-CAM corrigido | Fichamento de uma página por artigo |
-| 03–09/11 | Ciclo 6 com fotos de adaptação, se aprovado; reescrever as Seções 4 e 5 do artigo | Artigo com Q3 respondida |
+| 03–09/11 | Ciclo 6 com fotos de adaptação, se aprovado; reescrever as Seções 4 e 5 do artigo | Artigo com a parte de campo respondida |
 | 10–16/11 | Atualizar este guia; montar os slides | Deck completo |
 | 17–23/11 | Ensaio 1, sozinho e cronometrado; estudar a Seção 4 | Gravação para rever |
 | 24–30/11 | Ensaio 2, com o orientador ou colegas; treinar a Seção 11 | Lista de ajustes |
@@ -1252,7 +1253,7 @@ Oito semanas a partir de 13/10.
 - [ ] Aval para o conjunto de adaptação (muda a regra "fotos de campo nunca treinam")
 - [ ] Aval para manter o ViT como quarta arquitetura
 - [ ] Se a demonstração ao vivo é bem-vinda
-- [ ] Palavras-chave e demais pendências do artigo
+- [x] Palavras-chave e demais pendências do artigo (19/11: 25 observações aplicadas no artigo v14)
 - [ ] Composição da banca, para ajustar a ênfase (mais estatística, mais engenharia ou
       mais agronomia)
 
